@@ -330,16 +330,21 @@ body {
 #leaflet-map{flex:1;width:100%;z-index:0;}
 .leaflet-container{font-family:inherit;}
 .lf-you{width:16px;height:16px;border-radius:50%;background:#007aff;border:3px solid #fff;box-shadow:0 0 0 3px rgba(0,122,255,0.3);}
-.leaflet-tooltip.spot-tip{background:var(--navy);color:#fff;border:none;border-radius:8px;padding:3px 8px;font-size:10px;font-weight:700;letter-spacing:-0.2px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.2);pointer-events:none;}
-.leaflet-tooltip.spot-tip::before{border-top-color:var(--navy);}
-.map-card-wrap{position:absolute;bottom:76px;left:12px;right:12px;background:#fff;border-radius:18px;padding:14px 16px;box-shadow:0 4px 28px rgba(0,0,0,0.18);z-index:1000;display:none;}
-.map-card-wrap.visible{display:block;}
-.map-card-title{font-size:14px;font-weight:700;color:#000;letter-spacing:-0.4px;}
-.map-card-sub{font-size:11px;color:var(--gray);margin-top:2px;letter-spacing:-0.2px;}
-.map-stat{font-size:11px;color:var(--navy);font-weight:600;letter-spacing:-0.2px;}
-.map-stat-row{display:flex;gap:14px;margin-top:10px;}
-.map-card-close{position:absolute;top:10px;right:12px;font-size:18px;color:var(--gray);cursor:pointer;line-height:1;padding:2px 4px;}
-.map-locate-btn{position:absolute;bottom:136px;right:12px;width:40px;height:40px;border-radius:50%;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,0.18);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;z-index:999;-webkit-tap-highlight-color:transparent;transition:transform 0.15s;}
+.lf-spot{border-radius:50%;background:#fff;border:2.5px solid var(--navy);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(27,46,75,0.35);cursor:pointer;transition:transform 0.15s;-webkit-tap-highlight-color:transparent;}
+.lf-spot:active{transform:scale(0.88);}
+.map-sheet{position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:22px 22px 0 0;padding:0 0 20px;box-shadow:0 -4px 32px rgba(0,0,0,0.18);z-index:1000;transform:translateY(100%);transition:transform 0.36s cubic-bezier(0.32,0.72,0,1);}
+.map-sheet.visible{transform:translateY(0);}
+.map-sheet-handle{width:36px;height:4px;border-radius:2px;background:#e0e0e0;margin:10px auto 14px;}
+.map-sheet-body{padding:0 18px;}
+.map-sheet-name{font-size:17px;font-weight:800;color:#000;letter-spacing:-0.5px;line-height:1.2;}
+.map-sheet-species{font-size:12px;color:var(--gray);margin-top:4px;letter-spacing:-0.2px;}
+.map-sheet-divider{height:1px;background:var(--sep);margin:14px 0;}
+.map-sheet-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.map-sheet-ico{width:34px;height:34px;border-radius:10px;background:rgba(27,46,75,0.08);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.map-sheet-lbl{font-size:12px;font-weight:600;color:#000;letter-spacing:-0.2px;}
+.map-sheet-val{font-size:11px;color:var(--gray);margin-top:1px;letter-spacing:-0.2px;}
+.map-sheet-close{position:absolute;top:12px;right:14px;width:28px;height:28px;border-radius:50%;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--gray);cursor:pointer;}
+.map-locate-btn{position:absolute;bottom:16px;right:12px;width:42px;height:42px;border-radius:50%;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,0.18);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;z-index:999;-webkit-tap-highlight-color:transparent;transition:transform 0.15s;}
 .map-locate-btn:active{transform:scale(0.9);}
 
 /* ── LEADERBOARD ── */
@@ -794,13 +799,25 @@ body {
       <div class="map-wrap">
         <div id="leaflet-map"></div>
         <div class="map-locate-btn" onclick="mapLocateMe()" title="My location">📍</div>
-        <div class="map-card-wrap" id="map-card">
-          <span class="map-card-close" onclick="closeMapCard()">✕</span>
-          <div class="map-card-title" id="mc-title"></div>
-          <div class="map-card-sub" id="mc-sub"></div>
-          <div class="map-stat-row">
-            <div class="map-stat" id="mc-stat1"></div>
-            <div class="map-stat" id="mc-stat2"></div>
+        <div class="map-sheet" id="map-card">
+          <div class="map-sheet-close" onclick="closeMapCard()">✕</div>
+          <div class="map-sheet-handle"></div>
+          <div class="map-sheet-body">
+            <div class="map-sheet-name" id="mc-title"></div>
+            <div class="map-sheet-species" id="mc-sub"></div>
+            <div class="map-sheet-divider"></div>
+            <div class="map-sheet-row">
+              <div class="map-sheet-ico">🎣</div>
+              <div><div class="map-sheet-lbl" id="mc-stat1"></div><div class="map-sheet-val">Common species at this spot</div></div>
+            </div>
+            <div class="map-sheet-row">
+              <div class="map-sheet-ico">📍</div>
+              <div><div class="map-sheet-lbl" id="mc-coords"></div><div class="map-sheet-val">GPS coordinates</div></div>
+            </div>
+            <div class="map-sheet-row" id="mc-dist-row" style="display:none;">
+              <div class="map-sheet-ico">🚗</div>
+              <div><div class="map-sheet-lbl" id="mc-dist"></div><div class="map-sheet-val">From your location</div></div>
+            </div>
           </div>
         </div>
       </div>
@@ -1667,57 +1684,64 @@ function initMap() {
 
   const spotMarkers = [];
 
-  SPOTS.forEach(spot => {
-    const m = L.circleMarker([spot.lat, spot.lng], {
-      radius: spotRadius(9),
-      fillColor: '#1B2E4B',
-      color: '#fff',
-      weight: 2.5,
-      opacity: 1,
-      fillOpacity: 1,
-    }).addTo(leafletMap);
+  function spotSize(zoom) { return Math.max(22, Math.min(42, (zoom - 5) * 4)); }
 
-    m.bindTooltip(spot.name, {
-      permanent: true,
-      direction: 'top',
-      className: 'spot-tip',
-      offset: [0, -4],
+  function makeSpotIcon(size) {
+    const fs = Math.round(size * 0.52);
+    return L.divIcon({
+      className: '',
+      html: `<div class="lf-spot" style="width:${size}px;height:${size}px;font-size:${fs}px;">🐟</div>`,
+      iconSize: [size, size],
+      iconAnchor: [size / 2, size / 2],
     });
+  }
 
-    m.on('click', () => showMapCard(spot));
+  SPOTS.forEach(spot => {
+    const size = spotSize(9);
+    const m = L.marker([spot.lat, spot.lng], { icon: makeSpotIcon(size) })
+      .addTo(leafletMap)
+      .on('click', e => { L.DomEvent.stopPropagation(e); showMapCard(spot); });
     spotMarkers.push(m);
   });
 
-  function spotRadius(zoom) {
-    return Math.max(5, Math.min(16, zoom - 2));
-  }
+  leafletMap.on('zoomend', () => {
+    const size = spotSize(leafletMap.getZoom());
+    const icon = makeSpotIcon(size);
+    spotMarkers.forEach(m => m.setIcon(icon));
+  });
 
-  function updateMarkerSizes() {
-    const r = spotRadius(leafletMap.getZoom());
-    spotMarkers.forEach(m => m.setRadius(r));
-  }
-
-  leafletMap.on('zoomend', updateMarkerSizes);
   leafletMap.on('click', closeMapCard);
   mapLocateMe();
 }
 
 function showMapCard(spot) {
   setEl('mc-title', spot.name);
-  setEl('mc-sub', spot.sub ? `🐟 Species: ${spot.sub}` : 'Tap to fish here');
-  setEl('mc-stat1', '📍 Fishing spot');
-  setEl('mc-stat2', '');
-  const card = document.getElementById('map-card');
-  if (card) {
-    card.classList.add('visible');
-    card.style.animation = 'none';
-    void card.offsetWidth;
-    card.style.animation = 'card-rise 0.35s var(--ease) both';
+  setEl('mc-sub', spot.sub || 'Fishing spot');
+  setEl('mc-stat1', spot.sub || '—');
+  setEl('mc-coords', `${spot.lat.toFixed(4)}, ${spot.lng.toFixed(4)}`);
+
+  // Show distance if we have user location
+  if (userMarker) {
+    const ul = userMarker.getLatLng();
+    const d = haversine(ul.lat, ul.lng, spot.lat, spot.lng);
+    setEl('mc-dist', d < 1 ? `${Math.round(d * 5280)} ft away` : `${d.toFixed(1)} mi away`);
+    document.getElementById('mc-dist-row').style.display = 'flex';
+  } else {
+    document.getElementById('mc-dist-row').style.display = 'none';
   }
+
+  document.getElementById('map-card')?.classList.add('visible');
 }
 
 function closeMapCard() {
   document.getElementById('map-card')?.classList.remove('visible');
+}
+
+function haversine(lat1, lon1, lat2, lon2) {
+  const R = 3958.8, r = Math.PI / 180;
+  const dLat = (lat2 - lat1) * r, dLon = (lon2 - lon1) * r;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*r)*Math.cos(lat2*r)*Math.sin(dLon/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 }
 
 function mapLocateMe() {
