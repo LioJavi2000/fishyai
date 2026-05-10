@@ -104,7 +104,7 @@ body {
   transition:opacity 0.15s;
 }
 .back-btn:active{opacity:0.6;}
-#status-bar.dark .back-btn{color:#fff;}
+#status-bar.dark .back-btn,#status-bar.navy .back-btn{color:#fff;}
 .back-btn svg{width:16px;height:16px;}
 .back-btn svg *{stroke:currentColor;}
 
@@ -442,6 +442,10 @@ body {
 
   <!-- STATUS BAR -->
   <div id="status-bar">
+    <div id="back-btn" class="back-btn" style="display:none;" onclick="goBack()">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
+    </div>
     <span id="status-time">9:41</span>
     <span id="status-title">Fishy AI</span>
     <span id="status-icons" style="font-size:11px;letter-spacing:1px;">▲▲▲</span>
@@ -922,6 +926,12 @@ let toastTimer = null;
 const NAV_SCREENS  = ['feed','map','leaderboard','profile'];
 const DARK_SCREENS = ['scan','processing'];
 const NAVY_SCREENS = ['onboard1','onboard2','auth'];
+const BACK_MAP = {
+  onboard2:'onboard1', auth:'onboard2',
+  scan:'feed', processing:'scan', result:'scan',
+  log:'result', map:'feed', leaderboard:'feed',
+  profile:'feed', paywall:'feed',
+};
 const STATUS_TITLES = {
   onboard1:'',onboard2:'',auth:'',feed:'Fishy AI',scan:'',processing:'',
   result:'AI Result',log:'Log Catch',map:'Fishy AI',leaderboard:'Fishy AI',
@@ -1002,6 +1012,16 @@ function updateStatusBar(name) {
   const bar = document.getElementById('status-bar');
   bar.className = DARK_SCREENS.includes(name) ? 'dark' : NAVY_SCREENS.includes(name) ? 'navy' : '';
   setEl('status-title', STATUS_TITLES[name] ?? 'Fishy AI');
+  const hasBack = name in BACK_MAP;
+  const backBtn = document.getElementById('back-btn');
+  const timeEl  = document.getElementById('status-time');
+  if (backBtn) backBtn.style.display = hasBack ? 'flex' : 'none';
+  if (timeEl)  timeEl.style.display  = hasBack ? 'none' : 'block';
+}
+
+function goBack() {
+  const dest = BACK_MAP[current];
+  if (dest) showScreen(dest, true);
 }
 function updateBottomNav(name) {
   const nav = document.getElementById('bottom-nav');
