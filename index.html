@@ -10,6 +10,8 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎣</text></svg>">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 :root {
   --navy: #1B2E4B;
@@ -324,18 +326,24 @@ body {
 .toggle-sub{font-size:11px;color:var(--gray);font-weight:400;margin-top:1px;}
 
 /* ── MAP ── */
-.map-wrap{height:100%;position:relative;}
-.map-bg{width:100%;height:100%;background:#cde0cd;overflow:hidden;position:relative;}
-.mp{position:absolute;display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:transform 0.22s var(--spring);-webkit-tap-highlight-color:transparent;}
-.mp:active{transform:scale(0.88) !important;}
-.mp-dot{width:36px;height:36px;border-radius:50% 50% 50% 0;background:var(--navy);transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(27,46,75,0.5);}
-.mp-ico{transform:rotate(45deg);font-size:16px;}
-.mp-lbl{background:#fff;border-radius:8px;padding:3px 8px;font-size:10px;font-weight:600;color:var(--navy);margin-top:4px;white-space:nowrap;box-shadow:0 1px 5px rgba(0,0,0,0.12);}
-.map-card-wrap{position:absolute;bottom:12px;left:12px;right:12px;background:#fff;border-radius:16px;padding:14px;box-shadow:0 4px 24px rgba(0,0,0,0.14);}
+.map-wrap{height:100%;position:relative;display:flex;flex-direction:column;}
+#leaflet-map{flex:1;width:100%;z-index:0;}
+.leaflet-container{font-family:inherit;}
+.lf-pin{display:flex;flex-direction:column;align-items:center;cursor:pointer;}
+.lf-dot{width:36px;height:36px;border-radius:50% 50% 50% 0;background:var(--navy);transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 12px rgba(27,46,75,0.55);transition:transform 0.18s;}
+.lf-dot:hover{transform:rotate(-45deg) scale(1.15);}
+.lf-ico{transform:rotate(45deg);font-size:17px;line-height:1;}
+.lf-lbl{background:#fff;border-radius:8px;padding:3px 8px;font-size:10px;font-weight:700;color:var(--navy);margin-top:5px;white-space:nowrap;box-shadow:0 1px 6px rgba(0,0,0,0.15);letter-spacing:-0.2px;}
+.lf-you{width:16px;height:16px;border-radius:50%;background:#007aff;border:3px solid #fff;box-shadow:0 0 0 3px rgba(0,122,255,0.3);}
+.map-card-wrap{position:absolute;bottom:76px;left:12px;right:12px;background:#fff;border-radius:18px;padding:14px 16px;box-shadow:0 4px 28px rgba(0,0,0,0.18);z-index:1000;display:none;}
+.map-card-wrap.visible{display:block;}
 .map-card-title{font-size:14px;font-weight:700;color:#000;letter-spacing:-0.4px;}
 .map-card-sub{font-size:11px;color:var(--gray);margin-top:2px;letter-spacing:-0.2px;}
-.map-stat{font-size:11px;color:var(--navy);font-weight:500;letter-spacing:-0.2px;}
+.map-stat{font-size:11px;color:var(--navy);font-weight:600;letter-spacing:-0.2px;}
 .map-stat-row{display:flex;gap:14px;margin-top:10px;}
+.map-card-close{position:absolute;top:10px;right:12px;font-size:18px;color:var(--gray);cursor:pointer;line-height:1;padding:2px 4px;}
+.map-locate-btn{position:absolute;bottom:136px;right:12px;width:40px;height:40px;border-radius:50%;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,0.18);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;z-index:999;-webkit-tap-highlight-color:transparent;transition:transform 0.15s;}
+.map-locate-btn:active{transform:scale(0.9);}
 
 /* ── LEADERBOARD ── */
 .lb-wrap{background:var(--bg);min-height:100%;}
@@ -787,27 +795,15 @@ body {
     <!-- ══════ MAP ══════ -->
     <div class="screen" id="screen-map">
       <div class="map-wrap">
-        <div class="map-bg">
-          <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:0.25;" viewBox="0 0 322 600" xmlns="http://www.w3.org/2000/svg">
-            <defs><pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse"><path d="M36 0L0 0 0 36" fill="none" stroke="#1B2E4B" stroke-width="0.5"/></pattern></defs>
-            <rect width="100%" height="100%" fill="url(#grid)"/>
-            <path d="M70 180 Q160 160 240 200 Q285 225 300 290 Q295 370 240 395 Q175 415 115 385 Q55 350 65 275 Q68 230 70 180" fill="#9bbf9b" opacity="0.7"/>
-            <path d="M30 80 Q80 60 120 90 Q140 110 130 140 Q110 160 80 150 Q45 140 30 110 Z" fill="#9bbf9b" opacity="0.5"/>
-            <path d="M230 80 Q265 65 290 90 Q305 110 295 135 Q275 155 245 145 Q220 132 225 108 Z" fill="#9bbf9b" opacity="0.5"/>
-          </svg>
-          <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:0.15;" viewBox="0 0 322 600">
-            <line x1="0" y1="300" x2="322" y2="300" stroke="#fff" stroke-width="1.5"/>
-            <line x1="161" y1="0" x2="161" y2="600" stroke="#fff" stroke-width="1"/>
-            <line x1="0" y1="160" x2="322" y2="180" stroke="#fff" stroke-width="0.8"/>
-          </svg>
-          <div class="mp" style="top:36%;left:40%;" onclick="showMapCard('Lake Elsinore South Cove','34 catches · Most recent: 2 min ago','🐟 Largemouth Bass · 1st','⚖️ Top: 6.1 lbs')"><div class="mp-dot"><span class="mp-ico">🐟</span></div><div class="mp-lbl">Lake Elsinore</div></div>
-          <div class="mp" style="top:16%;left:60%;" onclick="showMapCard('Prado Basin East Shore','18 catches · Most recent: 3h ago','🐡 Striped Bass · 1st','⚖️ Top: 9.3 lbs')"><div class="mp-dot"><span class="mp-ico">🐡</span></div><div class="mp-lbl">Prado Basin</div></div>
-          <div class="mp" style="top:52%;left:14%;" onclick="showMapCard('Santa Ana River Bend','9 catches · Most recent: 1 day ago','🎣 Carp · 1st','⚖️ Top: 4.2 lbs')"><div class="mp-dot"><span class="mp-ico">🎣</span></div><div class="mp-lbl">Santa Ana River</div></div>
-          <div class="mp" style="top:60%;left:68%;" onclick="showMapCard('Corona Lake South','22 catches · Most recent: 45m ago','🐠 Catfish · 1st','⚖️ Top: 11.7 lbs')"><div class="mp-dot"><span class="mp-ico">🐠</span></div><div class="mp-lbl">Corona Lake</div></div>
-          <div class="map-card-wrap" id="map-card">
-            <div class="map-card-title" id="mc-title">Lake Elsinore South Cove</div>
-            <div class="map-card-sub" id="mc-sub">34 catches · Most recent: 2 min ago</div>
-            <div class="map-stat-row"><div class="map-stat" id="mc-stat1">🐟 Largemouth Bass · 1st</div><div class="map-stat" id="mc-stat2">⚖️ Top: 6.1 lbs</div></div>
+        <div id="leaflet-map"></div>
+        <div class="map-locate-btn" onclick="mapLocateMe()" title="My location">📍</div>
+        <div class="map-card-wrap" id="map-card">
+          <span class="map-card-close" onclick="closeMapCard()">✕</span>
+          <div class="map-card-title" id="mc-title"></div>
+          <div class="map-card-sub" id="mc-sub"></div>
+          <div class="map-stat-row">
+            <div class="map-stat" id="mc-stat1"></div>
+            <div class="map-stat" id="mc-stat2"></div>
           </div>
         </div>
       </div>
@@ -1045,6 +1041,7 @@ function showScreen(name, back = false) {
   if (name === 'feed') loadFeed();
   if (name === 'leaderboard') loadLeaderboard();
   if (name === 'profile') loadProfileScreen();
+  if (name === 'map') setTimeout(initMap, 80);
 }
 
 function updateStatusBar(name) {
@@ -1632,10 +1629,94 @@ document.addEventListener('click', e => {
   if (!e.target.closest('.lure-field')) document.getElementById('lure-dropdown')?.classList.remove('open');
 });
 
-function showMapCard(title, sub, s1, s2) {
-  setEl('mc-title', title); setEl('mc-sub', sub); setEl('mc-stat1', s1); setEl('mc-stat2', s2);
+// ══════════════════════════════════════════
+//  MAP (Leaflet)
+// ══════════════════════════════════════════
+const SPOTS = [
+  { name:'Lake Elsinore South Cove',  lat:33.6559, lng:-117.3480, emoji:'🐟', sub:'Largemouth Bass · Catfish' },
+  { name:'Prado Basin East Shore',    lat:33.8670, lng:-117.6354, emoji:'🐡', sub:'Striped Bass · Carp' },
+  { name:'Santa Monica Pier',         lat:34.0083, lng:-118.4983, emoji:'🦈', sub:'Halibut · Perch · Mackerel' },
+  { name:'Santa Ana River Bend',      lat:33.8347, lng:-117.8947, emoji:'🎣', sub:'Carp · Bass · Catfish' },
+  { name:'Corona Lake South',         lat:33.8100, lng:-117.5700, emoji:'🐠', sub:'Catfish · Trout · Bass' },
+  { name:'Big Bear Lake Marina',      lat:34.2399, lng:-116.8963, emoji:'🐟', sub:'Rainbow Trout · Bass' },
+  { name:'Castaic Lake South Cove',   lat:34.4893, lng:-118.6063, emoji:'🐡', sub:'Striped Bass · Largemouth' },
+  { name:'Lake Perris Recreation',    lat:33.8550, lng:-117.1720, emoji:'🐟', sub:'Bass · Trout · Catfish' },
+  { name:'Lake Skinner',              lat:33.6158, lng:-117.0685, emoji:'🎣', sub:'Bass · Catfish · Crappie' },
+  { name:'Dixon Lake',                lat:33.1734, lng:-117.0694, emoji:'🐟', sub:'Largemouth Bass · Trout' },
+  { name:'San Vicente Reservoir',     lat:32.9300, lng:-116.9200, emoji:'🐡', sub:'Bass · Catfish' },
+  { name:'Otay Lakes',                lat:32.6100, lng:-116.9700, emoji:'🐠', sub:'Largemouth Bass · Carp' },
+];
+
+let leafletMap = null;
+let userMarker = null;
+
+function initMap() {
+  if (leafletMap) { leafletMap.invalidateSize(); return; }
+
+  leafletMap = L.map('leaflet-map', {
+    center: [33.85, -117.45],
+    zoom: 9,
+    zoomControl: false,
+    attributionControl: false,
+  });
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap',
+  }).addTo(leafletMap);
+
+  L.control.attribution({ prefix: false, position: 'bottomleft' }).addTo(leafletMap);
+  L.control.zoom({ position: 'bottomright' }).addTo(leafletMap);
+
+  SPOTS.forEach(spot => {
+    const icon = L.divIcon({
+      className: '',
+      html: `<div class="lf-pin"><div class="lf-dot"><span class="lf-ico">${spot.emoji}</span></div><div class="lf-lbl">${spot.name.split(' ').slice(0,2).join(' ')}</div></div>`,
+      iconSize: [80, 58],
+      iconAnchor: [40, 54],
+    });
+    L.marker([spot.lat, spot.lng], { icon })
+      .addTo(leafletMap)
+      .on('click', () => showMapCard(spot));
+  });
+
+  leafletMap.on('click', closeMapCard);
+  mapLocateMe();
+}
+
+function showMapCard(spot) {
+  setEl('mc-title', spot.name);
+  setEl('mc-sub', spot.sub ? `🐟 Species: ${spot.sub}` : 'Tap to fish here');
+  setEl('mc-stat1', '📍 Fishing spot');
+  setEl('mc-stat2', '');
   const card = document.getElementById('map-card');
-  if (card) { card.style.animation = 'none'; void card.offsetWidth; card.style.animation = 'card-rise 0.35s var(--ease) both'; }
+  if (card) {
+    card.classList.add('visible');
+    card.style.animation = 'none';
+    void card.offsetWidth;
+    card.style.animation = 'card-rise 0.35s var(--ease) both';
+  }
+}
+
+function closeMapCard() {
+  document.getElementById('map-card')?.classList.remove('visible');
+}
+
+function mapLocateMe() {
+  if (!navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(pos => {
+    if (!leafletMap) return;
+    const { latitude: lat, longitude: lng } = pos.coords;
+    if (userMarker) userMarker.remove();
+    const icon = L.divIcon({
+      className: '',
+      html: '<div class="lf-you"></div>',
+      iconSize: [16, 16],
+      iconAnchor: [8, 8],
+    });
+    userMarker = L.marker([lat, lng], { icon }).addTo(leafletMap);
+    leafletMap.flyTo([lat, lng], 11, { duration: 1.2 });
+  }, () => {});
 }
 
 function setLbTab(el) {
