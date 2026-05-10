@@ -293,6 +293,7 @@ body {
 .res-hero{width:100%;height:195px;background:linear-gradient(145deg,#c8ddf0 0%,#8fb8d8 100%);display:flex;align-items:center;justify-content:center;font-size:80px;position:relative;background-size:cover;background-position:center;}
 .res-badge{position:absolute;bottom:12px;left:12px;background:var(--navy);color:#fff;font-size:13px;font-weight:700;padding:7px 14px;border-radius:20px;letter-spacing:-0.3px;animation:badge-pop 0.4s 0.1s var(--spring) both;}
 .res-sub-badge{position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,0.4);color:#fff;font-size:11px;font-weight:500;padding:5px 10px;border-radius:14px;backdrop-filter:blur(8px);letter-spacing:-0.2px;animation:badge-pop 0.4s 0.2s var(--spring) both;}
+.res-scientific{position:absolute;bottom:36px;left:12px;color:rgba(255,255,255,0.75);font-size:11px;font-style:italic;letter-spacing:0.1px;text-shadow:0 1px 3px rgba(0,0,0,0.5);animation:badge-pop 0.4s 0.15s var(--spring) both;}
 .res-card{background:#fff;border-radius:20px;margin:-20px 12px 0;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,0.07);animation:card-rise 0.45s 0.08s var(--ease) both;}
 .res-section{margin-bottom:14px;padding-bottom:14px;border-bottom:0.5px solid var(--bg);}
 .res-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
@@ -694,6 +695,7 @@ body {
           <span id="res-photo-placeholder" style="font-size:80px;">🐟</span>
           <div class="res-badge" id="res-badge">Largemouth Bass</div>
           <div class="res-sub-badge" id="res-confidence">98% confidence</div>
+          <div class="res-scientific" id="res-scientific">Micropterus salmoides</div>
         </div>
         <div class="res-card">
           <div class="res-section">
@@ -707,13 +709,17 @@ body {
               <div class="val" style="margin-top:4px;font-size:12px;">Min size: 12 in · Bag limit: 5 per day · Season: Open year-round</div>
             </div>
           </div>
-          <div class="res-section" style="border-bottom:none;margin-bottom:0;padding-bottom:0;">
+          <div class="res-section">
             <div class="lbl">Best lures</div>
             <div class="lure-chips" id="res-lures">
               <div class="lure-chip">🪱 Plastic Worms</div>
               <div class="lure-chip">🪝 Crankbaits</div>
               <div class="lure-chip">✨ Spinnerbaits</div>
             </div>
+          </div>
+          <div class="res-section" id="res-funfact-section" style="border-bottom:none;margin-bottom:0;padding-bottom:0;">
+            <div class="lbl">Did you know?</div>
+            <div class="val" id="res-funfact" style="font-style:italic;"></div>
           </div>
         </div>
         <button class="btn" onclick="showScreen('log')" style="margin-top:16px;">Log This Catch →</button>
@@ -1398,6 +1404,7 @@ function renderResult() {
 
   setEl('res-badge', f.species || 'Unknown Fish');
   setEl('res-confidence', `${f.confidence || 0}% confidence`);
+  setEl('res-scientific', f.scientific || '');
   setEl('res-habitat', f.habitat || '');
 
   const regEl = document.getElementById('res-regulations');
@@ -1408,6 +1415,15 @@ function renderResult() {
 
   const lureEl = document.getElementById('res-lures');
   if (lureEl) lureEl.innerHTML = (f.lures || []).map(l => `<div class="lure-chip">🎣 ${esc(l)}</div>`).join('');
+
+  const factEl = document.getElementById('res-funfact');
+  const factSec = document.getElementById('res-funfact-section');
+  if (factEl && f.funFact) {
+    factEl.textContent = f.funFact;
+    if (factSec) factSec.style.display = '';
+  } else if (factSec) {
+    factSec.style.display = 'none';
+  }
 
   setEl('log-species-title', f.species || 'Unknown Fish');
 }

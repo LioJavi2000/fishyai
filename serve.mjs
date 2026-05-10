@@ -69,13 +69,26 @@ createServer(async (req, res) => {
         },
         body: JSON.stringify({
           model: 'claude-sonnet-4-6',
-          max_tokens: 512,
+          max_tokens: 800,
+          system: `You are an expert fish biologist and fishing guide with deep knowledge of North American freshwater and saltwater species, US fishing regulations, and angling techniques. You help anglers identify their catches instantly.
+
+Always respond with ONLY a valid JSON object — no markdown, no code fences, no explanation before or after. If you cannot identify a fish in the image (e.g. no fish visible), still return the JSON with species "Unknown" and confidence 0.`,
           messages: [{
             role: 'user',
             content: [
               { type: 'image', source: { type: 'base64', media_type: mimeType, data: imageBase64 } },
-              { type: 'text', text: `You are a fish identification expert. Identify the fish in this image. Respond with ONLY valid JSON and no markdown or explanation:
-{"species":"Common Name","confidence":95,"habitat":"One to two sentence habitat tip.","regulations":"Brief California fishing regulation for this species.","lures":["Lure 1","Lure 2","Lure 3"],"legal":true}` }
+              { type: 'text', text: `Identify the fish in this photo and return ONLY this JSON (fill in real values, no placeholders):
+
+{
+  "species": "Common name of the fish",
+  "scientific": "Genus species",
+  "confidence": 92,
+  "habitat": "2-3 sentences on where this fish lives, what structures it relates to, and the best time of day to find it.",
+  "regulations": "California-specific regulation: minimum size, daily bag limit, open season. Be specific with numbers.",
+  "legal": true,
+  "lures": ["Most effective lure or bait #1", "Lure #2", "Lure #3", "Lure #4"],
+  "funFact": "One surprising or memorable fact about this species that an angler would love to know."
+}` }
             ]
           }]
         })
