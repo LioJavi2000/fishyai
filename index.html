@@ -280,6 +280,24 @@ body {
 .cs-send:disabled{opacity:0.4;}
 .cs-backdrop{position:absolute;inset:0;background:rgba(0,0,0,0.35);z-index:1999;display:none;backdrop-filter:blur(2px);}
 .cs-backdrop.open{display:block;}
+.settings-sheet{position:absolute;bottom:0;left:0;right:0;background:var(--bg);border-radius:22px 22px 0 0;z-index:2000;transform:translateY(100%);transition:transform 0.38s cubic-bezier(0.32,0.72,0,1);max-height:88%;overflow-y:auto;}
+.settings-sheet.open{transform:translateY(0);}
+.settings-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 8px;}
+.settings-hd-title{font-size:17px;font-weight:700;color:#000;letter-spacing:-0.4px;}
+.settings-prof{background:#fff;margin:0 12px 10px;border-radius:16px;padding:16px;display:flex;align-items:center;gap:14px;}
+.settings-prof-name{font-size:15px;font-weight:700;color:#000;letter-spacing:-0.4px;}
+.settings-prof-sub{font-size:12px;color:var(--gray);margin-top:2px;letter-spacing:-0.2px;}
+.settings-group{background:#fff;margin:0 12px 10px;border-radius:16px;overflow:hidden;}
+.settings-row{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:0.5px solid var(--sep);cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.settings-row:last-child{border-bottom:none;}
+.settings-row:active{background:var(--bg);}
+.set-ico{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.set-ico-blue{background:#007aff;}.set-ico-green{background:#34c759;}.set-ico-yellow{background:#ff9500;}.set-ico-red{background:#ff3b30;}.set-ico-navy{background:var(--navy);}
+.settings-row-lbl{flex:1;font-size:14px;font-weight:500;color:#000;letter-spacing:-0.3px;}
+.settings-row-lbl.danger{color:#ff3b30;}
+.settings-row-arrow{color:#c7c7cc;font-size:18px;font-weight:300;}
+.settings-name-input{width:100%;background:var(--bg);border:none;border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit;color:#000;outline:none;letter-spacing:-0.2px;}
+.settings-ver{text-align:center;font-size:11px;color:var(--gray);padding:8px 0 32px;letter-spacing:-0.1px;}
 
 /* ── SCAN ── */
 .scan-wrap{background:#000;height:100%;display:flex;flex-direction:column;}
@@ -597,8 +615,8 @@ body {
       <div class="feed-wrap">
         <div class="feed-hd">
           <span class="feed-title">Feed</span>
-          <div class="feed-hd-ico">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <div class="feed-hd-ico" onclick="openSettings()" style="cursor:pointer;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#000"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
           </div>
         </div>
         <div class="story-row">
@@ -976,6 +994,59 @@ body {
     </div>
   </div>
 
+  <!-- ══ SETTINGS SHEET ══ -->
+  <div class="cs-backdrop" id="settings-backdrop" onclick="closeSettings()"></div>
+  <div class="settings-sheet" id="settings-sheet">
+    <div class="cs-handle"></div>
+    <div class="settings-hd">
+      <span class="settings-hd-title">Settings</span>
+      <div class="cs-close-btn" onclick="closeSettings()">✕</div>
+    </div>
+    <div class="settings-prof">
+      <div class="av" id="settings-av" style="width:50px;height:50px;font-size:18px;flex-shrink:0;">A</div>
+      <div style="flex:1;">
+        <div class="settings-prof-name" id="settings-name">Angler</div>
+        <div class="settings-prof-sub" id="settings-sub">0 catches · 0 species</div>
+      </div>
+    </div>
+    <div class="settings-group" style="padding:12px 16px;">
+      <div style="font-size:11px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Display Name</div>
+      <input class="settings-name-input" id="settings-name-input" placeholder="Your name or handle" oninput="saveDisplayName(this.value)">
+    </div>
+    <div class="settings-group">
+      <div class="settings-row" onclick="toggleSettingsTog('notif-tog')">
+        <div class="set-ico set-ico-blue"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+        <span class="settings-row-lbl">Notifications</span>
+        <div class="tog on" id="notif-tog" onclick="event.stopPropagation();toggleSettingsTog('notif-tog')"></div>
+      </div>
+      <div class="settings-row" onclick="toggleSettingsTog('location-tog')">
+        <div class="set-ico set-ico-green"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+        <span class="settings-row-lbl">Share Location</span>
+        <div class="tog on" id="location-tog" onclick="event.stopPropagation();toggleSettingsTog('location-tog')"></div>
+      </div>
+    </div>
+    <div class="settings-group">
+      <div class="settings-row" onclick="showToast('Thanks for the love! ⭐')">
+        <div class="set-ico set-ico-yellow"><svg width="15" height="15" viewBox="0 0 24 24" fill="#fff" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+        <span class="settings-row-lbl">Rate Fishy AI</span>
+        <span class="settings-row-arrow">›</span>
+      </div>
+      <div class="settings-row" onclick="showToast('Privacy policy coming soon')">
+        <div class="set-ico set-ico-navy"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <span class="settings-row-lbl">Privacy Policy</span>
+        <span class="settings-row-arrow">›</span>
+      </div>
+    </div>
+    <div class="settings-group">
+      <div class="settings-row" onclick="clearAllData()">
+        <div class="set-ico set-ico-red"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></div>
+        <span class="settings-row-lbl danger">Clear All Data</span>
+        <span class="settings-row-arrow" style="color:#ff3b30;">›</span>
+      </div>
+    </div>
+    <div class="settings-ver">Fishy AI v1.0 · Powered by Claude</div>
+  </div>
+
   <!-- ══ COMMENT SHEET ══ -->
   <div class="cs-backdrop" id="cs-backdrop" onclick="closeComments()"></div>
   <div class="cs-sheet" id="cs-sheet">
@@ -1045,6 +1116,7 @@ async function init() {
   updateStatusBar('onboard1');
   updateBottomNav('onboard1');
   updateTabBar('onboard1');
+  initPersistence();
 
   try {
     // Always initialize Supabase with embedded keys (publishable key is client-safe)
@@ -1231,26 +1303,33 @@ async function loadProfile() {
 }
 
 async function loadProfileScreen() {
+  // Load from localStorage immediately (works without auth)
+  const catches  = STORE.get('catches', []);
+  const username = STORE.get('username', 'Angler');
+  setEl('prof-name', username);
+  setEl('prof-handle', `@${username.toLowerCase().replace(/\s+/g,'_')} · California`);
+  setEl('prof-avatar-initials', username.slice(0, 2).toUpperCase());
+  if (catches.length) {
+    const species = new Set(catches.map(c => c.species)).size;
+    const best    = Math.max(0, ...catches.map(c => parseFloat(c.weight_lbs) || 0));
+    setEl('prof-catches', catches.length);
+    setEl('prof-species', species);
+    setEl('prof-best', best > 0 ? `${best} lb` : '—');
+    document.getElementById('badge-first')?.classList.toggle('locked', catches.length === 0);
+    document.getElementById('badge-species')?.classList.toggle('locked', species < 3);
+    document.getElementById('badge-trophy')?.classList.toggle('locked', best < 10);
+    const grid = document.getElementById('catch-grid');
+    if (grid) {
+      grid.innerHTML = catches.slice(0, 6).map(c =>
+        c.photo_b64
+          ? `<div class="catch-thumb" style="background:url(data:image/jpeg;base64,${c.photo_b64}) center/cover;"></div>`
+          : `<div class="catch-thumb" style="background:linear-gradient(135deg,#c8ddf0,#5a96c0);"></div>`
+      ).join('');
+    }
+  }
+  // Also try Supabase if logged in
   if (!sb || !currentUser) return;
   try {
-    const { data: catches } = await sb.from('catches').select('species,weight_lbs').eq('user_id', currentUser.id);
-    if (catches) {
-      const species = new Set(catches.map(c => c.species)).size;
-      const best    = Math.max(0, ...catches.map(c => parseFloat(c.weight_lbs) || 0));
-      setEl('prof-catches', catches.length);
-      setEl('prof-species', species);
-      setEl('prof-best', best > 0 ? `${best} lb` : '—');
-      // badges
-      document.getElementById('badge-first')?.classList.toggle('locked', catches.length === 0);
-      document.getElementById('badge-species')?.classList.toggle('locked', species < 3);
-      document.getElementById('badge-trophy')?.classList.toggle('locked', best < 10);
-      // catch grid
-      const grid = document.getElementById('catch-grid');
-      if (grid && catches.length) {
-        const emojis = ['🐟','🐡','🎣','🐠','🦈','🐟'];
-        grid.innerHTML = catches.slice(0, 6).map((_, i) => `<div class="catch-thumb">${emojis[i % emojis.length]}</div>`).join('');
-      }
-    }
     const { count } = await sb.from('follows').select('*', { count: 'exact', head: true }).eq('following_id', currentUser.id);
     setEl('prof-followers', count ?? 0);
   } catch {}
@@ -1497,7 +1576,25 @@ async function postCatch() {
   if (btn) { btn.textContent = 'Posting…'; btn.disabled = true; }
 
   try {
-    if (false) { // auth disabled — skip DB write for now
+    // Save to localStorage (always works, no auth needed)
+    const catchEntry = {
+      id: Date.now().toString(),
+      species:    identifiedFish?.species    || 'Unknown',
+      scientific: identifiedFish?.scientific || '',
+      confidence: identifiedFish?.confidence || null,
+      weight_lbs: weight,
+      length_in:  length,
+      lure_used:  lure,
+      kept:       catchKept,
+      spot_name:  spotName,
+      photo_b64:  capturedB64,
+      created_at: new Date().toISOString(),
+    };
+    const catches = STORE.get('catches', []);
+    catches.unshift(catchEntry);
+    STORE.set('catches', catches.slice(0, 50));
+
+    if (false) { // Supabase DB write (enable when DB is set up)
       // Create spot record if new
       let spotId = currentSpot?.id ?? null;
       if (currentSpot && !currentSpot.id && currentSpot.lat) {
@@ -1668,14 +1765,14 @@ function showToast(msg) {
 function toggleLike(id) {
   const btn = document.getElementById(id);
   if (!btn) return;
-  const count = btn.querySelector('.like-count');
+  const countEl = btn.querySelector('.like-count');
   const liked = btn.classList.toggle('liked');
-  const n = parseInt(count.textContent) + (liked ? 1 : -1);
-  count.textContent = n;
-  // update likes label in the card
-  const card = btn.closest('.card');
-  const likesEl = card?.querySelector('.post-likes');
-  if (likesEl) likesEl.textContent = `${n} like${n !== 1 ? 's' : ''}`;
+  const n = parseInt(countEl.textContent) + (liked ? 1 : -1);
+  countEl.textContent = n;
+  updateLikesLabel(btn.closest('.card'), n);
+  const likes = STORE.get('likes', {});
+  likes[id] = { count: n, liked };
+  STORE.set('likes', likes);
 }
 
 // ── COMMENTS ──
@@ -1694,6 +1791,127 @@ const COMMENTS = {
   ],
 };
 let activePostId = null;
+
+// ══════════════════════════════════════════
+//  PERSISTENCE (localStorage)
+// ══════════════════════════════════════════
+const STORE = {
+  get(key, fallback = null) {
+    try { const v = localStorage.getItem('fy_'+key); return v !== null ? JSON.parse(v) : fallback; } catch { return fallback; }
+  },
+  set(key, val) { try { localStorage.setItem('fy_'+key, JSON.stringify(val)); } catch {} },
+  del(key)      { try { localStorage.removeItem('fy_'+key); } catch {} },
+};
+
+function initPersistence() {
+  // Likes
+  const likes = STORE.get('likes', {});
+  Object.entries(likes).forEach(([id, s]) => {
+    const btn = document.getElementById(id);
+    if (!btn) return;
+    const countEl = btn.querySelector('.like-count');
+    if (countEl) countEl.textContent = s.count;
+    if (s.liked) btn.classList.add('liked');
+    updateLikesLabel(btn.closest('.card'), s.count);
+  });
+  // Bookmarks
+  STORE.get('bookmarks', []).forEach(id => {
+    document.getElementById(id)?.classList.add('bookmarked');
+  });
+  // Comments: merge saved into COMMENTS object
+  const saved = STORE.get('comments', {});
+  Object.entries(saved).forEach(([id, cmts]) => {
+    COMMENTS[id] = [...cmts, ...(COMMENTS[id] || [])];
+  });
+  // Settings toggles
+  if (!STORE.get('notif', true))    document.getElementById('notif-tog')?.classList.remove('on');
+  if (!STORE.get('location', true)) document.getElementById('location-tog')?.classList.remove('on');
+  // Local catches in feed
+  loadLocalCatchesInFeed();
+}
+
+function updateLikesLabel(card, count) {
+  if (!card) return;
+  const el = card.querySelector('.post-likes');
+  if (el) el.textContent = `${count} like${count !== 1 ? 's' : ''}`;
+}
+
+function loadLocalCatchesInFeed() {
+  const catches = STORE.get('catches', []);
+  if (!catches.length) return;
+  const feedContent = document.getElementById('feed-content');
+  if (!feedContent) return;
+  const username = STORE.get('username', 'You');
+  const av = username.slice(0, 2).toUpperCase();
+  const cards = catches.slice(0, 5).map(c => {
+    const lid = 'like-local-' + c.id;
+    const savedLike = (STORE.get('likes', {}))[lid] || { count: 0, liked: false };
+    const stats = [
+      c.weight_lbs ? `<b>${c.weight_lbs} lbs</b>` : '',
+      c.length_in  ? `${c.length_in} in` : '',
+      c.lure_used  ? esc(c.lure_used) : '',
+      c.kept === false ? 'Released' : '',
+    ].filter(Boolean).join(' · ');
+    const photo = c.photo_b64
+      ? `<div class="post-photo"><img src="data:image/jpeg;base64,${c.photo_b64}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy"><div class="post-fish-over"><span class="fish-tag">${esc(c.species)}</span></div></div>`
+      : `<div class="post-photo ph-ocean">${PH_SVG}<div class="post-fish-over"><span class="fish-tag">${esc(c.species)}</span></div></div>`;
+    return `<div class="card" style="margin-top:8px;">
+      <div class="post-hd"><div class="av">${av}</div><div style="flex:1;"><div class="post-name">${esc(username)} <span style="font-size:10px;color:var(--navy);background:rgba(27,46,75,0.1);padding:2px 6px;border-radius:8px;font-weight:600;">You</span></div><div class="post-spot">${PIN_SVG} ${esc(c.spot_name||'Unknown')}</div></div><span class="post-time">${timeAgo(c.created_at)}</span></div>
+      ${photo}
+      <div class="post-actions">
+        <button class="act-btn${savedLike.liked?' liked':''}" id="${lid}" onclick="toggleLike('${lid}')">${HEART_SVG}<span class="like-count">${savedLike.count}</span></button>
+        <button class="act-btn" onclick="openComments('local-${c.id}')">${CMT_SVG}<span>0</span></button>
+        <button class="act-btn" style="margin-left:auto;">${BM_SVG}</button>
+      </div>
+      <div class="post-likes">${savedLike.count} like${savedLike.count!==1?'s':''}</div>
+      ${stats ? `<div class="post-stats">${stats}</div>` : ''}
+    </div>`;
+  });
+  feedContent.insertAdjacentHTML('afterbegin', cards.join(''));
+}
+
+// ── SETTINGS ──
+function openSettings() {
+  const catches  = STORE.get('catches', []);
+  const species  = new Set(catches.map(c => c.species)).size;
+  const username = STORE.get('username', 'Angler');
+  setEl('settings-name', username);
+  setEl('settings-av',   username.slice(0, 2).toUpperCase());
+  setEl('settings-sub',  `${catches.length} catches · ${species} species`);
+  const inp = document.getElementById('settings-name-input');
+  if (inp) inp.value = username !== 'Angler' ? username : '';
+  document.getElementById('settings-sheet').classList.add('open');
+  document.getElementById('settings-backdrop').classList.add('open');
+}
+
+function closeSettings() {
+  document.getElementById('settings-sheet').classList.remove('open');
+  document.getElementById('settings-backdrop').classList.remove('open');
+}
+
+function saveDisplayName(val) {
+  const name = val.trim() || 'Angler';
+  STORE.set('username', name);
+  setEl('settings-name', name);
+  setEl('settings-av', name.slice(0, 2).toUpperCase());
+}
+
+function toggleSettingsTog(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const on = el.classList.toggle('on');
+  if (id === 'notif-tog')    STORE.set('notif', on);
+  if (id === 'location-tog') STORE.set('location', on);
+}
+
+function clearAllData() {
+  if (!confirm('Clear all your catches, likes, and comments? This cannot be undone.')) return;
+  Object.keys(localStorage).filter(k => k.startsWith('fy_')).forEach(k => localStorage.removeItem(k));
+  showToast('All data cleared');
+  closeSettings();
+  document.getElementById('feed-content').innerHTML = '';
+  loadFeed();
+}
 
 function openComments(postId) {
   activePostId = postId;
@@ -1718,8 +1936,14 @@ function sendComment() {
   const input = document.getElementById('cs-input');
   const text = input.value.trim();
   if (!text) return;
+  const username = STORE.get('username', 'You');
+  const newCmt = { av: username.slice(0,2).toUpperCase(), name: username, text, time: 'just now' };
   if (!COMMENTS[activePostId]) COMMENTS[activePostId] = [];
-  COMMENTS[activePostId].unshift({ av:'Me', name:'You', text, time:'just now' });
+  COMMENTS[activePostId].unshift(newCmt);
+  // Persist
+  const saved = STORE.get('comments', {});
+  saved[activePostId] = [newCmt, ...(saved[activePostId] || [])];
+  STORE.set('comments', saved);
   input.value = '';
   openComments(activePostId);
 }
