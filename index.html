@@ -1660,9 +1660,14 @@ function initMap() {
     attributionControl: false,
   });
 
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     maxZoom: 19,
-    attribution: '© OpenStreetMap © CARTO',
+    attribution: '© Esri © USGS',
+  }).addTo(leafletMap);
+  // Labels overlay on top of satellite
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 19,
+    opacity: 0.8,
   }).addTo(leafletMap);
 
   L.control.attribution({ prefix: false, position: 'bottomleft' }).addTo(leafletMap);
