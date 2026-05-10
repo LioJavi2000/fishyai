@@ -329,12 +329,9 @@ body {
 .map-wrap{height:100%;position:relative;display:flex;flex-direction:column;}
 #leaflet-map{flex:1;width:100%;z-index:0;}
 .leaflet-container{font-family:inherit;}
-.lf-pin{display:flex;flex-direction:column;align-items:center;cursor:pointer;}
-.lf-dot{width:36px;height:36px;border-radius:50% 50% 50% 0;background:var(--navy);transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 12px rgba(27,46,75,0.55);transition:transform 0.18s;}
-.lf-dot:hover{transform:rotate(-45deg) scale(1.15);}
-.lf-ico{transform:rotate(45deg);font-size:17px;line-height:1;}
-.lf-lbl{background:#fff;border-radius:8px;padding:3px 8px;font-size:10px;font-weight:700;color:var(--navy);margin-top:5px;white-space:nowrap;box-shadow:0 1px 6px rgba(0,0,0,0.15);letter-spacing:-0.2px;}
 .lf-you{width:16px;height:16px;border-radius:50%;background:#007aff;border:3px solid #fff;box-shadow:0 0 0 3px rgba(0,122,255,0.3);}
+.leaflet-tooltip.spot-tip{background:var(--navy);color:#fff;border:none;border-radius:8px;padding:3px 8px;font-size:10px;font-weight:700;letter-spacing:-0.2px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.2);pointer-events:none;}
+.leaflet-tooltip.spot-tip::before{border-top-color:var(--navy);}
 .map-card-wrap{position:absolute;bottom:76px;left:12px;right:12px;background:#fff;border-radius:18px;padding:14px 16px;box-shadow:0 4px 28px rgba(0,0,0,0.18);z-index:1000;display:none;}
 .map-card-wrap.visible{display:block;}
 .map-card-title{font-size:14px;font-weight:700;color:#000;letter-spacing:-0.4px;}
@@ -1668,18 +1665,39 @@ function initMap() {
   L.control.attribution({ prefix: false, position: 'bottomleft' }).addTo(leafletMap);
   L.control.zoom({ position: 'bottomright' }).addTo(leafletMap);
 
+  const spotMarkers = [];
+
   SPOTS.forEach(spot => {
-    const icon = L.divIcon({
-      className: '',
-      html: `<div class="lf-pin"><div class="lf-dot"><span class="lf-ico">${spot.emoji}</span></div><div class="lf-lbl">${spot.name.split(' ').slice(0,2).join(' ')}</div></div>`,
-      iconSize: [80, 58],
-      iconAnchor: [40, 54],
+    const m = L.circleMarker([spot.lat, spot.lng], {
+      radius: spotRadius(9),
+      fillColor: '#1B2E4B',
+      color: '#fff',
+      weight: 2.5,
+      opacity: 1,
+      fillOpacity: 1,
+    }).addTo(leafletMap);
+
+    m.bindTooltip(spot.name, {
+      permanent: true,
+      direction: 'top',
+      className: 'spot-tip',
+      offset: [0, -4],
     });
-    L.marker([spot.lat, spot.lng], { icon })
-      .addTo(leafletMap)
-      .on('click', () => showMapCard(spot));
+
+    m.on('click', () => showMapCard(spot));
+    spotMarkers.push(m);
   });
 
+  function spotRadius(zoom) {
+    return Math.max(5, Math.min(16, zoom - 2));
+  }
+
+  function updateMarkerSizes() {
+    const r = spotRadius(leafletMap.getZoom());
+    spotMarkers.forEach(m => m.setRadius(r));
+  }
+
+  leafletMap.on('zoomend', updateMarkerSizes);
   leafletMap.on('click', closeMapCard);
   mapLocateMe();
 }
