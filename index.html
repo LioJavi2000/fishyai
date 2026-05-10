@@ -472,7 +472,7 @@ body {
         </div>
         <div class="ob-footer">
           <div class="ob-dots"><div class="dot"></div><div class="dot active"></div><div class="dot"></div></div>
-          <button class="btn btn-white" onclick="showScreen('auth')">Continue</button>
+          <button class="btn btn-white" onclick="showScreen('feed')">Continue</button>
         </div>
       </div>
     </div>
@@ -1336,7 +1336,7 @@ async function postCatch() {
   if (btn) { btn.textContent = 'Posting…'; btn.disabled = true; }
 
   try {
-    if (sb && currentUser) {
+    if (false) { // auth disabled — skip DB write for now
       // Create spot record if new
       let spotId = currentSpot?.id ?? null;
       if (currentSpot && !currentSpot.id && currentSpot.lat) {
