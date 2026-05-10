@@ -6,6 +6,7 @@
 <title>Fishy AI — Prototype v1</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎣</text></svg>">
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 :root {
   --navy: #1B2E4B;
@@ -150,6 +151,7 @@ body {
 .card:active{transform:scale(0.985);}
 .btn{display:block;width:calc(100% - 24px);margin:8px 12px;background:var(--navy);color:#fff;font-size:15px;font-weight:600;letter-spacing:-0.3px;padding:14px;border-radius:14px;border:none;cursor:pointer;font-family:inherit;text-align:center;box-shadow:0 4px 16px rgba(27,46,75,0.3);transition:transform 0.18s var(--spring),background 0.2s;-webkit-tap-highlight-color:transparent;}
 .btn:active{transform:scale(0.97);background:var(--navy2);}
+.btn:disabled{opacity:0.6;cursor:default;transform:none;}
 .btn-outline{background:transparent;color:var(--navy);border:1.5px solid var(--navy);box-shadow:none;}
 .btn-outline:active{background:rgba(27,46,75,0.05);}
 .btn-white{background:#fff;color:var(--navy);box-shadow:0 4px 16px rgba(0,0,0,0.15);}
@@ -172,9 +174,17 @@ body {
 @keyframes badge-pop{from{opacity:0;transform:scale(0.7) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
 @keyframes fade-up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
-/* ═══════════════════════════════════════
-   ONBOARDING SCREENS
-═══════════════════════════════════════ */
+/* ── TOAST ── */
+#toast{
+  position:fixed;bottom:40px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:rgba(0,0,0,0.82);color:#fff;font-size:13px;font-weight:500;
+  padding:10px 18px;border-radius:20px;letter-spacing:-0.2px;
+  opacity:0;transition:opacity 0.25s,transform 0.25s var(--ease);pointer-events:none;
+  white-space:nowrap;z-index:9999;backdrop-filter:blur(12px);
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── ONBOARDING ── */
 .ob-wrap{background:var(--navy);height:100%;display:flex;flex-direction:column;}
 .ob-hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 28px;text-align:center;}
 .ob-icon{font-size:90px;margin-bottom:24px;filter:drop-shadow(0 8px 32px rgba(0,0,0,0.4));}
@@ -191,9 +201,7 @@ body {
 .dot{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,0.25);transition:width 0.25s var(--ease),background 0.25s;}
 .dot.active{width:20px;background:#fff;}
 
-/* ═══════════════════════════════════════
-   AUTH SCREEN
-═══════════════════════════════════════ */
+/* ── AUTH ── */
 .auth-wrap{background:var(--navy);min-height:100%;display:flex;flex-direction:column;}
 .auth-top{flex:0 0 auto;padding:28px 20px 52px;text-align:center;}
 .auth-logo{font-size:48px;display:block;filter:drop-shadow(0 8px 24px rgba(0,0,0,0.4));}
@@ -207,12 +215,10 @@ body {
 .auth-sep-txt{font-size:12px;color:var(--gray);}
 .btn-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px;border:1.5px solid #e5e5ea;border-radius:12px;background:#fff;font-size:14px;font-weight:500;color:#000;cursor:pointer;font-family:inherit;letter-spacing:-0.2px;transition:background 0.2s,transform 0.15s var(--spring);-webkit-tap-highlight-color:transparent;}
 .btn-google:active{background:var(--bg);transform:scale(0.97);}
-.auth-link{text-align:center;font-size:13px;color:var(--gray);cursor:pointer;letter-spacing:-0.2px;}
-.auth-link span{color:var(--navy);font-weight:600;}
+.auth-link{text-align:center;font-size:13px;color:var(--gray);letter-spacing:-0.2px;}
+.auth-link span{color:var(--navy);font-weight:600;cursor:pointer;}
 
-/* ═══════════════════════════════════════
-   FEED SCREEN
-═══════════════════════════════════════ */
+/* ── FEED ── */
 .feed-wrap{background:var(--bg);min-height:100%;padding-bottom:16px;}
 .feed-hd{background:#fff;padding:12px 12px 8px;display:flex;align-items:center;justify-content:space-between;}
 .feed-title{font-size:20px;font-weight:700;color:#000;letter-spacing:-0.5px;}
@@ -242,18 +248,15 @@ body {
 .act-btn.liked{color:#ff375f;}
 .act-btn.bookmarked{color:var(--navy);}
 
-/* ═══════════════════════════════════════
-   SCAN SCREEN
-═══════════════════════════════════════ */
+/* ── SCAN ── */
 .scan-wrap{background:#000;height:100%;display:flex;flex-direction:column;}
 .cam-view{flex:1;background:linear-gradient(180deg,#0d2418 0%,#1a3a28 60%,#0f2418 100%);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;}
 .cam-fish{font-size:90px;filter:drop-shadow(0 0 40px rgba(0,200,80,0.35));animation:fish-float 3s ease-in-out infinite;}
 @keyframes fish-float{0%,100%{transform:translateY(0) scaleX(-1)}50%{transform:translateY(-9px) scaleX(-1)}}
 .cam-glow{position:absolute;width:200px;height:200px;background:radial-gradient(circle,rgba(0,180,80,0.12) 0%,transparent 70%);border-radius:50%;pointer-events:none;}
-.scan-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:24px 0 28px;}
+.scan-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:24px 0 28px;z-index:5;}
 .scan-frame{width:148px;height:148px;border:2.5px solid rgba(255,255,255,0.75);border-radius:18px;animation:frame-pulse 2.4s ease-in-out infinite;box-shadow:0 0 0 1px rgba(255,255,255,0.1),inset 0 0 0 1px rgba(255,255,255,0.05);}
 @keyframes frame-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.45;transform:scale(1.07)}}
-.scan-corner-tl,.scan-corner-tr,.scan-corner-bl,.scan-corner-br{position:absolute;width:20px;height:20px;border-color:#fff;border-style:solid;border-width:0;}
 .scan-lbl{color:#fff;font-size:13px;font-weight:500;background:rgba(0,0,0,0.52);padding:6px 16px;border-radius:20px;backdrop-filter:blur(8px);letter-spacing:-0.2px;}
 .scan-controls{display:flex;align-items:center;justify-content:center;width:100%;padding:0 36px;position:relative;}
 .gallery-btn{width:38px;height:38px;border-radius:10px;border:2px solid rgba(255,255,255,0.45);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:transform 0.15s var(--spring);-webkit-tap-highlight-color:transparent;position:absolute;left:36px;}
@@ -263,9 +266,7 @@ body {
 .flip-btn{position:absolute;right:36px;width:38px;height:38px;border-radius:50%;border:2px solid rgba(255,255,255,0.45);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:transform 0.15s var(--spring);-webkit-tap-highlight-color:transparent;}
 .flip-btn:active{transform:scale(0.88);}
 
-/* ═══════════════════════════════════════
-   PROCESSING SCREEN
-═══════════════════════════════════════ */
+/* ── PROCESSING ── */
 .proc-wrap{background:#000;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;}
 .proc-fish{font-size:80px;animation:proc-pulse 1.1s ease-in-out infinite;}
 @keyframes proc-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.65;transform:scale(0.94)}}
@@ -276,11 +277,9 @@ body {
 .proc-sub{color:rgba(255,255,255,0.45);font-size:12px;letter-spacing:-0.2px;}
 .claude-badge{margin-top:36px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:7px 16px;color:rgba(255,255,255,0.5);font-size:11px;font-weight:500;letter-spacing:-0.1px;display:flex;align-items:center;gap:6px;}
 
-/* ═══════════════════════════════════════
-   AI RESULT SCREEN
-═══════════════════════════════════════ */
+/* ── AI RESULT ── */
 .res-wrap{background:var(--bg);min-height:100%;padding-bottom:20px;}
-.res-hero{width:100%;height:195px;background:linear-gradient(145deg,#c8ddf0 0%,#8fb8d8 100%);display:flex;align-items:center;justify-content:center;font-size:80px;position:relative;}
+.res-hero{width:100%;height:195px;background:linear-gradient(145deg,#c8ddf0 0%,#8fb8d8 100%);display:flex;align-items:center;justify-content:center;font-size:80px;position:relative;background-size:cover;background-position:center;}
 .res-badge{position:absolute;bottom:12px;left:12px;background:var(--navy);color:#fff;font-size:13px;font-weight:700;padding:7px 14px;border-radius:20px;letter-spacing:-0.3px;animation:badge-pop 0.4s 0.1s var(--spring) both;}
 .res-sub-badge{position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,0.4);color:#fff;font-size:11px;font-weight:500;padding:5px 10px;border-radius:14px;backdrop-filter:blur(8px);letter-spacing:-0.2px;animation:badge-pop 0.4s 0.2s var(--spring) both;}
 .res-card{background:#fff;border-radius:20px;margin:-20px 12px 0;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,0.07);animation:card-rise 0.45s 0.08s var(--ease) both;}
@@ -291,9 +290,7 @@ body {
 .lure-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
 .lure-chip{background:rgba(27,46,75,0.08);border-radius:14px;padding:4px 10px;font-size:11px;font-weight:500;color:var(--navy);letter-spacing:-0.1px;}
 
-/* ═══════════════════════════════════════
-   LOG CATCH SCREEN
-═══════════════════════════════════════ */
+/* ── LOG CATCH ── */
 .log-wrap{background:var(--bg);min-height:100%;padding-bottom:24px;}
 .log-hero{background:linear-gradient(145deg,#c8ddf0 0%,#8fb8d8 100%);height:130px;display:flex;align-items:center;justify-content:center;position:relative;}
 .log-fish-ico{font-size:60px;}
@@ -314,9 +311,7 @@ body {
 .toggle-hd{padding:12px 16px 6px;font-size:13px;font-weight:700;color:#000;letter-spacing:-0.3px;}
 .toggle-sub{font-size:11px;color:var(--gray);font-weight:400;margin-top:1px;}
 
-/* ═══════════════════════════════════════
-   MAP SCREEN
-═══════════════════════════════════════ */
+/* ── MAP ── */
 .map-wrap{height:100%;position:relative;}
 .map-bg{width:100%;height:100%;background:#cde0cd;overflow:hidden;position:relative;}
 .mp{position:absolute;display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:transform 0.22s var(--spring);-webkit-tap-highlight-color:transparent;}
@@ -330,9 +325,7 @@ body {
 .map-stat{font-size:11px;color:var(--navy);font-weight:500;letter-spacing:-0.2px;}
 .map-stat-row{display:flex;gap:14px;margin-top:10px;}
 
-/* ═══════════════════════════════════════
-   LEADERBOARD SCREEN
-═══════════════════════════════════════ */
+/* ── LEADERBOARD ── */
 .lb-wrap{background:var(--bg);min-height:100%;}
 .lb-hd{background:var(--navy);padding:18px 16px 36px;}
 .lb-title{font-size:24px;font-weight:700;color:#fff;letter-spacing:-0.6px;}
@@ -353,9 +346,7 @@ body {
 .lb-weight{font-size:15px;font-weight:700;color:var(--navy);letter-spacing:-0.4px;white-space:nowrap;}
 .lb-you{background:rgba(27,46,75,0.07);border:1.5px solid rgba(27,46,75,0.2);}
 
-/* ═══════════════════════════════════════
-   PROFILE SCREEN
-═══════════════════════════════════════ */
+/* ── PROFILE ── */
 .prof-wrap{background:var(--bg);min-height:100%;}
 .prof-hd{background:var(--navy);padding:22px 16px 48px;display:flex;flex-direction:column;align-items:center;}
 .prof-name{font-size:20px;font-weight:700;color:#fff;letter-spacing:-0.6px;margin-top:10px;}
@@ -379,9 +370,7 @@ body {
 .catch-thumb:nth-child(2n){background:linear-gradient(145deg,#d4ecd4,#8fc898);}
 .catch-thumb:nth-child(3n){background:linear-gradient(145deg,#f0d4c8,#d8908f);}
 
-/* ═══════════════════════════════════════
-   PAYWALL SCREEN
-═══════════════════════════════════════ */
+/* ── PAYWALL ── */
 .pw-wrap{background:#fff;min-height:100%;padding-bottom:28px;}
 .pw-top{padding:28px 20px 20px;text-align:center;}
 .pw-logo{font-size:44px;display:block;}
@@ -410,6 +399,13 @@ body {
 </style>
 </head>
 <body>
+
+<!-- HIDDEN: gallery file input + capture canvas -->
+<input type="file" id="gallery-input" accept="image/*" style="display:none" onchange="handleGallerySelect(event)">
+<canvas id="camera-canvas" style="display:none"></canvas>
+
+<!-- TOAST -->
+<div id="toast"></div>
 
 <!-- ── TAB SWITCHER ── -->
 <div id="tab-bar">
@@ -455,11 +451,7 @@ body {
           <p class="ob-p">Point your camera at your catch. Claude AI identifies the species, regulations, and best lures — in seconds.</p>
         </div>
         <div class="ob-footer">
-          <div class="ob-dots">
-            <div class="dot active"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-          </div>
+          <div class="ob-dots"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
           <button class="btn btn-white" onclick="showScreen('onboard2')">Get Started</button>
         </div>
       </div>
@@ -472,26 +464,13 @@ body {
           <div class="ob-icon2">🗺️</div>
           <h1 class="ob-h1">Never miss<br>a catch.</h1>
           <div class="ob-feat">
-            <div class="ob-feat-item">
-              <span class="ob-feat-ico">📍</span>
-              <div><span class="ob-feat-bold">Auto-log spots</span><span class="ob-feat-txt">GPS pins your catch to the nearest fishing spot automatically.</span></div>
-            </div>
-            <div class="ob-feat-item">
-              <span class="ob-feat-ico">👥</span>
-              <div><span class="ob-feat-bold">Social feed</span><span class="ob-feat-txt">Share catches, follow anglers, climb the leaderboard.</span></div>
-            </div>
-            <div class="ob-feat-item">
-              <span class="ob-feat-ico">📊</span>
-              <div><span class="ob-feat-bold">Stats & badges</span><span class="ob-feat-txt">Track species, personal bests, and earn fishing badges.</span></div>
-            </div>
+            <div class="ob-feat-item"><span class="ob-feat-ico">📍</span><div><span class="ob-feat-bold">Auto-log spots</span><span class="ob-feat-txt">GPS pins your catch to the nearest fishing spot automatically.</span></div></div>
+            <div class="ob-feat-item"><span class="ob-feat-ico">👥</span><div><span class="ob-feat-bold">Social feed</span><span class="ob-feat-txt">Share catches, follow anglers, climb the leaderboard.</span></div></div>
+            <div class="ob-feat-item"><span class="ob-feat-ico">📊</span><div><span class="ob-feat-bold">Stats & badges</span><span class="ob-feat-txt">Track species, personal bests, and earn fishing badges.</span></div></div>
           </div>
         </div>
         <div class="ob-footer">
-          <div class="ob-dots">
-            <div class="dot"></div>
-            <div class="dot active"></div>
-            <div class="dot"></div>
-          </div>
+          <div class="ob-dots"><div class="dot"></div><div class="dot active"></div><div class="dot"></div></div>
           <button class="btn btn-white" onclick="showScreen('auth')">Continue</button>
         </div>
       </div>
@@ -502,26 +481,31 @@ body {
       <div class="auth-wrap">
         <div class="auth-top">
           <span class="auth-logo">🐟</span>
-          <h1 class="auth-h1">Join Fishy AI</h1>
+          <h1 class="auth-h1" id="auth-mode-title">Join Fishy AI</h1>
           <p class="auth-sub">The smartest fishing app ever made.</p>
           <div class="trial-pill">✦ 3-day free trial · No credit card needed</div>
         </div>
         <div class="auth-card">
+          <div id="auth-username-row">
+            <div class="inp-lbl">Username</div>
+            <input class="inp" id="auth-username" type="text" placeholder="fisherman123" autocomplete="username">
+          </div>
           <div>
             <div class="inp-lbl">Email address</div>
-            <input class="inp" type="email" placeholder="you@example.com">
+            <input class="inp" id="auth-email" type="email" placeholder="you@example.com" autocomplete="email">
           </div>
           <div>
             <div class="inp-lbl">Password</div>
-            <input class="inp" type="password" placeholder="Create a password">
+            <input class="inp" id="auth-password" type="password" placeholder="Create a password" autocomplete="current-password">
           </div>
-          <button class="btn" style="width:100%;margin:4px 0 0;" onclick="showScreen('feed')">Create Account</button>
+          <div id="auth-error" style="font-size:12px;color:#ff3b30;min-height:16px;letter-spacing:-0.2px;"></div>
+          <button class="btn" id="auth-submit-btn" style="width:100%;margin:4px 0 0;" onclick="handleAuth()">Create Account</button>
           <div class="auth-sep"><span class="auth-sep-txt">or</span></div>
-          <button class="btn-google" onclick="showScreen('feed')">
+          <button class="btn-google" onclick="showToast('Google sign-in coming soon')">
             <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
             Continue with Google
           </button>
-          <div class="auth-link" onclick="showScreen('feed')">Already have an account? <span>Log in</span></div>
+          <div class="auth-link" id="auth-toggle-link">Already have an account? <span onclick="toggleAuthMode()">Log in</span></div>
         </div>
       </div>
     </div>
@@ -535,10 +519,8 @@ body {
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
           </div>
         </div>
-
-        <!-- Stories -->
         <div class="story-row">
-          <div class="story add-story">
+          <div class="story add-story" onclick="showScreen('scan')">
             <div class="s-add-ring"><div class="s-add-img">+</div></div>
             <span>Your story</span>
           </div>
@@ -548,80 +530,58 @@ body {
           <div class="story"><div class="s-ring"><div class="s-img">🦈</div></div><span>coastkid</span></div>
           <div class="story"><div class="s-ring"><div class="s-img">🐡</div></div><span>pro_cast</span></div>
         </div>
-
-        <!-- Post 1 -->
-        <div class="card" style="margin-top:8px;">
-          <div class="post-hd">
-            <div class="av">JF</div>
-            <div style="flex:1">
-              <div class="post-name">jake_fisher</div>
-              <div class="post-spot">📍 Lake Elsinore South Cove</div>
+        <!-- Dynamic feed content; fallback static posts shown until Supabase loads -->
+        <div id="feed-content">
+          <div class="card" style="margin-top:8px;">
+            <div class="post-hd">
+              <div class="av">JF</div>
+              <div style="flex:1"><div class="post-name">jake_fisher</div><div class="post-spot">📍 Lake Elsinore South Cove</div></div>
+              <span class="post-time">2m ago</span>
             </div>
-            <span class="post-time">2m ago</span>
-          </div>
-          <div class="post-img post-img-bg1">🐟</div>
-          <div class="post-info">
-            <div class="fish-tag">Largemouth Bass</div>
-            <div class="post-details">
-              <div class="pill">⚖️ 4.2 lbs</div>
-              <div class="pill">📏 18 in</div>
-              <div class="pill">🎣 Zoom Trick Worm</div>
+            <div class="post-img post-img-bg1">🐟</div>
+            <div class="post-info">
+              <div class="fish-tag">Largemouth Bass</div>
+              <div class="post-details"><div class="pill">⚖️ 4.2 lbs</div><div class="pill">📏 18 in</div><div class="pill">🎣 Zoom Trick Worm</div></div>
             </div>
-          </div>
-          <div class="post-actions">
-            <div class="act-btn like-btn" id="like-1" onclick="toggleLike('like-1')">❤️ <span class="like-count">24</span></div>
-            <div class="act-btn">💬 <span>3</span></div>
-            <div class="act-btn" style="margin-left:auto;" onclick="this.classList.toggle('bookmarked')">🔖</div>
-          </div>
-        </div>
-
-        <!-- Post 2 -->
-        <div class="card">
-          <div class="post-hd">
-            <div class="av">MR</div>
-            <div style="flex:1">
-              <div class="post-name">maria_reels</div>
-              <div class="post-spot">📍 Santa Monica Pier</div>
-            </div>
-            <span class="post-time">1h ago</span>
-          </div>
-          <div class="post-img post-img-bg2">🐡</div>
-          <div class="post-info">
-            <div class="fish-tag">Yellowfin Croaker</div>
-            <div class="post-details">
-              <div class="pill">⚖️ 1.8 lbs</div>
-              <div class="pill">✅ Released</div>
+            <div class="post-actions">
+              <div class="act-btn" id="like-1" onclick="toggleLike('like-1')">❤️ <span class="like-count">24</span></div>
+              <div class="act-btn">💬 <span>3</span></div>
+              <div class="act-btn" style="margin-left:auto;" onclick="this.classList.toggle('bookmarked')">🔖</div>
             </div>
           </div>
-          <div class="post-actions">
-            <div class="act-btn like-btn" id="like-2" onclick="toggleLike('like-2')">❤️ <span class="like-count">11</span></div>
-            <div class="act-btn">💬 <span>1</span></div>
-            <div class="act-btn" style="margin-left:auto;" onclick="this.classList.toggle('bookmarked')">🔖</div>
-          </div>
-        </div>
-
-        <!-- Post 3 -->
-        <div class="card">
-          <div class="post-hd">
-            <div class="av">BC</div>
-            <div style="flex:1">
-              <div class="post-name">big_bass_co</div>
-              <div class="post-spot">📍 Prado Basin East Shore</div>
+          <div class="card">
+            <div class="post-hd">
+              <div class="av">MR</div>
+              <div style="flex:1"><div class="post-name">maria_reels</div><div class="post-spot">📍 Santa Monica Pier</div></div>
+              <span class="post-time">1h ago</span>
             </div>
-            <span class="post-time">3h ago</span>
-          </div>
-          <div class="post-img" style="background:linear-gradient(145deg,#e8d4c0 0%,#c8a88a 100%);">🎣</div>
-          <div class="post-info">
-            <div class="fish-tag">Striped Bass</div>
-            <div class="post-details">
-              <div class="pill">⚖️ 7.8 lbs</div>
-              <div class="pill">📏 24 in</div>
+            <div class="post-img post-img-bg2">🐡</div>
+            <div class="post-info">
+              <div class="fish-tag">Yellowfin Croaker</div>
+              <div class="post-details"><div class="pill">⚖️ 1.8 lbs</div><div class="pill">✅ Released</div></div>
+            </div>
+            <div class="post-actions">
+              <div class="act-btn" id="like-2" onclick="toggleLike('like-2')">❤️ <span class="like-count">11</span></div>
+              <div class="act-btn">💬 <span>1</span></div>
+              <div class="act-btn" style="margin-left:auto;" onclick="this.classList.toggle('bookmarked')">🔖</div>
             </div>
           </div>
-          <div class="post-actions">
-            <div class="act-btn like-btn" id="like-3" onclick="toggleLike('like-3')">❤️ <span class="like-count">38</span></div>
-            <div class="act-btn">💬 <span>7</span></div>
-            <div class="act-btn" style="margin-left:auto;" onclick="this.classList.toggle('bookmarked')">🔖</div>
+          <div class="card">
+            <div class="post-hd">
+              <div class="av">BC</div>
+              <div style="flex:1"><div class="post-name">big_bass_co</div><div class="post-spot">📍 Prado Basin East Shore</div></div>
+              <span class="post-time">3h ago</span>
+            </div>
+            <div class="post-img" style="background:linear-gradient(145deg,#e8d4c0 0%,#c8a88a 100%);">🎣</div>
+            <div class="post-info">
+              <div class="fish-tag">Striped Bass</div>
+              <div class="post-details"><div class="pill">⚖️ 7.8 lbs</div><div class="pill">📏 24 in</div></div>
+            </div>
+            <div class="post-actions">
+              <div class="act-btn" id="like-3" onclick="toggleLike('like-3')">❤️ <span class="like-count">38</span></div>
+              <div class="act-btn">💬 <span>7</span></div>
+              <div class="act-btn" style="margin-left:auto;" onclick="this.classList.toggle('bookmarked')">🔖</div>
+            </div>
           </div>
         </div>
       </div>
@@ -631,16 +591,27 @@ body {
     <div class="screen" id="screen-scan">
       <div class="scan-wrap">
         <div class="cam-view">
-          <div class="cam-glow"></div>
-          <div class="cam-fish">🐟</div>
+          <!-- Live camera video -->
+          <video id="camera-video" autoplay playsinline muted style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;z-index:1;"></video>
+          <!-- Flash overlay -->
+          <div id="camera-flash" style="position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:8;transition:opacity 0.12s;"></div>
+          <!-- Placeholder (shown when no camera) -->
+          <div id="cam-fish-placeholder" style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+            <div class="cam-glow"></div>
+            <div class="cam-fish">🐟</div>
+          </div>
+          <!-- No-camera fallback message -->
+          <div id="scan-no-camera" style="display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:3;text-align:center;padding:16px 24px;background:rgba(0,0,0,0.6);border-radius:14px;backdrop-filter:blur(8px);">
+            <div style="font-size:13px;color:rgba(255,255,255,0.8);line-height:1.5;">Camera unavailable.<br>Use 🖼️ to upload a photo.</div>
+          </div>
           <div class="scan-overlay">
             <div class="scan-lbl">Point at your catch</div>
             <div class="scan-frame"></div>
             <div style="display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;">
               <div class="scan-controls">
-                <div class="gallery-btn" title="Gallery">🖼️</div>
+                <div class="gallery-btn" title="Gallery" onclick="document.getElementById('gallery-input').click()">🖼️</div>
                 <div class="shutter" onclick="handleShutter()"></div>
-                <div class="flip-btn" title="Flip">🔄</div>
+                <div class="flip-btn" title="Flip" onclick="flipCamera()">🔄</div>
               </div>
               <div style="color:rgba(255,255,255,0.4);font-size:11px;letter-spacing:-0.2px;">AI identifies in seconds</div>
             </div>
@@ -666,18 +637,18 @@ body {
     <!-- ══════ AI RESULT ══════ -->
     <div class="screen" id="screen-result">
       <div class="res-wrap">
-        <div class="res-hero">
-          🐟
-          <div class="res-badge">Largemouth Bass</div>
-          <div class="res-sub-badge">98% confidence</div>
+        <div class="res-hero" id="res-photo">
+          <span id="res-photo-placeholder" style="font-size:80px;">🐟</span>
+          <div class="res-badge" id="res-badge">Largemouth Bass</div>
+          <div class="res-sub-badge" id="res-confidence">98% confidence</div>
         </div>
         <div class="res-card">
           <div class="res-section">
             <div class="lbl">Habitat tip</div>
-            <div class="val">Found near shallow vegetation, fallen logs & rocky coves. Look for shaded areas in warm water during early morning and evening.</div>
+            <div class="val" id="res-habitat">Found near shallow vegetation, fallen logs &amp; rocky coves. Look for shaded areas in warm water during early morning and evening.</div>
           </div>
           <div class="res-section">
-            <div class="reg-wrap">
+            <div class="reg-wrap" id="res-regulations">
               <div class="lbl" style="margin-bottom:4px;">California Regulations</div>
               <div class="reg-ok">✅ Legal to keep</div>
               <div class="val" style="margin-top:4px;font-size:12px;">Min size: 12 in · Bag limit: 5 per day · Season: Open year-round</div>
@@ -685,7 +656,7 @@ body {
           </div>
           <div class="res-section" style="border-bottom:none;margin-bottom:0;padding-bottom:0;">
             <div class="lbl">Best lures</div>
-            <div class="lure-chips">
+            <div class="lure-chips" id="res-lures">
               <div class="lure-chip">🪱 Plastic Worms</div>
               <div class="lure-chip">🪝 Crankbaits</div>
               <div class="lure-chip">✨ Spinnerbaits</div>
@@ -704,19 +675,17 @@ body {
           <div class="log-overlay"></div>
         </div>
         <div style="padding:12px 12px 4px;">
-          <div style="font-size:16px;font-weight:700;color:#000;letter-spacing:-0.4px;">Largemouth Bass</div>
-          <div style="font-size:12px;color:var(--gray);margin-top:2px;letter-spacing:-0.2px;">📍 Lake Elsinore South Cove · Just now</div>
+          <div id="log-species-title" style="font-size:16px;font-weight:700;color:#000;letter-spacing:-0.4px;">Largemouth Bass</div>
+          <div style="font-size:12px;color:var(--gray);margin-top:2px;letter-spacing:-0.2px;">📍 <span id="log-spot-name">Auto-detecting location…</span> · Just now</div>
         </div>
-
-        <!-- Details card -->
         <div class="log-card">
           <div class="log-row">
             <div class="log-row-l"><span class="log-row-ico">⚖️</span> Weight</div>
-            <div style="display:flex;align-items:center;gap:6px;"><input class="log-inp" type="number" placeholder="0.0" style="width:70px;"> <span style="font-size:12px;color:var(--gray);">lbs</span></div>
+            <div style="display:flex;align-items:center;gap:6px;"><input class="log-inp" id="weight-input" type="number" placeholder="0.0" style="width:70px;"> <span style="font-size:12px;color:var(--gray);">lbs</span></div>
           </div>
           <div class="log-row">
             <div class="log-row-l"><span class="log-row-ico">📏</span> Length</div>
-            <div style="display:flex;align-items:center;gap:6px;"><input class="log-inp" type="number" placeholder="0" style="width:70px;"> <span style="font-size:12px;color:var(--gray);">in</span></div>
+            <div style="display:flex;align-items:center;gap:6px;"><input class="log-inp" id="length-input" type="number" placeholder="0" style="width:70px;"> <span style="font-size:12px;color:var(--gray);">in</span></div>
           </div>
           <div class="log-row" style="flex-direction:column;align-items:stretch;gap:8px;">
             <div class="log-row-l"><span class="log-row-ico">🎣</span> Lure used</div>
@@ -740,40 +709,19 @@ body {
             </div>
           </div>
         </div>
-
-        <!-- Privacy toggles -->
         <div class="toggle-card">
           <div style="padding:12px 16px 8px;">
             <div style="font-size:13px;font-weight:700;color:#000;letter-spacing:-0.3px;">What shows on your post</div>
             <div style="font-size:11px;color:var(--gray);margin-top:1px;letter-spacing:-0.2px;">Toggle what others can see</div>
           </div>
-          <div class="log-row">
-            <div class="log-row-l"><span class="log-row-ico">📍</span> Spot name</div>
-            <div class="tog on" onclick="this.classList.toggle('on')"></div>
-          </div>
-          <div class="log-row">
-            <div class="log-row-l"><span class="log-row-ico">⚖️</span> Weight</div>
-            <div class="tog on" onclick="this.classList.toggle('on')"></div>
-          </div>
-          <div class="log-row">
-            <div class="log-row-l"><span class="log-row-ico">📏</span> Length</div>
-            <div class="tog on" onclick="this.classList.toggle('on')"></div>
-          </div>
-          <div class="log-row">
-            <div class="log-row-l"><span class="log-row-ico">🎣</span> Lure used</div>
-            <div class="tog on" onclick="this.classList.toggle('on')"></div>
-          </div>
-          <div class="log-row">
-            <div class="log-row-l"><span class="log-row-ico">✅</span> Keep / release</div>
-            <div class="tog" onclick="this.classList.toggle('on')"></div>
-          </div>
-          <div class="log-row">
-            <div class="log-row-l"><span class="log-row-ico">🤳</span> Selfie with fish</div>
-            <div class="tog" onclick="this.classList.toggle('on')"></div>
-          </div>
+          <div class="log-row"><div class="log-row-l"><span class="log-row-ico">📍</span> Spot name</div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="log-row"><div class="log-row-l"><span class="log-row-ico">⚖️</span> Weight</div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="log-row"><div class="log-row-l"><span class="log-row-ico">📏</span> Length</div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="log-row"><div class="log-row-l"><span class="log-row-ico">🎣</span> Lure used</div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="log-row"><div class="log-row-l"><span class="log-row-ico">✅</span> Keep / release</div><div class="tog" onclick="this.classList.toggle('on')"></div></div>
+          <div class="log-row"><div class="log-row-l"><span class="log-row-ico">🤳</span> Selfie with fish</div><div class="tog" onclick="this.classList.toggle('on')"></div></div>
         </div>
-
-        <button class="btn" onclick="postCatch()">Post Catch 🎣</button>
+        <button class="btn" id="post-catch-btn" onclick="postCatch()">Post Catch 🎣</button>
       </div>
     </div>
 
@@ -781,52 +729,26 @@ body {
     <div class="screen" id="screen-map">
       <div class="map-wrap">
         <div class="map-bg">
-          <!-- SVG map overlay -->
           <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:0.25;" viewBox="0 0 322 600" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse">
-                <path d="M36 0L0 0 0 36" fill="none" stroke="#1B2E4B" stroke-width="0.5"/>
-              </pattern>
-            </defs>
+            <defs><pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse"><path d="M36 0L0 0 0 36" fill="none" stroke="#1B2E4B" stroke-width="0.5"/></pattern></defs>
             <rect width="100%" height="100%" fill="url(#grid)"/>
             <path d="M70 180 Q160 160 240 200 Q285 225 300 290 Q295 370 240 395 Q175 415 115 385 Q55 350 65 275 Q68 230 70 180" fill="#9bbf9b" opacity="0.7"/>
             <path d="M30 80 Q80 60 120 90 Q140 110 130 140 Q110 160 80 150 Q45 140 30 110 Z" fill="#9bbf9b" opacity="0.5"/>
             <path d="M230 80 Q265 65 290 90 Q305 110 295 135 Q275 155 245 145 Q220 132 225 108 Z" fill="#9bbf9b" opacity="0.5"/>
           </svg>
-
-          <!-- Road lines -->
           <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:0.15;" viewBox="0 0 322 600">
             <line x1="0" y1="300" x2="322" y2="300" stroke="#fff" stroke-width="1.5"/>
             <line x1="161" y1="0" x2="161" y2="600" stroke="#fff" stroke-width="1"/>
             <line x1="0" y1="160" x2="322" y2="180" stroke="#fff" stroke-width="0.8"/>
           </svg>
-
-          <!-- Pins -->
-          <div class="mp" style="top:36%;left:40%;" onclick="showMapCard('Lake Elsinore South Cove','34 catches · Most recent: 2 min ago','🐟 Largemouth Bass · 1st','⚖️ Top: 6.1 lbs')">
-            <div class="mp-dot"><span class="mp-ico">🐟</span></div>
-            <div class="mp-lbl">Lake Elsinore</div>
-          </div>
-          <div class="mp" style="top:16%;left:60%;" onclick="showMapCard('Prado Basin East Shore','18 catches · Most recent: 3h ago','🐡 Striped Bass · 1st','⚖️ Top: 9.3 lbs')">
-            <div class="mp-dot"><span class="mp-ico">🐡</span></div>
-            <div class="mp-lbl">Prado Basin</div>
-          </div>
-          <div class="mp" style="top:52%;left:14%;" onclick="showMapCard('Santa Ana River Bend','9 catches · Most recent: 1 day ago','🎣 Carp · 1st','⚖️ Top: 4.2 lbs')">
-            <div class="mp-dot"><span class="mp-ico">🎣</span></div>
-            <div class="mp-lbl">Santa Ana River</div>
-          </div>
-          <div class="mp" style="top:60%;left:68%;" onclick="showMapCard('Corona Lake South','22 catches · Most recent: 45m ago','🐠 Catfish · 1st','⚖️ Top: 11.7 lbs')">
-            <div class="mp-dot"><span class="mp-ico">🐠</span></div>
-            <div class="mp-lbl">Corona Lake</div>
-          </div>
-
-          <!-- Map card -->
+          <div class="mp" style="top:36%;left:40%;" onclick="showMapCard('Lake Elsinore South Cove','34 catches · Most recent: 2 min ago','🐟 Largemouth Bass · 1st','⚖️ Top: 6.1 lbs')"><div class="mp-dot"><span class="mp-ico">🐟</span></div><div class="mp-lbl">Lake Elsinore</div></div>
+          <div class="mp" style="top:16%;left:60%;" onclick="showMapCard('Prado Basin East Shore','18 catches · Most recent: 3h ago','🐡 Striped Bass · 1st','⚖️ Top: 9.3 lbs')"><div class="mp-dot"><span class="mp-ico">🐡</span></div><div class="mp-lbl">Prado Basin</div></div>
+          <div class="mp" style="top:52%;left:14%;" onclick="showMapCard('Santa Ana River Bend','9 catches · Most recent: 1 day ago','🎣 Carp · 1st','⚖️ Top: 4.2 lbs')"><div class="mp-dot"><span class="mp-ico">🎣</span></div><div class="mp-lbl">Santa Ana River</div></div>
+          <div class="mp" style="top:60%;left:68%;" onclick="showMapCard('Corona Lake South','22 catches · Most recent: 45m ago','🐠 Catfish · 1st','⚖️ Top: 11.7 lbs')"><div class="mp-dot"><span class="mp-ico">🐠</span></div><div class="mp-lbl">Corona Lake</div></div>
           <div class="map-card-wrap" id="map-card">
             <div class="map-card-title" id="mc-title">Lake Elsinore South Cove</div>
             <div class="map-card-sub" id="mc-sub">34 catches · Most recent: 2 min ago</div>
-            <div class="map-stat-row">
-              <div class="map-stat" id="mc-stat1">🐟 Largemouth Bass · 1st</div>
-              <div class="map-stat" id="mc-stat2">⚖️ Top: 6.1 lbs</div>
-            </div>
+            <div class="map-stat-row"><div class="map-stat" id="mc-stat1">🐟 Largemouth Bass · 1st</div><div class="map-stat" id="mc-stat2">⚖️ Top: 6.1 lbs</div></div>
           </div>
         </div>
       </div>
@@ -845,59 +767,13 @@ body {
           </div>
         </div>
         <div class="lb-list">
-          <div class="lb-item">
-            <div class="lb-rank gold">1</div>
-            <div class="av">TK</div>
-            <div class="lb-info">
-              <div class="lb-name">texas_king</div>
-              <div class="lb-fish">Blue Catfish · Lake Texoma, TX</div>
-            </div>
-            <div class="lb-weight">121 lbs</div>
-          </div>
-          <div class="lb-item">
-            <div class="lb-rank silver">2</div>
-            <div class="av">SB</div>
-            <div class="lb-info">
-              <div class="lb-name">saltybob_ak</div>
-              <div class="lb-fish">Pacific Halibut · Kodiak, AK</div>
-            </div>
-            <div class="lb-weight">88 lbs</div>
-          </div>
-          <div class="lb-item">
-            <div class="lb-rank bronze">3</div>
-            <div class="av">PA</div>
-            <div class="lb-info">
-              <div class="lb-name">pro_angler99</div>
-              <div class="lb-fish">Striped Bass · Sacramento River, CA</div>
-            </div>
-            <div class="lb-weight">42 lbs</div>
-          </div>
-          <div class="lb-item">
-            <div class="lb-rank">4</div>
-            <div class="av">CK</div>
-            <div class="lb-info">
-              <div class="lb-name">coastkid</div>
-              <div class="lb-fish">White Bass · Lake Mead, NV</div>
-            </div>
-            <div class="lb-weight">22 lbs</div>
-          </div>
-          <div class="lb-item lb-you">
-            <div class="lb-rank">5</div>
-            <div class="av">JF</div>
-            <div class="lb-info">
-              <div class="lb-name">jake_fisher <span style="font-size:10px;color:var(--navy);font-weight:600;background:rgba(27,46,75,0.1);padding:1px 6px;border-radius:8px;">You</span></div>
-              <div class="lb-fish">Largemouth Bass · Lake Elsinore, CA</div>
-            </div>
-            <div class="lb-weight">4.2 lbs</div>
-          </div>
-          <div class="lb-item">
-            <div class="lb-rank">6</div>
-            <div class="av">MR</div>
-            <div class="lb-info">
-              <div class="lb-name">maria_reels</div>
-              <div class="lb-fish">Yellowfin Croaker · Santa Monica, CA</div>
-            </div>
-            <div class="lb-weight">1.8 lbs</div>
+          <div id="lb-list-content">
+            <div class="lb-item"><div class="lb-rank gold">1</div><div class="av">TK</div><div class="lb-info"><div class="lb-name">texas_king</div><div class="lb-fish">Blue Catfish · Lake Texoma, TX</div></div><div class="lb-weight">121 lbs</div></div>
+            <div class="lb-item"><div class="lb-rank silver">2</div><div class="av">SB</div><div class="lb-info"><div class="lb-name">saltybob_ak</div><div class="lb-fish">Pacific Halibut · Kodiak, AK</div></div><div class="lb-weight">88 lbs</div></div>
+            <div class="lb-item"><div class="lb-rank bronze">3</div><div class="av">PA</div><div class="lb-info"><div class="lb-name">pro_angler99</div><div class="lb-fish">Striped Bass · Sacramento River, CA</div></div><div class="lb-weight">42 lbs</div></div>
+            <div class="lb-item"><div class="lb-rank">4</div><div class="av">CK</div><div class="lb-info"><div class="lb-name">coastkid</div><div class="lb-fish">White Bass · Lake Mead, NV</div></div><div class="lb-weight">22 lbs</div></div>
+            <div class="lb-item lb-you"><div class="lb-rank">5</div><div class="av">JF</div><div class="lb-info"><div class="lb-name">jake_fisher <span style="font-size:10px;color:var(--navy);font-weight:600;background:rgba(27,46,75,0.1);padding:1px 6px;border-radius:8px;">You</span></div><div class="lb-fish">Largemouth Bass · Lake Elsinore, CA</div></div><div class="lb-weight">4.2 lbs</div></div>
+            <div class="lb-item"><div class="lb-rank">6</div><div class="av">MR</div><div class="lb-info"><div class="lb-name">maria_reels</div><div class="lb-fish">Yellowfin Croaker · Santa Monica, CA</div></div><div class="lb-weight">1.8 lbs</div></div>
           </div>
         </div>
       </div>
@@ -907,27 +783,27 @@ body {
     <div class="screen" id="screen-profile">
       <div class="prof-wrap">
         <div class="prof-hd">
-          <div class="av-lg">JF</div>
-          <div class="prof-name">jake_fisher</div>
-          <div class="prof-handle">@jake_fisher · California 🌊</div>
+          <div class="av-lg" id="prof-avatar-initials">JF</div>
+          <div class="prof-name" id="prof-name">jake_fisher</div>
+          <div class="prof-handle" id="prof-handle">@jake_fisher · California 🌊</div>
           <div class="prof-stats">
-            <div class="ps"><div class="ps-num">47</div><div class="ps-lbl">Catches</div></div>
-            <div class="ps"><div class="ps-num">12</div><div class="ps-lbl">Species</div></div>
-            <div class="ps"><div class="ps-num">4.2 lb</div><div class="ps-lbl">Best Fish</div></div>
-            <div class="ps"><div class="ps-num">203</div><div class="ps-lbl">Followers</div></div>
+            <div class="ps"><div class="ps-num" id="prof-catches">47</div><div class="ps-lbl">Catches</div></div>
+            <div class="ps"><div class="ps-num" id="prof-species">12</div><div class="ps-lbl">Species</div></div>
+            <div class="ps"><div class="ps-num" id="prof-best">4.2 lb</div><div class="ps-lbl">Best Fish</div></div>
+            <div class="ps"><div class="ps-num" id="prof-followers">203</div><div class="ps-lbl">Followers</div></div>
           </div>
           <button class="follow-btn" id="follow-btn" onclick="toggleFollow()">+ Follow</button>
         </div>
         <div class="prof-content">
           <div class="sec-hd">Badges</div>
           <div class="badge-list">
-            <div class="badge-item"><span style="font-size:16px;">🎣</span><div class="badge-nm">First Catch</div></div>
-            <div class="badge-item"><span style="font-size:16px;">🐠</span><div class="badge-nm">10 Species</div></div>
-            <div class="badge-item locked"><span style="font-size:16px;">🏆</span><div class="badge-nm">Trophy Fish</div></div>
-            <div class="badge-item locked"><span style="font-size:16px;">⭐</span><div class="badge-nm">Local Legend</div></div>
+            <div class="badge-item" id="badge-first"><span style="font-size:16px;">🎣</span><div class="badge-nm">First Catch</div></div>
+            <div class="badge-item" id="badge-species"><span style="font-size:16px;">🐠</span><div class="badge-nm">10 Species</div></div>
+            <div class="badge-item locked" id="badge-trophy"><span style="font-size:16px;">🏆</span><div class="badge-nm">Trophy Fish</div></div>
+            <div class="badge-item locked" id="badge-legend"><span style="font-size:16px;">⭐</span><div class="badge-nm">Local Legend</div></div>
           </div>
           <div class="sec-hd">My Catches</div>
-          <div class="catch-grid">
+          <div class="catch-grid" id="catch-grid">
             <div class="catch-thumb">🐟</div>
             <div class="catch-thumb">🐡</div>
             <div class="catch-thumb">🎣</div>
@@ -949,46 +825,26 @@ body {
           <h2 class="pw-h1">Keep fishing<br>with Fishy AI</h2>
           <p class="pw-sub">Unlimited AI fish ID, auto-spot logging, and the full social experience.</p>
         </div>
-
         <div class="plan-card" id="plan-annual" onclick="selectPlan('annual')">
           <div class="plan-top">
-            <div>
-              <div style="display:flex;align-items:center;gap:8px;">
-                <span class="plan-name">Annual</span>
-                <span class="plan-badge">Best Value</span>
-              </div>
-              <div class="plan-save">Save 44% vs monthly</div>
-            </div>
-            <div style="text-align:right;">
-              <div class="plan-price">$39.99<span class="plan-period">/yr</span></div>
-              <div style="font-size:11px;color:var(--gray);margin-top:2px;">$3.33/month</div>
-            </div>
+            <div><div style="display:flex;align-items:center;gap:8px;"><span class="plan-name">Annual</span><span class="plan-badge">Best Value</span></div><div class="plan-save">Save 44% vs monthly</div></div>
+            <div style="text-align:right;"><div class="plan-price">$39.99<span class="plan-period">/yr</span></div><div style="font-size:11px;color:var(--gray);margin-top:2px;">$3.33/month</div></div>
           </div>
-          <div class="plan-radio" style="display:none;"></div>
         </div>
-
         <div class="plan-card sel" id="plan-monthly" onclick="selectPlan('monthly')">
           <div class="plan-top">
-            <div>
-              <span class="plan-name">Monthly</span>
-            </div>
-            <div>
-              <div class="plan-price">$5.99<span class="plan-period">/mo</span></div>
-            </div>
+            <div><span class="plan-name">Monthly</span></div>
+            <div><div class="plan-price">$5.99<span class="plan-period">/mo</span></div></div>
           </div>
-          <div class="plan-radio" style="display:none;"></div>
         </div>
-
         <div class="pw-features">
           <div class="pw-feat"><span class="pw-check">✅</span> Unlimited AI fish identification</div>
           <div class="pw-feat"><span class="pw-check">✅</span> Auto-log to GPS fishing spots</div>
-          <div class="pw-feat"><span class="pw-check">✅</span> Full social feed, follows & leaderboards</div>
-          <div class="pw-feat"><span class="pw-check">✅</span> Catch history & personal stats</div>
+          <div class="pw-feat"><span class="pw-check">✅</span> Full social feed, follows &amp; leaderboards</div>
+          <div class="pw-feat"><span class="pw-check">✅</span> Catch history &amp; personal stats</div>
           <div class="pw-feat"><span class="pw-check">✅</span> US state fishing regulations</div>
         </div>
-
         <button class="btn" id="subscribe-btn" onclick="handleSubscribe()">Start Monthly — $5.99/mo</button>
-
         <div class="pw-footer">
           <span class="pw-restore">Restore purchase</span>
           <div class="pw-legal">Billed through Stripe. Cancel anytime from your account settings. By subscribing you agree to our Terms of Service and Privacy Policy.</div>
@@ -1001,48 +857,23 @@ body {
   <!-- ── BOTTOM NAV ── -->
   <div id="bottom-nav" class="hidden">
     <div class="nav-item active" id="nav-feed" onclick="showScreen('feed')">
-      <div class="nav-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-          <polyline points="9 22 9 12 15 12 15 22"/>
-        </svg>
-      </div>
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
       <span>Feed</span>
     </div>
     <div class="nav-item" id="nav-map" onclick="showScreen('map')">
-      <div class="nav-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
-          <circle cx="12" cy="10" r="3"/>
-        </svg>
-      </div>
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
       <span>Map</span>
     </div>
     <div class="nav-scan" id="nav-scan" onclick="showScreen('scan')">
-      <div class="scan-pill">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"/>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
-      </div>
+      <div class="scan-pill"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
       <span>Scan</span>
     </div>
     <div class="nav-item" id="nav-leaderboard" onclick="showScreen('leaderboard')">
-      <div class="nav-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
-          <polyline points="17 6 23 6 23 12"/>
-        </svg>
-      </div>
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
       <span>Ranks</span>
     </div>
     <div class="nav-item" id="nav-profile" onclick="showScreen('profile')">
-      <div class="nav-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
-          <circle cx="12" cy="7" r="4"/>
-        </svg>
-      </div>
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
       <span>Profile</span>
     </div>
   </div>
@@ -1054,188 +885,667 @@ body {
 </p>
 
 <script>
-// ── STATE ──
+// ══════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════
+let sb = null;           // Supabase client
+let currentUser = null;
+let currentProfile = null;
+let capturedB64 = null;  // base64 image from camera
+let capturedMime = 'image/jpeg';
+let identifiedFish = null;
+let currentSpot = null;  // {id?, name, lat?, lng?}
+let cameraStream = null;
+let catchKept = false;
+let isSignUp = true;
 let current = 'onboard1';
 let selectedPlan = 'monthly';
 let procTimer = null;
+let toastTimer = null;
 
-const NAV_SCREENS = ['feed','map','leaderboard','profile'];
+const NAV_SCREENS  = ['feed','map','leaderboard','profile'];
 const DARK_SCREENS = ['scan','processing'];
 const NAVY_SCREENS = ['onboard1','onboard2','auth'];
-
 const STATUS_TITLES = {
-  onboard1:'',onboard2:'',auth:'',
-  feed:'Fishy AI',scan:'',processing:'',result:'AI Result',
-  log:'Log Catch',map:'Fishy AI',leaderboard:'Fishy AI',
-  profile:'jake_fisher',paywall:'Fishy AI'
+  onboard1:'',onboard2:'',auth:'',feed:'Fishy AI',scan:'',processing:'',
+  result:'AI Result',log:'Log Catch',map:'Fishy AI',leaderboard:'Fishy AI',
+  profile:'Profile',paywall:'Fishy AI'
 };
 
-// ── SCREEN NAVIGATION ──
-function showScreen(name, back=false) {
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+async function init() {
+  updateTime();
+  setInterval(updateTime, 30000);
+  updateStatusBar('onboard1');
+  updateBottomNav('onboard1');
+  updateTabBar('onboard1');
+
+  try {
+    const cfg = await fetch('/api/config').then(r => r.json());
+    if (cfg.supabaseUrl && cfg.supabaseAnonKey) {
+      sb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+      const { data: { session } } = await sb.auth.getSession();
+      if (session?.user) {
+        currentUser = session.user;
+        await loadProfile();
+        showScreen('feed');
+        loadFeed();
+        loadLeaderboard();
+      }
+      sb.auth.onAuthStateChange(async (_e, session) => {
+        currentUser = session?.user ?? null;
+        if (!currentUser) currentProfile = null;
+      });
+    }
+  } catch (e) {
+    console.warn('Supabase unavailable:', e.message);
+  }
+}
+
+// ══════════════════════════════════════════
+//  SCREEN NAVIGATION
+// ══════════════════════════════════════════
+function showScreen(name, back = false) {
   if (name === current) return;
-  // Cancel any pending processing auto-navigate
   if (procTimer) { clearTimeout(procTimer); procTimer = null; }
+  if (current === 'scan') stopCamera();
 
   const prev = document.getElementById('screen-' + current);
   const next = document.getElementById('screen-' + name);
   if (!prev || !next) return;
 
-  // Clear leftover exiting class (rapid navigation guard)
   next.classList.remove('exiting');
   prev.classList.add('exiting');
-
-  const enterX = back ? '-30px' : '30px';
-  next.style.cssText = `transition:none;transform:translateX(${enterX});opacity:0;`;
+  next.style.cssText = `transition:none;transform:translateX(${back ? '-30px' : '30px'});opacity:0;`;
   next.classList.add('active');
-
-  const prevEl = prev;
   requestAnimationFrame(() => requestAnimationFrame(() => {
     next.style.cssText = '';
-    setTimeout(() => prevEl.classList.remove('active','exiting'), 390);
+    setTimeout(() => prev.classList.remove('active', 'exiting'), 390);
   }));
 
   current = name;
   updateStatusBar(name);
   updateBottomNav(name);
   updateTabBar(name);
+
+  if (name === 'scan') startCamera();
+  if (name === 'feed') loadFeed();
+  if (name === 'leaderboard') loadLeaderboard();
+  if (name === 'profile') loadProfileScreen();
 }
 
 function updateStatusBar(name) {
   const bar = document.getElementById('status-bar');
-  const title = document.getElementById('status-title');
   bar.className = DARK_SCREENS.includes(name) ? 'dark' : NAVY_SCREENS.includes(name) ? 'navy' : '';
-  title.textContent = STATUS_TITLES[name] ?? 'Fishy AI';
+  setEl('status-title', STATUS_TITLES[name] ?? 'Fishy AI');
 }
-
 function updateBottomNav(name) {
   const nav = document.getElementById('bottom-nav');
   nav.classList.toggle('hidden', !NAV_SCREENS.includes(name));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const map = {feed:'nav-feed',map:'nav-map',leaderboard:'nav-leaderboard',profile:'nav-profile'};
+  const map = { feed:'nav-feed', map:'nav-map', leaderboard:'nav-leaderboard', profile:'nav-profile' };
   if (map[name]) document.getElementById(map[name])?.classList.add('active');
 }
-
 function updateTabBar(name) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + name)?.classList.add('active');
 }
 
-// ── SHUTTER → PROCESSING → RESULT ──
-function handleShutter() {
-  showScreen('processing');
-  procTimer = setTimeout(() => { procTimer = null; showScreen('result'); }, 2400);
+// ══════════════════════════════════════════
+//  AUTH
+// ══════════════════════════════════════════
+function toggleAuthMode() {
+  isSignUp = !isSignUp;
+  const row  = document.getElementById('auth-username-row');
+  const title = document.getElementById('auth-mode-title');
+  const btn  = document.getElementById('auth-submit-btn');
+  const link = document.getElementById('auth-toggle-link');
+  if (row)   row.style.display  = isSignUp ? 'block' : 'none';
+  if (title) title.textContent  = isSignUp ? 'Join Fishy AI' : 'Welcome back';
+  if (btn)   btn.textContent    = isSignUp ? 'Create Account' : 'Log In';
+  if (link)  link.innerHTML     = isSignUp
+    ? 'Already have an account? <span onclick="toggleAuthMode()">Log in</span>'
+    : "Don't have an account? <span onclick=\"toggleAuthMode()\">Sign up</span>";
+  setEl('auth-error', '');
 }
 
-// ── LIKES ──
+async function handleAuth() {
+  if (!sb) { showToast('Service starting up, try again.'); return; }
+  const email    = (document.getElementById('auth-email')?.value || '').trim();
+  const password =  document.getElementById('auth-password')?.value || '';
+  const username = (document.getElementById('auth-username')?.value || email.split('@')[0]).trim();
+  const errEl    =  document.getElementById('auth-error');
+  const btn      =  document.getElementById('auth-submit-btn');
+
+  if (!email || !password) { if (errEl) errEl.textContent = 'Email and password are required.'; return; }
+  const orig = btn?.textContent;
+  if (btn) { btn.textContent = 'Loading…'; btn.disabled = true; }
+  if (errEl) errEl.textContent = '';
+
+  try {
+    if (isSignUp) {
+      const { data, error } = await sb.auth.signUp({ email, password, options: { data: { username } } });
+      if (error) throw error;
+      currentUser = data.user;
+      if (data.session === null) {
+        showToast('Check your email to confirm your account.');
+        if (btn) { btn.textContent = orig; btn.disabled = false; }
+        return;
+      }
+    } else {
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      currentUser = data.user;
+    }
+    await loadProfile();
+    showScreen('feed');
+    loadFeed();
+    loadLeaderboard();
+  } catch (err) {
+    if (errEl) errEl.textContent = err.message;
+  } finally {
+    if (btn) { btn.textContent = orig; btn.disabled = false; }
+  }
+}
+
+// ══════════════════════════════════════════
+//  PROFILE
+// ══════════════════════════════════════════
+async function loadProfile() {
+  if (!sb || !currentUser) return;
+  const { data } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+  currentProfile = data ?? {
+    id: currentUser.id,
+    username: currentUser.user_metadata?.username || currentUser.email?.split('@')[0] || 'Angler'
+  };
+  const name = currentProfile.username;
+  setEl('prof-name', name);
+  setEl('prof-handle', `@${name} · California 🌊`);
+  setEl('prof-avatar-initials', name.slice(0, 2).toUpperCase());
+  STATUS_TITLES.profile = name;
+}
+
+async function loadProfileScreen() {
+  if (!sb || !currentUser) return;
+  try {
+    const { data: catches } = await sb.from('catches').select('species,weight_lbs').eq('user_id', currentUser.id);
+    if (catches) {
+      const species = new Set(catches.map(c => c.species)).size;
+      const best    = Math.max(0, ...catches.map(c => parseFloat(c.weight_lbs) || 0));
+      setEl('prof-catches', catches.length);
+      setEl('prof-species', species);
+      setEl('prof-best', best > 0 ? `${best} lb` : '—');
+      // badges
+      document.getElementById('badge-first')?.classList.toggle('locked', catches.length === 0);
+      document.getElementById('badge-species')?.classList.toggle('locked', species < 3);
+      document.getElementById('badge-trophy')?.classList.toggle('locked', best < 10);
+      // catch grid
+      const grid = document.getElementById('catch-grid');
+      if (grid && catches.length) {
+        const emojis = ['🐟','🐡','🎣','🐠','🦈','🐟'];
+        grid.innerHTML = catches.slice(0, 6).map((_, i) => `<div class="catch-thumb">${emojis[i % emojis.length]}</div>`).join('');
+      }
+    }
+    const { count } = await sb.from('follows').select('*', { count: 'exact', head: true }).eq('following_id', currentUser.id);
+    setEl('prof-followers', count ?? 0);
+  } catch {}
+}
+
+// ══════════════════════════════════════════
+//  CAMERA
+// ══════════════════════════════════════════
+async function startCamera() {
+  const video       = document.getElementById('camera-video');
+  const placeholder = document.getElementById('cam-fish-placeholder');
+  const noCamera    = document.getElementById('scan-no-camera');
+  if (!video) return;
+  try {
+    cameraStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
+      audio: false
+    });
+    video.srcObject = cameraStream;
+    video.style.display = 'block';
+    if (placeholder) placeholder.style.display = 'none';
+    if (noCamera)    noCamera.style.display    = 'none';
+  } catch {
+    if (placeholder) placeholder.style.display = 'flex';
+    if (noCamera)    noCamera.style.display    = 'block';
+  }
+}
+
+function stopCamera() {
+  if (!cameraStream) return;
+  cameraStream.getTracks().forEach(t => t.stop());
+  cameraStream = null;
+  const video = document.getElementById('camera-video');
+  if (video) { video.srcObject = null; video.style.display = 'none'; }
+  const ph = document.getElementById('cam-fish-placeholder');
+  if (ph) ph.style.display = 'flex';
+}
+
+async function flipCamera() {
+  const currentFacing = cameraStream?.getVideoTracks()[0]?.getSettings()?.facingMode || 'environment';
+  stopCamera();
+  const video = document.getElementById('camera-video');
+  const ph    = document.getElementById('cam-fish-placeholder');
+  try {
+    cameraStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: currentFacing === 'environment' ? 'user' : 'environment' },
+      audio: false
+    });
+    video.srcObject = cameraStream;
+    video.style.display = 'block';
+    if (ph) ph.style.display = 'none';
+  } catch { startCamera(); }
+}
+
+function handleGallerySelect(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    capturedB64  = ev.target.result.split(',')[1];
+    capturedMime = file.type;
+    doIdentify();
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+}
+
+// ══════════════════════════════════════════
+//  SHUTTER → IDENTIFY
+// ══════════════════════════════════════════
+function handleShutter() {
+  const video  = document.getElementById('camera-video');
+  const canvas = document.getElementById('camera-canvas');
+
+  if (video && video.style.display !== 'none' && canvas && video.readyState >= 2) {
+    canvas.width  = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0);
+    capturedB64  = canvas.toDataURL('image/jpeg', 0.85).split(',')[1];
+    capturedMime = 'image/jpeg';
+  } else {
+    capturedB64 = null;
+  }
+
+  // Flash effect
+  const flash = document.getElementById('camera-flash');
+  if (flash) { flash.style.opacity = '1'; setTimeout(() => flash.style.opacity = '0', 150); }
+
+  doIdentify();
+}
+
+async function doIdentify() {
+  stopCamera();
+  showScreen('processing');
+  currentSpot = null;
+  setEl('log-spot-name', 'Detecting location…');
+
+  // GPS in background (don't await — it runs in parallel)
+  navigator.geolocation?.getCurrentPosition(
+    pos => matchOrNameSpot(pos.coords.latitude, pos.coords.longitude),
+    ()  => setEl('log-spot-name', 'Unknown Spot')
+  );
+
+  try {
+    if (capturedB64) {
+      const resp = await fetch('/api/identify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageBase64: capturedB64, mimeType: capturedMime })
+      });
+      if (!resp.ok) throw new Error('API error ' + resp.status);
+      const data = await resp.json();
+      if (data.error) throw new Error(data.error);
+      identifiedFish = data;
+    } else {
+      // Demo mode — no camera access
+      await new Promise(r => setTimeout(r, 2200));
+      identifiedFish = {
+        species: 'Largemouth Bass', confidence: 95,
+        habitat: 'Found near shallow vegetation, fallen logs & rocky coves. Best in warm water during early morning and evening.',
+        regulations: 'Min size: 12 in · Bag limit: 5 per day · Season: Open year-round',
+        lures: ['Plastic Worms', 'Crankbaits', 'Spinnerbaits'], legal: true
+      };
+    }
+    renderResult();
+    showScreen('result');
+  } catch (err) {
+    showToast('Could not identify fish — try again.');
+    showScreen('scan');
+    startCamera();
+  }
+}
+
+// ══════════════════════════════════════════
+//  GPS & SPOT MATCHING
+// ══════════════════════════════════════════
+function haversine(lat1, lng1, lat2, lng2) {
+  const R = 3958.8, toR = x => x * Math.PI / 180;
+  const dLat = toR(lat2 - lat1), dLng = toR(lng2 - lng1);
+  const a = Math.sin(dLat/2)**2 + Math.cos(toR(lat1)) * Math.cos(toR(lat2)) * Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+async function matchOrNameSpot(lat, lng) {
+  if (sb) {
+    const { data: spots } = await sb.from('spots').select('*');
+    for (const s of (spots || [])) {
+      if (haversine(lat, lng, s.lat, s.lng) < 0.5) {
+        currentSpot = s;
+        setEl('log-spot-name', s.name);
+        return;
+      }
+    }
+  }
+  try {
+    const { name } = await fetch('/api/name-spot', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lat, lng })
+    }).then(r => r.json());
+    currentSpot = { name, lat, lng };
+    setEl('log-spot-name', name);
+  } catch {
+    currentSpot = { name: 'Unknown Spot', lat, lng };
+    setEl('log-spot-name', 'Unknown Spot');
+  }
+}
+
+// ══════════════════════════════════════════
+//  RESULT RENDER
+// ══════════════════════════════════════════
+function renderResult() {
+  if (!identifiedFish) return;
+  const f = identifiedFish;
+
+  // Hero photo
+  const hero = document.getElementById('res-photo');
+  const ph   = document.getElementById('res-photo-placeholder');
+  if (hero && capturedB64) {
+    hero.style.backgroundImage    = `url(data:${capturedMime};base64,${capturedB64})`;
+    hero.style.backgroundSize     = 'cover';
+    hero.style.backgroundPosition = 'center';
+    if (ph) ph.style.display = 'none';
+  } else if (ph) {
+    ph.style.display = 'block';
+  }
+
+  setEl('res-badge', f.species || 'Unknown Fish');
+  setEl('res-confidence', `${f.confidence || 0}% confidence`);
+  setEl('res-habitat', f.habitat || '');
+
+  const regEl = document.getElementById('res-regulations');
+  if (regEl) regEl.innerHTML = `
+    <div class="lbl" style="margin-bottom:4px;">California Regulations</div>
+    <div class="reg-ok">${f.legal ? '✅ Legal to keep' : '⛔ Check local regulations'}</div>
+    <div class="val" style="margin-top:4px;font-size:12px;">${esc(f.regulations || '')}</div>`;
+
+  const lureEl = document.getElementById('res-lures');
+  if (lureEl) lureEl.innerHTML = (f.lures || []).map(l => `<div class="lure-chip">🎣 ${esc(l)}</div>`).join('');
+
+  setEl('log-species-title', f.species || 'Unknown Fish');
+}
+
+// ══════════════════════════════════════════
+//  POST CATCH
+// ══════════════════════════════════════════
+async function postCatch() {
+  const weight   = parseFloat(document.getElementById('weight-input')?.value) || null;
+  const length   = parseFloat(document.getElementById('length-input')?.value) || null;
+  const lure     = document.getElementById('lure-input')?.value || null;
+  const spotName = currentSpot?.name || document.getElementById('log-spot-name')?.textContent || 'Unknown Spot';
+  const btn      = document.getElementById('post-catch-btn');
+
+  if (btn) { btn.textContent = 'Posting…'; btn.disabled = true; }
+
+  try {
+    if (sb && currentUser) {
+      // Create spot record if new
+      let spotId = currentSpot?.id ?? null;
+      if (currentSpot && !currentSpot.id && currentSpot.lat) {
+        const { data: ns } = await sb.from('spots').insert({ name: currentSpot.name, lat: currentSpot.lat, lng: currentSpot.lng }).select().single();
+        if (ns) { spotId = ns.id; currentSpot.id = ns.id; }
+      }
+
+      // Upload photo to Storage
+      let photoUrl = null;
+      if (capturedB64) {
+        const blob = b64Blob(capturedB64, capturedMime);
+        const path = `${currentUser.id}/${Date.now()}.jpg`;
+        const { data: up } = await sb.storage.from('catches').upload(path, blob, { contentType: capturedMime, upsert: true });
+        if (up) {
+          const { data: u } = sb.storage.from('catches').getPublicUrl(path);
+          photoUrl = u?.publicUrl;
+        }
+      }
+
+      const { error } = await sb.from('catches').insert({
+        user_id: currentUser.id, species: identifiedFish?.species || 'Unknown',
+        confidence: identifiedFish?.confidence || null, weight_lbs: weight,
+        length_in: length, lure_used: lure, kept: catchKept,
+        spot_id: spotId, spot_name: spotName, photo_url: photoUrl, is_public: true
+      });
+      if (error) throw error;
+    }
+    showToast('Catch posted! 🎣');
+    showScreen('feed');
+  } catch (err) {
+    showToast('Failed to post: ' + err.message);
+  } finally {
+    if (btn) { btn.textContent = 'Post Catch 🎣'; btn.disabled = false; }
+  }
+}
+
+function b64Blob(b64, mime) {
+  const bytes = atob(b64), arr = new Uint8Array(bytes.length);
+  for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
+  return new Blob([arr], { type: mime });
+}
+
+// ══════════════════════════════════════════
+//  FEED
+// ══════════════════════════════════════════
+async function loadFeed() {
+  if (!sb) return;
+  try {
+    const { data: catches } = await sb
+      .from('catches').select('*, profiles!catches_user_id_fkey(username)')
+      .eq('is_public', true).order('created_at', { ascending: false }).limit(10);
+    if (!catches?.length) return;
+
+    const ids = catches.map(c => c.id);
+    const { data: likes }  = await sb.from('likes').select('catch_id').in('catch_id', ids);
+    const likeMap = {};
+    (likes || []).forEach(l => { likeMap[l.catch_id] = (likeMap[l.catch_id] || 0) + 1; });
+
+    const myLikes = new Set();
+    if (currentUser) {
+      const { data: ml } = await sb.from('likes').select('catch_id').eq('user_id', currentUser.id).in('catch_id', ids);
+      (ml || []).forEach(l => myLikes.add(l.catch_id));
+    }
+
+    document.getElementById('feed-content').innerHTML =
+      catches.map(c => catchCard(c, likeMap[c.id] || 0, myLikes.has(c.id))).join('');
+  } catch {}
+}
+
+function timeAgo(ts) {
+  const s = (Date.now() - new Date(ts)) / 1000;
+  if (s < 60)    return 'just now';
+  if (s < 3600)  return `${Math.floor(s/60)}m ago`;
+  if (s < 86400) return `${Math.floor(s/3600)}h ago`;
+  return `${Math.floor(s/86400)}d ago`;
+}
+
+function catchCard(c, likes, liked) {
+  const u  = c.profiles?.username || 'angler';
+  const av = u.slice(0, 2).toUpperCase();
+  const pills = [
+    c.weight_lbs ? `<div class="pill">⚖️ ${c.weight_lbs} lbs</div>` : '',
+    c.length_in  ? `<div class="pill">📏 ${c.length_in} in</div>` : '',
+    c.lure_used  ? `<div class="pill">🎣 ${esc(c.lure_used)}</div>` : '',
+    c.kept === false ? `<div class="pill">✅ Released</div>` : ''
+  ].filter(Boolean).join('');
+  const img = c.photo_url
+    ? `<img src="${esc(c.photo_url)}" style="width:100%;height:200px;object-fit:cover;" alt="${esc(c.species)}" loading="lazy">`
+    : `<div class="post-img post-img-bg1">🐟</div>`;
+  return `<div class="card" style="margin-top:8px;">
+    <div class="post-hd"><div class="av">${av}</div><div style="flex:1"><div class="post-name">${esc(u)}</div><div class="post-spot">📍 ${esc(c.spot_name||'Unknown')}</div></div><span class="post-time">${timeAgo(c.created_at)}</span></div>
+    ${img}
+    <div class="post-info"><div class="fish-tag">${esc(c.species)}</div><div class="post-details">${pills}</div></div>
+    <div class="post-actions">
+      <div class="act-btn${liked?' liked':''}" id="like-db-${c.id}" onclick="toggleLikeDb('${c.id}')">❤️ <span class="like-count">${likes}</span></div>
+      <div class="act-btn">💬 <span>0</span></div>
+      <div class="act-btn" style="margin-left:auto;" onclick="this.classList.toggle('bookmarked')">🔖</div>
+    </div>
+  </div>`;
+}
+
+async function toggleLikeDb(catchId) {
+  const btn = document.getElementById(`like-db-${catchId}`);
+  if (!btn) return;
+  const countEl = btn.querySelector('.like-count');
+  const liked = btn.classList.toggle('liked');
+  if (countEl) countEl.textContent = parseInt(countEl.textContent) + (liked ? 1 : -1);
+  if (!sb || !currentUser) return;
+  try {
+    if (liked) await sb.from('likes').insert({ user_id: currentUser.id, catch_id: catchId });
+    else       await sb.from('likes').delete().eq('user_id', currentUser.id).eq('catch_id', catchId);
+  } catch {
+    btn.classList.toggle('liked');
+    if (countEl) countEl.textContent = parseInt(countEl.textContent) + (liked ? -1 : 1);
+  }
+}
+
+// ══════════════════════════════════════════
+//  LEADERBOARD
+// ══════════════════════════════════════════
+async function loadLeaderboard() {
+  if (!sb) return;
+  try {
+    const { data } = await sb.from('catches')
+      .select('*, profiles!catches_user_id_fkey(username)')
+      .not('weight_lbs', 'is', null)
+      .order('weight_lbs', { ascending: false }).limit(10);
+    if (!data?.length) return;
+    const rankCls = i => ['gold','silver','bronze'][i] || '';
+    document.getElementById('lb-list-content').innerHTML = data.map((c, i) => {
+      const u   = c.profiles?.username || 'angler';
+      const isMe = currentUser && c.user_id === currentUser.id;
+      return `<div class="lb-item${isMe?' lb-you':''}">
+        <div class="lb-rank ${rankCls(i)}">${i+1}</div>
+        <div class="av">${u.slice(0,2).toUpperCase()}</div>
+        <div class="lb-info">
+          <div class="lb-name">${esc(u)}${isMe?' <span style="font-size:10px;color:var(--navy);font-weight:600;background:rgba(27,46,75,0.1);padding:1px 6px;border-radius:8px;">You</span>':''}</div>
+          <div class="lb-fish">${esc(c.species)}${c.spot_name?' · '+esc(c.spot_name):''}</div>
+        </div>
+        <div class="lb-weight">${c.weight_lbs} lbs</div>
+      </div>`;
+    }).join('');
+  } catch {}
+}
+
+// ══════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ══════════════════════════════════════════
+//  STATIC INTERACTION HANDLERS
+// ══════════════════════════════════════════
 function toggleLike(id) {
   const btn = document.getElementById(id);
+  if (!btn) return;
   const count = btn.querySelector('.like-count');
   const liked = btn.classList.toggle('liked');
-  count.textContent = parseInt(count.textContent) + (liked ? 1 : -1);
+  if (count) count.textContent = parseInt(count.textContent) + (liked ? 1 : -1);
 }
 
-// ── KEPT / RELEASED ──
 function setKept(kept) {
-  const keepBtn = document.getElementById('keep-btn');
-  const releaseBtn = document.getElementById('release-btn');
-  if (kept) {
-    keepBtn.style.cssText = 'padding:5px 10px;border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;background:rgba(27,46,75,0.1);color:var(--navy);transition:background 0.15s,color 0.15s,font-weight 0.1s;';
-    releaseBtn.style.cssText = 'padding:5px 10px;border-radius:10px;font-size:11px;font-weight:500;cursor:pointer;background:var(--bg);color:var(--gray);transition:background 0.15s,color 0.15s,font-weight 0.1s;';
-  } else {
-    keepBtn.style.cssText = 'padding:5px 10px;border-radius:10px;font-size:11px;font-weight:500;cursor:pointer;background:var(--bg);color:var(--gray);transition:background 0.15s,color 0.15s,font-weight 0.1s;';
-    releaseBtn.style.cssText = 'padding:5px 10px;border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;background:rgba(27,46,75,0.1);color:var(--navy);transition:background 0.15s,color 0.15s,font-weight 0.1s;';
-  }
+  catchKept = kept;
+  const kBtn  = document.getElementById('keep-btn');
+  const rBtn  = document.getElementById('release-btn');
+  const on  = 'padding:5px 10px;border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;background:rgba(27,46,75,0.1);color:var(--navy);transition:background 0.15s,color 0.15s,font-weight 0.1s;';
+  const off = 'padding:5px 10px;border-radius:10px;font-size:11px;font-weight:500;cursor:pointer;background:var(--bg);color:var(--gray);transition:background 0.15s,color 0.15s,font-weight 0.1s;';
+  if (kBtn) kBtn.style.cssText = kept ? on : off;
+  if (rBtn) rBtn.style.cssText = kept ? off : on;
 }
 
-// ── LURE DROPDOWN ──
 function toggleLureDropdown() {
-  document.getElementById('lure-dropdown').classList.toggle('open');
+  document.getElementById('lure-dropdown')?.classList.toggle('open');
 }
 function selectLure(name) {
-  document.getElementById('lure-input').value = name;
-  document.getElementById('lure-dropdown').classList.remove('open');
+  const inp = document.getElementById('lure-input');
+  if (inp) inp.value = name;
+  document.getElementById('lure-dropdown')?.classList.remove('open');
 }
 document.addEventListener('click', e => {
-  if (!e.target.closest('.lure-field')) {
-    document.getElementById('lure-dropdown')?.classList.remove('open');
-  }
+  if (!e.target.closest('.lure-field')) document.getElementById('lure-dropdown')?.classList.remove('open');
 });
 
-// ── POST CATCH ──
-function postCatch() {
-  const btn = document.querySelector('#screen-log .btn');
-  btn.textContent = 'Posting…';
-  btn.style.opacity = '0.7';
-  setTimeout(() => {
-    showScreen('feed');
-    btn.textContent = 'Post Catch 🎣';
-    btn.style.opacity = '';
-  }, 1000);
-}
-
-// ── MAP CARD ──
-function showMapCard(title, sub, stat1, stat2) {
-  document.getElementById('mc-title').textContent = title;
-  document.getElementById('mc-sub').textContent = sub;
-  document.getElementById('mc-stat1').textContent = stat1;
-  document.getElementById('mc-stat2').textContent = stat2;
+function showMapCard(title, sub, s1, s2) {
+  setEl('mc-title', title); setEl('mc-sub', sub); setEl('mc-stat1', s1); setEl('mc-stat2', s2);
   const card = document.getElementById('map-card');
-  card.style.animation = 'none';
-  void card.offsetWidth;
-  card.style.animation = 'card-rise 0.35s var(--ease) both';
+  if (card) { card.style.animation = 'none'; void card.offsetWidth; card.style.animation = 'card-rise 0.35s var(--ease) both'; }
 }
 
-// ── LEADERBOARD TABS ──
 function setLbTab(el) {
   document.querySelectorAll('.lb-tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
 }
 
-// ── FOLLOW ──
 function toggleFollow() {
   const btn = document.getElementById('follow-btn');
-  const following = btn.classList.toggle('following');
-  btn.textContent = following ? '✓ Following' : '+ Follow';
+  const f = btn.classList.toggle('following');
+  btn.textContent = f ? '✓ Following' : '+ Follow';
 }
 
-// ── PAYWALL PLAN SELECT ──
 function selectPlan(plan) {
   selectedPlan = plan;
   document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('sel'));
-  document.getElementById('plan-' + plan).classList.add('sel');
+  document.getElementById('plan-' + plan)?.classList.add('sel');
   const btn = document.getElementById('subscribe-btn');
-  if (plan === 'annual') {
-    btn.textContent = 'Start Annual — $39.99/yr';
-  } else {
-    btn.textContent = 'Start Monthly — $5.99/mo';
-  }
+  if (btn) btn.textContent = plan === 'annual' ? 'Start Annual — $39.99/yr' : 'Start Monthly — $5.99/mo';
 }
 function handleSubscribe() {
   const btn = document.getElementById('subscribe-btn');
-  const orig = btn.textContent;
-  btn.textContent = 'Connecting to Stripe…';
-  btn.style.opacity = '0.7';
-  setTimeout(() => {
-    showScreen('feed');
-    btn.textContent = orig;
-    btn.style.opacity = '';
-  }, 1200);
+  const orig = btn?.textContent;
+  if (btn) { btn.textContent = 'Connecting to Stripe…'; btn.style.opacity = '0.7'; }
+  setTimeout(() => { showScreen('feed'); if (btn) { btn.textContent = orig; btn.style.opacity = ''; } }, 1200);
 }
 
-// ── CLOCK ──
+// ══════════════════════════════════════════
+//  UTILITIES
+// ══════════════════════════════════════════
+function setEl(id, text) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = String(text);
+}
+function esc(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 function updateTime() {
   const now = new Date();
   const h = now.getHours() % 12 || 12;
-  const m = String(now.getMinutes()).padStart(2,'0');
-  document.getElementById('status-time').textContent = `${h}:${m}`;
+  const m = String(now.getMinutes()).padStart(2, '0');
+  setEl('status-time', `${h}:${m}`);
 }
-updateTime();
-setInterval(updateTime, 30000);
 
-// ── INIT ──
-updateStatusBar('onboard1');
-updateBottomNav('onboard1');
-updateTabBar('onboard1');
+// ══════════════════════════════════════════
+//  BOOT
+// ══════════════════════════════════════════
+init();
 </script>
 </body>
 </html>
