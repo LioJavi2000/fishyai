@@ -278,6 +278,13 @@ body {
 .proc-sub{color:rgba(255,255,255,0.45);font-size:12px;letter-spacing:-0.2px;}
 .claude-badge{margin-top:36px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:7px 16px;color:rgba(255,255,255,0.5);font-size:11px;font-weight:500;letter-spacing:-0.1px;display:flex;align-items:center;gap:6px;}
 
+/* ── ERROR STATE ── */
+.err-wrap{background:#000;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;}
+.err-icon{font-size:64px;margin-bottom:20px;filter:drop-shadow(0 0 24px rgba(255,60,60,0.3));}
+.err-title{font-size:20px;font-weight:700;color:#fff;letter-spacing:-0.5px;margin-bottom:8px;}
+.err-msg{font-size:13px;color:rgba(255,255,255,0.5);letter-spacing:-0.2px;line-height:1.6;margin-bottom:32px;}
+.err-code{font-size:11px;color:rgba(255,60,60,0.7);background:rgba(255,60,60,0.08);border:1px solid rgba(255,60,60,0.2);border-radius:10px;padding:8px 14px;margin-bottom:28px;font-family:monospace;max-width:260px;word-break:break-word;}
+
 /* ── AI RESULT ── */
 .res-wrap{background:var(--bg);min-height:100%;padding-bottom:20px;}
 .res-hero{width:100%;height:195px;background:linear-gradient(145deg,#c8ddf0 0%,#8fb8d8 100%);display:flex;align-items:center;justify-content:center;font-size:80px;position:relative;background-size:cover;background-position:center;}
@@ -623,15 +630,24 @@ body {
 
     <!-- ══════ PROCESSING ══════ -->
     <div class="screen" id="screen-processing">
-      <div class="proc-wrap">
+      <!-- Loading state (default) -->
+      <div class="proc-wrap" id="proc-loading">
         <div class="proc-fish">🐟</div>
         <div class="proc-txt">Identifying your catch…</div>
         <div class="proc-bar-wrap"><div class="proc-bar"></div></div>
-        <div class="proc-sub">Analyzing species, habitat & regulations</div>
+        <div class="proc-sub">Analyzing species, habitat &amp; regulations</div>
         <div class="claude-badge">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
           Powered by Claude AI
         </div>
+      </div>
+      <!-- Error state (shown on failure) -->
+      <div class="err-wrap" id="proc-error" style="display:none;">
+        <div class="err-icon">🎣</div>
+        <div class="err-title">Couldn't identify fish</div>
+        <div class="err-msg">Something went wrong while analyzing your photo. This usually means the AI service is unavailable or out of credits.</div>
+        <div class="err-code" id="err-detail">Unknown error</div>
+        <button class="btn btn-white" style="width:200px;margin:0;" onclick="retryFromError()">Try Again</button>
       </div>
     </div>
 
@@ -1212,13 +1228,29 @@ function handleShutter() {
   doIdentify();
 }
 
+function showProcError(msg) {
+  document.getElementById('proc-loading').style.display = 'none';
+  document.getElementById('proc-error').style.display  = 'flex';
+  setEl('err-detail', msg);
+}
+function resetProcScreen() {
+  document.getElementById('proc-loading').style.display = 'flex';
+  document.getElementById('proc-error').style.display  = 'none';
+}
+function retryFromError() {
+  resetProcScreen();
+  showScreen('scan');
+  startCamera();
+}
+
 async function doIdentify() {
   stopCamera();
+  resetProcScreen();
   showScreen('processing');
   currentSpot = null;
   setEl('log-spot-name', 'Detecting location…');
 
-  // GPS in background (don't await — it runs in parallel)
+  // GPS in background
   navigator.geolocation?.getCurrentPosition(
     pos => matchOrNameSpot(pos.coords.latitude, pos.coords.longitude),
     ()  => setEl('log-spot-name', 'Unknown Spot')
@@ -1231,12 +1263,12 @@ async function doIdentify() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ imageBase64: capturedB64, mimeType: capturedMime })
       });
-      if (!resp.ok) throw new Error('API error ' + resp.status);
       const data = await resp.json();
-      if (data.error) throw new Error(data.error);
+      if (!resp.ok || data.error) throw new Error(data.error || `API error ${resp.status}`);
+      if (!data.species) throw new Error('AI returned an unrecognized response.');
       identifiedFish = data;
     } else {
-      // Demo mode — no camera access
+      // Demo mode — no camera
       await new Promise(r => setTimeout(r, 2200));
       identifiedFish = {
         species: 'Largemouth Bass', confidence: 95,
@@ -1248,9 +1280,7 @@ async function doIdentify() {
     renderResult();
     showScreen('result');
   } catch (err) {
-    showToast('Could not identify fish — try again.');
-    showScreen('scan');
-    startCamera();
+    showProcError(err.message);
   }
 }
 

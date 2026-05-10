@@ -81,7 +81,13 @@ createServer(async (req, res) => {
         })
       });
       const data = await r.json();
-      const text = (data.content?.[0]?.text || '{}').trim();
+      // Surface Anthropic API errors (no credits, invalid key, overloaded, etc.)
+      if (!r.ok || data.type === 'error' || data.error) {
+        const msg = data.error?.message || data.message || `Anthropic error ${r.status}`;
+        return json(res, { error: msg }, 502);
+      }
+      const text = (data.content?.[0]?.text || '').trim();
+      if (!text) return json(res, { error: 'Empty response from AI' }, 502);
       const match = text.match(/\{[\s\S]*\}/);
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(match ? match[0] : text);
