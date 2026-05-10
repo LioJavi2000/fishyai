@@ -1042,13 +1042,14 @@ async function handleAuth() {
 
   try {
     if (isSignUp) {
-      const { data, error } = await sb.auth.signUp({ email, password, options: { data: { username } } });
-      if (error) throw error;
-      currentUser = data.user;
+      const { data: signUpData, error: signUpError } = await sb.auth.signUp({ email, password, options: { data: { username } } });
+      if (signUpError) throw signUpError;
 
-      if (!data.session) {
-        // Email confirmation required — switch to login mode and tell the user
-        showAuthMsg('✅ Account created! Check your email for a confirmation link, then log in below.', false);
+      // Try to sign in immediately — works whether confirmation is on or off
+      const { data: signInData, error: signInError } = await sb.auth.signInWithPassword({ email, password });
+      if (signInError) {
+        // Confirmation required — tell user clearly and switch to login mode
+        showAuthMsg('✅ Account created! Check your email for a confirmation link, then come back and log in.', false);
         isSignUp = false;
         const row   = document.getElementById('auth-username-row');
         const title = document.getElementById('auth-mode-title');
@@ -1060,6 +1061,7 @@ async function handleAuth() {
         if (btn)   btn.disabled      = false;
         return;
       }
+      currentUser = signInData.user;
     } else {
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
       if (error) throw error;
