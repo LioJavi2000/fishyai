@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fishy AI — Prototype v1</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎣</text></svg>">
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
 :root {
@@ -734,8 +735,8 @@ body {
           <div class="log-row">
             <div class="log-row-l"><span class="log-row-ico">🔄</span> Keep or release?</div>
             <div style="display:flex;gap:8px;">
-              <div id="keep-btn" onclick="setKept(true)" style="padding:5px 10px;border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;background:rgba(27,46,75,0.1);color:var(--navy);transition:all 0.15s;">Keep</div>
-              <div id="release-btn" onclick="setKept(false)" style="padding:5px 10px;border-radius:10px;font-size:11px;font-weight:500;cursor:pointer;background:var(--bg);color:var(--gray);transition:all 0.15s;">Release</div>
+              <div id="keep-btn" onclick="setKept(true)" style="padding:5px 10px;border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;background:rgba(27,46,75,0.1);color:var(--navy);transition:background 0.15s,color 0.15s,font-weight 0.1s;">Keep</div>
+              <div id="release-btn" onclick="setKept(false)" style="padding:5px 10px;border-radius:10px;font-size:11px;font-weight:500;cursor:pointer;background:var(--bg);color:var(--gray);transition:background 0.15s,color 0.15s,font-weight 0.1s;">Release</div>
             </div>
           </div>
         </div>
@@ -1056,6 +1057,7 @@ body {
 // ── STATE ──
 let current = 'onboard1';
 let selectedPlan = 'monthly';
+let procTimer = null;
 
 const NAV_SCREENS = ['feed','map','leaderboard','profile'];
 const DARK_SCREENS = ['scan','processing'];
@@ -1071,18 +1073,25 @@ const STATUS_TITLES = {
 // ── SCREEN NAVIGATION ──
 function showScreen(name, back=false) {
   if (name === current) return;
+  // Cancel any pending processing auto-navigate
+  if (procTimer) { clearTimeout(procTimer); procTimer = null; }
+
   const prev = document.getElementById('screen-' + current);
   const next = document.getElementById('screen-' + name);
   if (!prev || !next) return;
 
+  // Clear leftover exiting class (rapid navigation guard)
+  next.classList.remove('exiting');
   prev.classList.add('exiting');
+
   const enterX = back ? '-30px' : '30px';
   next.style.cssText = `transition:none;transform:translateX(${enterX});opacity:0;`;
   next.classList.add('active');
 
+  const prevEl = prev;
   requestAnimationFrame(() => requestAnimationFrame(() => {
     next.style.cssText = '';
-    setTimeout(() => prev.classList.remove('active','exiting'), 380);
+    setTimeout(() => prevEl.classList.remove('active','exiting'), 390);
   }));
 
   current = name;
@@ -1114,7 +1123,7 @@ function updateTabBar(name) {
 // ── SHUTTER → PROCESSING → RESULT ──
 function handleShutter() {
   showScreen('processing');
-  setTimeout(() => showScreen('result'), 2400);
+  procTimer = setTimeout(() => { procTimer = null; showScreen('result'); }, 2400);
 }
 
 // ── LIKES ──
@@ -1130,11 +1139,11 @@ function setKept(kept) {
   const keepBtn = document.getElementById('keep-btn');
   const releaseBtn = document.getElementById('release-btn');
   if (kept) {
-    keepBtn.style.cssText = 'padding:5px 10px;border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;background:rgba(27,46,75,0.1);color:var(--navy);transition:all 0.15s;';
-    releaseBtn.style.cssText = 'padding:5px 10px;border-radius:10px;font-size:11px;font-weight:500;cursor:pointer;background:var(--bg);color:var(--gray);transition:all 0.15s;';
+    keepBtn.style.cssText = 'padding:5px 10px;border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;background:rgba(27,46,75,0.1);color:var(--navy);transition:background 0.15s,color 0.15s,font-weight 0.1s;';
+    releaseBtn.style.cssText = 'padding:5px 10px;border-radius:10px;font-size:11px;font-weight:500;cursor:pointer;background:var(--bg);color:var(--gray);transition:background 0.15s,color 0.15s,font-weight 0.1s;';
   } else {
-    keepBtn.style.cssText = 'padding:5px 10px;border-radius:10px;font-size:11px;font-weight:500;cursor:pointer;background:var(--bg);color:var(--gray);transition:all 0.15s;';
-    releaseBtn.style.cssText = 'padding:5px 10px;border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;background:rgba(27,46,75,0.1);color:var(--navy);transition:all 0.15s;';
+    keepBtn.style.cssText = 'padding:5px 10px;border-radius:10px;font-size:11px;font-weight:500;cursor:pointer;background:var(--bg);color:var(--gray);transition:background 0.15s,color 0.15s,font-weight 0.1s;';
+    releaseBtn.style.cssText = 'padding:5px 10px;border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;background:rgba(27,46,75,0.1);color:var(--navy);transition:background 0.15s,color 0.15s,font-weight 0.1s;';
   }
 }
 
@@ -1216,7 +1225,7 @@ function handleSubscribe() {
 // ── CLOCK ──
 function updateTime() {
   const now = new Date();
-  const h = now.getHours();
+  const h = now.getHours() % 12 || 12;
   const m = String(now.getMinutes()).padStart(2,'0');
   document.getElementById('status-time').textContent = `${h}:${m}`;
 }
