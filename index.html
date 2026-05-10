@@ -1204,7 +1204,11 @@ async function startCamera() {
   if (!video) return;
   try {
     cameraStream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
+      video: {
+        facingMode: 'environment',
+        width:  { ideal: 3840, min: 1280 },
+        height: { ideal: 2160, min: 720 },
+      },
       audio: false
     });
     video.srcObject = cameraStream;
@@ -1234,7 +1238,11 @@ async function flipCamera() {
   const ph    = document.getElementById('cam-fish-placeholder');
   try {
     cameraStream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: currentFacing === 'environment' ? 'user' : 'environment' },
+      video: {
+        facingMode: currentFacing === 'environment' ? 'user' : 'environment',
+        width:  { ideal: 3840, min: 1280 },
+        height: { ideal: 2160, min: 720 },
+      },
       audio: false
     });
     video.srcObject = cameraStream;
@@ -1267,7 +1275,7 @@ function handleShutter() {
     canvas.width  = video.videoWidth;
     canvas.height = video.videoHeight;
     canvas.getContext('2d').drawImage(video, 0, 0);
-    capturedB64  = canvas.toDataURL('image/jpeg', 0.85).split(',')[1];
+    capturedB64  = canvas.toDataURL('image/jpeg', 0.92).split(',')[1];
     capturedMime = 'image/jpeg';
   } else {
     capturedB64 = null;
