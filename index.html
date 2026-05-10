@@ -916,6 +916,10 @@ const STATUS_TITLES = {
 // ══════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════
+// Supabase credentials (anon/publishable key — safe to embed client-side)
+const SUPABASE_URL      = 'https://spckbmbbtusnvwopuxjc.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_A8oCQpvB9Y4sr0K9_wG_WQ_l_1UVpHu';
+
 async function init() {
   updateTime();
   setInterval(updateTime, 30000);
@@ -924,24 +928,26 @@ async function init() {
   updateTabBar('onboard1');
 
   try {
-    const cfg = await fetch('/api/config').then(r => r.json());
-    if (cfg.supabaseUrl && cfg.supabaseAnonKey) {
-      sb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
-      const { data: { session } } = await sb.auth.getSession();
-      if (session?.user) {
-        currentUser = session.user;
-        await loadProfile();
-        showScreen('feed');
-        loadFeed();
-        loadLeaderboard();
-      }
-      sb.auth.onAuthStateChange(async (_e, session) => {
-        currentUser = session?.user ?? null;
-        if (!currentUser) currentProfile = null;
-      });
+    // Always initialize Supabase with embedded keys (publishable key is client-safe)
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Try to get a fresher config from the server (for AI endpoints), but don't block on it
+    fetch('/api/config').catch(() => {});
+
+    const { data: { session } } = await sb.auth.getSession();
+    if (session?.user) {
+      currentUser = session.user;
+      await loadProfile();
+      showScreen('feed');
+      loadFeed();
+      loadLeaderboard();
     }
+    sb.auth.onAuthStateChange(async (_e, session) => {
+      currentUser = session?.user ?? null;
+      if (!currentUser) currentProfile = null;
+    });
   } catch (e) {
-    console.warn('Supabase unavailable:', e.message);
+    console.warn('Supabase init error:', e.message);
   }
 }
 
