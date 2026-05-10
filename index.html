@@ -645,8 +645,7 @@ body {
       <div class="err-wrap" id="proc-error" style="display:none;">
         <div class="err-icon">🎣</div>
         <div class="err-title">Couldn't identify fish</div>
-        <div class="err-msg">Something went wrong while analyzing your photo. This usually means the AI service is unavailable or out of credits.</div>
-        <div class="err-code" id="err-detail">Unknown error</div>
+        <div class="err-msg">Our servers are down. Please try again in a moment.</div>
         <button class="btn btn-white" style="width:200px;margin:0;" onclick="retryFromError()">Try Again</button>
       </div>
     </div>
@@ -1231,7 +1230,6 @@ function handleShutter() {
 function showProcError(msg) {
   document.getElementById('proc-loading').style.display = 'none';
   document.getElementById('proc-error').style.display  = 'flex';
-  setEl('err-detail', msg);
 }
 function resetProcScreen() {
   document.getElementById('proc-loading').style.display = 'flex';
