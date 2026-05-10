@@ -1,0 +1,7 @@
+node_modules/
+temporary screenshots/
+*.png
+*.jpg
+*.mp4
+.env
+.DS_Store

@@ -1,0 +1,357 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; }
+  .phone { width: 340px; margin: 0 auto; background: #f2f2f7; border-radius: 40px; border: 8px solid #1B2E4B; overflow: hidden; height: 680px; display: flex; flex-direction: column; }
+  .status-bar { background: #fff; padding: 12px 20px 8px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 600; color: #000; flex-shrink: 0; letter-spacing: -0.3px; }
+  .screen { flex: 1; overflow: hidden; background: #f2f2f7; position: relative; }
+
+  .screen-wrapper {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    opacity: 0;
+    transform: translateX(32px);
+    pointer-events: none;
+    transition: opacity 0.38s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                transform 0.38s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .screen-wrapper::-webkit-scrollbar { display: none; }
+  .screen-wrapper.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: all;
+  }
+  .screen-wrapper.slide-out {
+    opacity: 0;
+    transform: translateX(-32px);
+  }
+
+  .bottom-nav { background: rgba(255,255,255,0.94); border-top: 0.5px solid rgba(0,0,0,0.12); padding: 10px 4px 18px; display: flex; justify-content: space-around; align-items: flex-end; flex-shrink: 0; }
+  .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; flex: 1; padding: 0 2px; -webkit-tap-highlight-color: transparent; }
+  .nav-icon-wrap { width: 44px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 10px; transition: background 0.2s cubic-bezier(0.25,0.46,0.45,0.94), transform 0.15s cubic-bezier(0.34,1.56,0.64,1); }
+  .nav-item:active .nav-icon-wrap { transform: scale(0.88); }
+  .nav-item.active .nav-icon-wrap { background: rgba(27,46,75,0.09); }
+  .nav-item svg { width: 24px; height: 24px; transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1); }
+  .nav-item.active svg { transform: scale(1.08); }
+  .nav-item span { font-size: 10px; font-weight: 500; color: #8e8e93; letter-spacing: -0.3px; transition: color 0.2s ease, font-weight 0.2s ease; }
+  .nav-item.active span { color: #1B2E4B; font-weight: 600; }
+  .nav-item svg path, .nav-item svg circle, .nav-item svg polyline { stroke: #8e8e93; transition: stroke 0.2s ease; }
+  .nav-item.active svg path, .nav-item.active svg circle, .nav-item.active svg polyline { stroke: #1B2E4B; }
+
+  .nav-center-item { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; flex: 1; padding: 0 2px; }
+  .nav-center-btn { width: 48px; height: 32px; background: #1B2E4B; border-radius: 14px; display: flex; align-items: center; justify-content: center; transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1), background 0.2s ease; }
+  .nav-center-btn:active { transform: scale(0.88); background: #253f64; }
+  .nav-center-btn svg { width: 20px; height: 20px; }
+  .nav-center-btn svg path, .nav-center-btn svg circle { stroke: #fff; }
+  .nav-center-item span { font-size: 10px; font-weight: 600; color: #1B2E4B; letter-spacing: -0.3px; }
+
+  .tab-btn {
+    border: none; border-radius: 20px; padding: 6px 14px; font-size: 12px; cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+    letter-spacing: -0.2px; font-weight: 500;
+    transition: background 0.22s cubic-bezier(0.25,0.46,0.45,0.94),
+                color 0.22s cubic-bezier(0.25,0.46,0.45,0.94),
+                transform 0.15s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .tab-btn:active { transform: scale(0.94); }
+
+  .card { background: #fff; border-radius: 16px; margin: 8px 12px; overflow: hidden; transition: transform 0.2s cubic-bezier(0.25,0.46,0.45,0.94); }
+  .card:active { transform: scale(0.985); }
+
+  .story-row { display: flex; gap: 12px; padding: 12px 12px 8px; overflow-x: auto; scrollbar-width: none; }
+  .story-row::-webkit-scrollbar { display: none; }
+  .story { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; cursor: pointer; transition: transform 0.18s cubic-bezier(0.34,1.56,0.64,1); }
+  .story:active { transform: scale(0.9); }
+  .story-ring { width: 56px; height: 56px; border-radius: 50%; border: 2.5px solid #1B2E4B; padding: 2px; }
+  .story-img { width: 100%; height: 100%; border-radius: 50%; background: #d0e0f0; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+  .story span { font-size: 10px; color: #1B2E4B; font-weight: 500; letter-spacing: -0.2px; }
+
+  .post-header { display: flex; align-items: center; gap: 10px; padding: 12px; }
+  .avatar { width: 36px; height: 36px; border-radius: 50%; background: #d0e0f0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #1B2E4B; flex-shrink: 0; letter-spacing: -0.5px; }
+  .post-name { font-size: 13px; font-weight: 600; color: #000; letter-spacing: -0.3px; }
+  .post-spot { font-size: 11px; color: #8e8e93; letter-spacing: -0.2px; }
+  .post-img { width: 100%; height: 200px; background: #c8ddf0; display: flex; align-items: center; justify-content: center; font-size: 60px; }
+  .post-info { padding: 10px 12px; }
+  .fish-tag { background: #1B2E4B; color: #fff; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; display: inline-block; margin-bottom: 6px; letter-spacing: -0.2px; }
+  .post-details { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+  .detail-pill { background: #f2f2f7; border-radius: 20px; font-size: 10px; color: #636366; padding: 3px 8px; letter-spacing: -0.2px; }
+  .post-actions { display: flex; gap: 16px; align-items: center; padding: 8px 12px 12px; border-top: 0.5px solid #f2f2f7; }
+  .action-btn { display: flex; align-items: center; gap: 4px; font-size: 12px; color: #8e8e93; cursor: pointer; letter-spacing: -0.2px; transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1); }
+  .action-btn:active { transform: scale(0.85); }
+
+  .scan-screen { background: #000; display: flex; flex-direction: column; height: 100%; }
+  .camera-view { flex: 1; background: #1a3a2a; display: flex; align-items: center; justify-content: center; font-size: 80px; position: relative; }
+  .scan-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 24px 0 20px; }
+  .scan-corner { width: 120px; height: 120px; border: 2.5px solid #fff; border-radius: 12px; animation: pulse-corner 2.4s cubic-bezier(0.45,0.05,0.55,0.95) infinite; }
+  @keyframes pulse-corner { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(1.04)} }
+  .scan-label { color: #fff; font-size: 13px; font-weight: 500; background: rgba(0,0,0,0.4); padding: 6px 14px; border-radius: 20px; letter-spacing: -0.2px; animation: fade-in-down 0.5s cubic-bezier(0.25,0.46,0.45,0.94) both; }
+  @keyframes fade-in-down { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+  .shutter { width: 64px; height: 64px; border-radius: 50%; background: #fff; border: 4px solid rgba(255,255,255,0.4); cursor: pointer; transition: transform 0.18s cubic-bezier(0.34,1.56,0.64,1); animation: fade-in-up 0.5s 0.15s cubic-bezier(0.25,0.46,0.45,0.94) both; }
+  @keyframes fade-in-up { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  .shutter:active { transform: scale(0.88); }
+
+  .result-screen { background: #f2f2f7; }
+  .result-hero { width: 100%; height: 180px; background: #c8ddf0; display: flex; align-items: center; justify-content: center; font-size: 80px; position: relative; }
+  .result-badge { position: absolute; bottom: 12px; left: 12px; background: #1B2E4B; color: #fff; font-size: 13px; font-weight: 700; padding: 6px 14px; border-radius: 20px; letter-spacing: -0.3px; animation: badge-pop 0.4s 0.1s cubic-bezier(0.34,1.56,0.64,1) both; }
+  @keyframes badge-pop { from{opacity:0;transform:scale(0.8) translateY(6px)} to{opacity:1;transform:scale(1) translateY(0)} }
+  .result-card { background: #fff; border-radius: 20px; margin: -20px 12px 0; padding: 16px; animation: card-rise 0.45s 0.08s cubic-bezier(0.25,0.46,0.45,0.94) both; }
+  @keyframes card-rise { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+  .result-section { margin-bottom: 14px; }
+  .result-label { font-size: 10px; font-weight: 600; color: #8e8e93; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px; }
+  .result-value { font-size: 13px; color: #000; line-height: 1.5; letter-spacing: -0.2px; }
+  .result-reg { background: #eaf5ea; border-radius: 10px; padding: 10px; }
+  .reg-ok { color: #2d7a2d; font-size: 12px; font-weight: 600; letter-spacing: -0.2px; }
+  .log-btn { background: #1B2E4B; color: #fff; font-size: 15px; font-weight: 600; padding: 14px; border-radius: 14px; width: calc(100% - 24px); margin: 12px; border: none; cursor: pointer; letter-spacing: -0.3px; font-family: inherit; transition: transform 0.18s cubic-bezier(0.34,1.56,0.64,1), background 0.2s ease; animation: card-rise 0.45s 0.22s cubic-bezier(0.25,0.46,0.45,0.94) both; }
+  .log-btn:active { transform: scale(0.97); background: #253f64; }
+
+  .map-screen { height: 100%; position: relative; }
+  .map-bg { width: 100%; height: 100%; background: #dce8dc; position: relative; overflow: hidden; }
+  .map-pin { position: absolute; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1); }
+  .map-pin:active { transform: scale(0.88); }
+  .pin-dot { width: 36px; height: 36px; border-radius: 50% 50% 50% 0; background: #1B2E4B; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; }
+  .pin-emoji { transform: rotate(45deg); font-size: 16px; }
+  .pin-label { background: #fff; border-radius: 8px; padding: 4px 8px; font-size: 10px; font-weight: 600; color: #1B2E4B; margin-top: 4px; white-space: nowrap; letter-spacing: -0.2px; }
+  .map-card { position: absolute; bottom: 12px; left: 12px; right: 12px; background: #fff; border-radius: 14px; padding: 12px; animation: card-rise 0.4s cubic-bezier(0.25,0.46,0.45,0.94) both; }
+  .map-card-title { font-size: 14px; font-weight: 700; color: #000; letter-spacing: -0.4px; }
+  .map-card-sub { font-size: 11px; color: #8e8e93; margin-top: 2px; letter-spacing: -0.2px; }
+  .map-stat { font-size: 11px; color: #1B2E4B; font-weight: 500; letter-spacing: -0.2px; }
+
+  .leaderboard-screen { background: #f2f2f7; }
+  .lb-header { background: #1B2E4B; padding: 20px 16px 30px; }
+  .lb-title { font-size: 22px; font-weight: 700; color: #fff; letter-spacing: -0.6px; }
+  .lb-sub { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 2px; letter-spacing: -0.2px; }
+  .lb-list { margin: -16px 12px 0; }
+  .lb-item { background: #fff; border-radius: 14px; padding: 12px; display: flex; align-items: center; gap: 12px; margin-bottom: 8px; transition: transform 0.18s cubic-bezier(0.34,1.56,0.64,1); }
+  .lb-item:active { transform: scale(0.97); }
+  .lb-rank { font-size: 18px; font-weight: 800; color: #1B2E4B; width: 28px; text-align: center; letter-spacing: -0.5px; }
+  .lb-rank.gold { color: #c9972a; } .lb-rank.silver { color: #8e8e93; } .lb-rank.bronze { color: #b5712a; }
+  .lb-name { font-size: 13px; font-weight: 600; color: #000; letter-spacing: -0.3px; }
+  .lb-fish { font-size: 11px; color: #8e8e93; letter-spacing: -0.2px; }
+  .lb-weight { font-size: 15px; font-weight: 700; color: #1B2E4B; letter-spacing: -0.4px; }
+
+  .profile-screen { background: #f2f2f7; }
+  .profile-hero { background: #1B2E4B; padding: 24px 16px 40px; display: flex; flex-direction: column; align-items: center; }
+  .profile-avatar { width: 72px; height: 72px; border-radius: 50%; background: #d0e0f0; border: 3px solid #fff; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 700; color: #1B2E4B; margin-bottom: 10px; letter-spacing: -1px; transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1); }
+  .profile-avatar:active { transform: scale(0.92); }
+  .profile-name { font-size: 20px; font-weight: 700; color: #fff; letter-spacing: -0.6px; }
+  .profile-handle { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 2px; letter-spacing: -0.2px; }
+  .profile-stats { display: flex; gap: 24px; margin-top: 14px; }
+  .p-stat-num { font-size: 20px; font-weight: 700; color: #fff; letter-spacing: -0.6px; }
+  .p-stat-label { font-size: 10px; color: rgba(255,255,255,0.6); letter-spacing: -0.1px; }
+  .profile-content { margin: -16px 12px 0; }
+  .section-title { font-size: 15px; font-weight: 700; color: #000; margin: 14px 0 8px; letter-spacing: -0.4px; }
+  .badge { background: #fff; border-radius: 12px; padding: 8px 12px; display: flex; align-items: center; gap: 6px; transition: transform 0.18s cubic-bezier(0.34,1.56,0.64,1); }
+  .badge:active { transform: scale(0.93); }
+  .badge-name { font-size: 11px; font-weight: 600; color: #1B2E4B; letter-spacing: -0.2px; }
+  .catch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .catch-thumb { background: #c8ddf0; border-radius: 12px; height: 80px; display: flex; align-items: center; justify-content: center; font-size: 30px; transition: transform 0.18s cubic-bezier(0.34,1.56,0.64,1); cursor: pointer; }
+  .catch-thumb:active { transform: scale(0.93); }
+</style>
+
+<div style="padding:1rem 0;display:flex;flex-direction:column;align-items:center;gap:16px;">
+  <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;" id="tab-bar">
+    <button class="tab-btn" id="tab-feed" onclick="showScreen('feed')" style="background:#1B2E4B;color:#fff;">Feed</button>
+    <button class="tab-btn" id="tab-scan" onclick="showScreen('scan')" style="background:#f2f2f7;color:#1B2E4B;">Scan</button>
+    <button class="tab-btn" id="tab-result" onclick="showScreen('result')" style="background:#f2f2f7;color:#1B2E4B;">AI Result</button>
+    <button class="tab-btn" id="tab-map" onclick="showScreen('map')" style="background:#f2f2f7;color:#1B2E4B;">Map</button>
+    <button class="tab-btn" id="tab-lb" onclick="showScreen('leaderboard')" style="background:#f2f2f7;color:#1B2E4B;">Ranks</button>
+    <button class="tab-btn" id="tab-profile" onclick="showScreen('profile')" style="background:#f2f2f7;color:#1B2E4B;">Profile</button>
+  </div>
+
+  <div class="phone">
+    <div class="status-bar">
+      <span>9:41</span>
+      <span style="font-size:15px;font-weight:700;letter-spacing:-0.5px;color:#1B2E4B;">Fishy AI</span>
+      <span style="font-size:11px;">●●●</span>
+    </div>
+
+    <div class="screen">
+      <div class="screen-wrapper active" id="screen-feed">
+        <div class="story-row">
+          <div class="story"><div class="story-ring"><div class="story-img">🐟</div></div><span>jake_f</span></div>
+          <div class="story"><div class="story-ring"><div class="story-img">🎣</div></div><span>maria_r</span></div>
+          <div class="story"><div class="story-ring"><div class="story-img">🐠</div></div><span>big_bass</span></div>
+          <div class="story"><div class="story-ring"><div class="story-img">🦈</div></div><span>coastkid</span></div>
+        </div>
+        <div class="card">
+          <div class="post-header">
+            <div class="avatar">JF</div>
+            <div style="flex:1;"><div class="post-name">jake_fisher</div><div class="post-spot">📍 Lake Elsinore South Cove</div></div>
+            <span style="font-size:11px;color:#8e8e93;letter-spacing:-0.2px;">2m ago</span>
+          </div>
+          <div class="post-img">🐟</div>
+          <div class="post-info">
+            <div class="fish-tag">Largemouth Bass</div>
+            <div class="post-details">
+              <div class="detail-pill">⚖️ 4.2 lbs</div><div class="detail-pill">📏 18 in</div><div class="detail-pill">🎣 Zoom Trick Worm</div>
+            </div>
+          </div>
+          <div class="post-actions">
+            <div class="action-btn">❤️ <span>24</span></div>
+            <div class="action-btn">💬 <span>3</span></div>
+            <div class="action-btn" style="margin-left:auto;">🔖</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="post-header">
+            <div class="avatar">MR</div>
+            <div style="flex:1;"><div class="post-name">maria_reels</div><div class="post-spot">📍 Santa Monica Pier</div></div>
+            <span style="font-size:11px;color:#8e8e93;">1h ago</span>
+          </div>
+          <div class="post-img">🐡</div>
+          <div class="post-info">
+            <div class="fish-tag">Yellowfin Croaker</div>
+            <div class="post-details"><div class="detail-pill">⚖️ 1.8 lbs</div><div class="detail-pill">✅ Released</div></div>
+          </div>
+          <div class="post-actions">
+            <div class="action-btn">❤️ <span>11</span></div>
+            <div class="action-btn">💬 <span>1</span></div>
+            <div class="action-btn" style="margin-left:auto;">🔖</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="screen-wrapper" id="screen-scan">
+        <div class="scan-screen">
+          <div class="camera-view">🐟
+            <div class="scan-overlay">
+              <div class="scan-label">Point at your catch</div>
+              <div class="scan-corner"></div>
+              <div class="shutter" onclick="showScreen('result')"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="screen-wrapper" id="screen-result">
+        <div class="result-screen">
+          <div class="result-hero">🐟<div class="result-badge">Largemouth Bass</div></div>
+          <div class="result-card">
+            <div class="result-section"><div class="result-label">Habitat tip</div><div class="result-value">Found near shallow vegetation, fallen logs & rocky coves. Look for shaded areas in warm water.</div></div>
+            <div class="result-section result-reg"><div class="result-label">California regulations</div><div class="reg-ok">✅ Legal to keep</div><div class="result-value" style="margin-top:4px;font-size:12px;">Min size: 12 in · Bag limit: 5 per day</div></div>
+            <div class="result-section" style="margin-top:12px;"><div class="result-label">Best lures</div><div class="result-value">Plastic worms · Crankbaits · Spinnerbaits</div></div>
+          </div>
+          <button class="log-btn" onclick="showScreen('feed')">Log this catch</button>
+        </div>
+      </div>
+
+      <div class="screen-wrapper" id="screen-map">
+        <div class="map-screen">
+          <div class="map-bg">
+            <svg style="width:100%;height:100%;position:absolute;top:0;left:0;opacity:0.3;" viewBox="0 0 324 600" xmlns="http://www.w3.org/2000/svg">
+              <defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1B2E4B" stroke-width="0.5"/></pattern></defs>
+              <rect width="100%" height="100%" fill="url(#grid)"/>
+              <path d="M 80 200 Q 160 180 240 220 Q 280 240 300 300 Q 290 360 240 380 Q 180 400 120 370 Q 60 340 70 280 Q 75 240 80 200" fill="#b8d4c8" opacity="0.6"/>
+            </svg>
+            <div class="map-pin" style="top:38%;left:42%;"><div class="pin-dot"><span class="pin-emoji">🐟</span></div><div class="pin-label">Lake Elsinore</div></div>
+            <div class="map-pin" style="top:20%;left:62%;"><div class="pin-dot"><span class="pin-emoji">🐠</span></div><div class="pin-label">Prado Basin</div></div>
+            <div class="map-pin" style="top:55%;left:20%;"><div class="pin-dot"><span class="pin-emoji">🎣</span></div><div class="pin-label">Santa Ana River</div></div>
+            <div class="map-card">
+              <div class="map-card-title">Lake Elsinore South Cove</div>
+              <div class="map-card-sub">34 catches · Most recent: 2 min ago</div>
+              <div style="display:flex;gap:12px;margin-top:8px;"><div class="map-stat">🐟 Largemouth Bass #1</div><div class="map-stat">⚖️ Top: 6.1 lbs</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="screen-wrapper" id="screen-leaderboard">
+        <div class="leaderboard-screen">
+          <div class="lb-header"><div class="lb-title">Biggest Catch</div><div class="lb-sub">All time · National</div></div>
+          <div class="lb-list">
+            <div class="lb-item"><div class="lb-rank gold">1</div><div class="avatar">TK</div><div style="flex:1;"><div class="lb-name">texas_king</div><div class="lb-fish">Blue Catfish · Lake Texoma</div></div><div class="lb-weight">121 lbs</div></div>
+            <div class="lb-item"><div class="lb-rank silver">2</div><div class="avatar">SB</div><div style="flex:1;"><div class="lb-name">saltybob</div><div class="lb-fish">Pacific Halibut · Kodiak, AK</div></div><div class="lb-weight">88 lbs</div></div>
+            <div class="lb-item"><div class="lb-rank bronze">3</div><div class="avatar">JF</div><div style="flex:1;"><div class="lb-name">jake_fisher</div><div class="lb-fish">Largemouth Bass · Lake Elsinore</div></div><div class="lb-weight">4.2 lbs</div></div>
+            <div class="lb-item"><div class="lb-rank">4</div><div class="avatar">MR</div><div style="flex:1;"><div class="lb-name">maria_reels</div><div class="lb-fish">Yellowfin Croaker · Santa Monica</div></div><div class="lb-weight">1.8 lbs</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="screen-wrapper" id="screen-profile">
+        <div class="profile-screen">
+          <div class="profile-hero">
+            <div class="profile-avatar">JF</div>
+            <div class="profile-name">jake_fisher</div>
+            <div class="profile-handle">@jake_fisher · California</div>
+            <div class="profile-stats">
+              <div style="text-align:center;"><div class="p-stat-num">47</div><div class="p-stat-label">Catches</div></div>
+              <div style="text-align:center;"><div class="p-stat-num">12</div><div class="p-stat-label">Species</div></div>
+              <div style="text-align:center;"><div class="p-stat-num">4.2 lb</div><div class="p-stat-label">Best Fish</div></div>
+              <div style="text-align:center;"><div class="p-stat-num">203</div><div class="p-stat-label">Followers</div></div>
+            </div>
+          </div>
+          <div class="profile-content">
+            <div class="section-title">Badges</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <div class="badge"><span style="font-size:16px;">🎣</span><div class="badge-name">First Catch</div></div>
+              <div class="badge"><span style="font-size:16px;">🐠</span><div class="badge-name">10 Species</div></div>
+            </div>
+            <div class="section-title">My Catches</div>
+            <div class="catch-grid">
+              <div class="catch-thumb">🐟</div><div class="catch-thumb">🐡</div>
+              <div class="catch-thumb">🎣</div><div class="catch-thumb">🐠</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item active" id="nav-feed" onclick="showScreen('feed')">
+        <div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+        <span>Feed</span>
+      </div>
+      <div class="nav-item" id="nav-map" onclick="showScreen('map')">
+        <div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+        <span>Map</span>
+      </div>
+      <div class="nav-center-item" onclick="showScreen('scan')">
+        <div class="nav-center-btn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M6.343 6.343A8 8 0 1017.657 17.657 8 8 0 006.343 6.343z"/></svg></div>
+        <span>Scan</span>
+      </div>
+      <div class="nav-item" id="nav-lb" onclick="showScreen('leaderboard')">
+        <div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+        <span>Ranks</span>
+      </div>
+      <div class="nav-item" id="nav-profile" onclick="showScreen('profile')">
+        <div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <span>Profile</span>
+      </div>
+    </div>
+  </div>
+  <p style="font-size:12px;color:var(--color-text-secondary);text-align:center;font-family:-apple-system,sans-serif;">Tap buttons above to switch screens · Tap shutter to see AI result</p>
+</div>
+
+<script>
+let current = 'feed';
+function showScreen(name) {
+  if (name === current) return;
+  const prev = document.getElementById('screen-' + current);
+  const next = document.getElementById('screen-' + name);
+  if (!next) return;
+  prev.classList.add('slide-out');
+  setTimeout(() => { prev.classList.remove('active','slide-out'); }, 360);
+  setTimeout(() => {
+    next.style.transition = 'none';
+    next.style.opacity = '0';
+    next.style.transform = 'translateX(32px)';
+    next.classList.add('active');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        next.style.transition = '';
+        next.style.opacity = '';
+        next.style.transform = '';
+      });
+    });
+  }, 80);
+  current = name;
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('[id^="tab-"]').forEach(b => { b.style.background='#f2f2f7'; b.style.color='#1B2E4B'; });
+  const navMap = {feed:'nav-feed',map:'nav-map',leaderboard:'nav-lb',profile:'nav-profile'};
+  const tabMap = {feed:'tab-feed',scan:'tab-scan',result:'tab-result',map:'tab-map',leaderboard:'tab-lb',profile:'tab-profile'};
+  if (navMap[name]) { const n = document.getElementById(navMap[name]); if(n) n.classList.add('active'); }
+  if (tabMap[name]) { const t = document.getElementById(tabMap[name]); if(t){ t.style.background='#1B2E4B'; t.style.color='#fff'; } }
+}
+</script>
