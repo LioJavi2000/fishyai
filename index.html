@@ -317,6 +317,56 @@ body {
 .flip-btn{position:absolute;right:36px;width:38px;height:38px;border-radius:50%;border:2px solid rgba(255,255,255,0.45);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:transform 0.15s var(--spring);-webkit-tap-highlight-color:transparent;}
 .flip-btn:active{transform:scale(0.88);}
 
+/* ── SCAN MODE TABS ── */
+.scan-mode-bar{display:flex;align-items:center;justify-content:center;gap:2px;background:rgba(0,0,0,0.38);border-radius:22px;padding:4px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);}
+.scan-mode-tab{padding:7px 18px;border-radius:18px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.55);cursor:pointer;transition:all 0.22s var(--ease);letter-spacing:-0.2px;-webkit-tap-highlight-color:transparent;white-space:nowrap;}
+.scan-mode-tab.active{background:#fff;color:#000;box-shadow:0 2px 8px rgba(0,0,0,0.18);}
+
+/* ── STORY EDITOR ── */
+.story-edit-wrap{height:100%;display:flex;flex-direction:column;background:#000;}
+.story-edit-bg{flex:1;position:relative;overflow:hidden;display:flex;flex-direction:column;}
+.se-photo{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat;}
+.se-bg-solid{position:absolute;inset:0;}
+.se-top{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:14px 16px 0;}
+.se-back-btn{width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(8px);}
+.se-tools{display:flex;gap:8px;}
+.se-tool{width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,0.4);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(8px);-webkit-tap-highlight-color:transparent;}
+.se-tool:active{transform:scale(0.88);}
+.se-overlays{position:absolute;inset:0;z-index:6;pointer-events:none;}
+.se-text-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:22px;font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,0.5);text-align:center;white-space:pre-wrap;max-width:80%;letter-spacing:-0.3px;pointer-events:all;cursor:move;}
+.se-text-input-wrap{position:absolute;bottom:0;left:0;right:0;z-index:20;background:rgba(0,0,0,0.7);backdrop-filter:blur(16px);padding:12px 16px 16px;}
+.se-color-row{display:flex;gap:8px;margin-bottom:10px;}
+.se-color{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2.5px solid rgba(255,255,255,0.5);-webkit-tap-highlight-color:transparent;flex-shrink:0;}
+.se-color.sel{border-color:#fff;transform:scale(1.2);}
+.se-text-inp{width:100%;background:rgba(255,255,255,0.12);border:none;border-radius:12px;padding:10px 12px;font-size:15px;font-family:inherit;color:#fff;outline:none;letter-spacing:-0.2px;resize:none;}
+.se-text-inp::placeholder{color:rgba(255,255,255,0.4);}
+.se-add-btn{background:var(--navy);color:#fff;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;margin-top:8px;width:100%;}
+.se-emoji-picker{position:absolute;bottom:0;left:0;right:0;z-index:20;background:rgba(0,0,0,0.85);backdrop-filter:blur(16px);padding:16px;border-radius:22px 22px 0 0;}
+.se-emoji-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;max-height:180px;overflow-y:auto;}
+.se-emoji-item{font-size:24px;text-align:center;cursor:pointer;padding:4px;border-radius:8px;-webkit-tap-highlight-color:transparent;}
+.se-emoji-item:active{background:rgba(255,255,255,0.15);}
+.se-bottom{background:#000;padding:12px 16px 20px;display:flex;flex-direction:column;gap:10px;}
+.se-caption-inp{background:rgba(255,255,255,0.1);border:none;border-radius:12px;padding:11px 14px;font-size:14px;font-family:inherit;color:#fff;outline:none;letter-spacing:-0.2px;width:100%;}
+.se-caption-inp::placeholder{color:rgba(255,255,255,0.4);}
+
+/* ── POST EDITOR ── */
+.pe-wrap{height:100%;background:#fff;display:flex;flex-direction:column;overflow-y:auto;}
+.pe-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:0.5px solid var(--sep);flex-shrink:0;}
+.pe-hd-title{font-size:16px;font-weight:700;color:#000;letter-spacing:-0.4px;}
+.pe-photo-preview{width:100%;height:200px;background:var(--bg);position:relative;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
+.pe-photo-preview img{width:100%;height:100%;object-fit:cover;}
+.pe-no-photo-msg{display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--gray);}
+.pe-no-photo-msg span{font-size:12px;letter-spacing:-0.2px;}
+.pe-change-photo{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.5);color:#fff;font-size:11px;font-weight:600;padding:5px 10px;border-radius:10px;cursor:pointer;backdrop-filter:blur(8px);}
+.pe-body{padding:14px 16px;flex:1;}
+.pe-av-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;}
+.pe-caption{flex:1;border:none;outline:none;font-size:15px;font-family:inherit;color:#000;resize:none;letter-spacing:-0.2px;line-height:1.5;min-height:90px;}
+.pe-caption::placeholder{color:var(--gray);}
+.pe-divider{height:0.5px;background:var(--sep);margin:12px 0;}
+.pe-meta-row{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:0.5px solid var(--sep);}
+.pe-meta-lbl{font-size:13px;font-weight:500;color:#000;letter-spacing:-0.2px;flex:1;}
+.pe-meta-val{font-size:13px;color:var(--gray);letter-spacing:-0.2px;}
+
 /* ── PROCESSING ── */
 .proc-wrap{background:#000;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;}
 .proc-fish{font-size:80px;animation:proc-pulse 1.1s ease-in-out infinite;}
@@ -708,17 +758,99 @@ body {
             <div style="font-size:13px;color:rgba(255,255,255,0.8);line-height:1.5;">Camera unavailable.<br>Use 🖼️ to upload a photo.</div>
           </div>
           <div class="scan-overlay">
-            <div class="scan-lbl">Point at your catch</div>
-            <div class="scan-frame"></div>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;">
-              <div class="scan-controls">
-                <div class="gallery-btn" title="Gallery" onclick="document.getElementById('gallery-input').click()">🖼️</div>
-                <div class="shutter" onclick="handleShutter()"></div>
-                <div class="flip-btn" title="Flip" onclick="flipCamera()">🔄</div>
+            <div class="scan-lbl" id="scan-lbl">Point at your catch</div>
+            <div class="scan-frame" id="scan-frame"></div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;">
+              <div class="scan-mode-bar">
+                <div class="scan-mode-tab active" id="smt-scan"  onclick="setScanMode('scan')">Scan Fish</div>
+                <div class="scan-mode-tab"         id="smt-story" onclick="setScanMode('story')">Story</div>
+                <div class="scan-mode-tab"         id="smt-post"  onclick="setScanMode('post')">Post</div>
               </div>
-              <div style="color:rgba(255,255,255,0.4);font-size:11px;letter-spacing:-0.2px;">AI identifies in seconds</div>
+              <div class="scan-controls">
+                <div class="gallery-btn" title="Gallery" onclick="document.getElementById('gallery-input').click()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+                <div class="shutter" onclick="handleShutter()"></div>
+                <div class="flip-btn" title="Flip" onclick="flipCamera()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.8" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg></div>
+              </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ STORY EDITOR ══════ -->
+    <div class="screen" id="screen-story-editor">
+      <div class="story-edit-wrap">
+        <div class="story-edit-bg" id="se-bg" onclick="closeSePanels()">
+          <div class="se-photo" id="se-photo"></div>
+          <div class="se-bg-solid" id="se-bg-solid" style="display:none;"></div>
+          <div class="se-overlays" id="se-overlays"></div>
+          <div class="se-top">
+            <div class="se-back-btn" onclick="showScreen('scan');startCamera()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+            <div class="se-tools">
+              <div class="se-tool" onclick="event.stopPropagation();toggleSeText()" title="Add text">Aa</div>
+              <div class="se-tool" onclick="event.stopPropagation();toggleSeEmoji()" title="Emoji">☺</div>
+              <div class="se-tool" onclick="event.stopPropagation();cycleStoryBg()" title="Background" id="se-bg-btn">◑</div>
+            </div>
+          </div>
+          <!-- Text input panel -->
+          <div class="se-text-input-wrap" id="se-text-wrap" style="display:none;" onclick="event.stopPropagation()">
+            <div class="se-color-row" id="se-colors">
+              <div class="se-color sel" style="background:#fff;" onclick="setSeColor('#fff',this)"></div>
+              <div class="se-color" style="background:#FFD700;" onclick="setSeColor('#FFD700',this)"></div>
+              <div class="se-color" style="background:#FF6B6B;" onclick="setSeColor('#FF6B6B',this)"></div>
+              <div class="se-color" style="background:#4ECDC4;" onclick="setSeColor('#4ECDC4',this)"></div>
+              <div class="se-color" style="background:#1B2E4B;" onclick="setSeColor('#1B2E4B',this)"></div>
+            </div>
+            <textarea class="se-text-inp" id="se-text-inp" placeholder="Type something…" rows="2"></textarea>
+            <button class="se-add-btn" onclick="addSeTextOverlay()">Add to Story</button>
+          </div>
+          <!-- Emoji picker -->
+          <div class="se-emoji-picker" id="se-emoji-picker" style="display:none;" onclick="event.stopPropagation()">
+            <div class="se-emoji-grid" id="se-emoji-grid"></div>
+          </div>
+        </div>
+        <div class="se-bottom">
+          <input class="se-caption-inp" id="se-caption" placeholder="Add a caption…">
+          <button class="btn" onclick="postStory()" style="margin:0;">Share Story</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ POST EDITOR ══════ -->
+    <div class="screen" id="screen-post-editor">
+      <div class="pe-wrap">
+        <div class="pe-hd">
+          <div class="se-back-btn" style="background:var(--bg);" onclick="showScreen('scan');startCamera()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+          <span class="pe-hd-title">New Post</span>
+          <div style="width:34px;"></div>
+        </div>
+        <div class="pe-photo-preview" id="pe-photo-wrap">
+          <div class="pe-no-photo-msg" id="pe-no-photo">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <span>No photo — text only</span>
+          </div>
+          <img id="pe-photo-img" style="display:none;width:100%;height:100%;object-fit:cover;" alt="">
+          <div class="pe-change-photo" onclick="document.getElementById('gallery-input').click()">Change Photo</div>
+        </div>
+        <div class="pe-body">
+          <div class="pe-av-row">
+            <div class="av" id="pe-av">Me</div>
+            <textarea class="pe-caption" id="pe-caption" placeholder="Share a thought, tip, or ask a question…" rows="4"></textarea>
+          </div>
+          <div class="pe-divider"></div>
+          <div class="pe-meta-row">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gray)" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span class="pe-meta-lbl">Location</span>
+            <span class="pe-meta-val" id="pe-location">Detecting…</span>
+          </div>
+          <div class="pe-meta-row">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gray)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <span class="pe-meta-lbl">Audience</span>
+            <div class="tog on" id="pe-public-tog" onclick="this.classList.toggle('on')" style="margin-left:auto;"></div>
+          </div>
+        </div>
+        <div style="padding:0 16px 24px;flex-shrink:0;">
+          <button class="btn" onclick="sharePost()" style="width:100%;margin:0;">Share Post</button>
         </div>
       </div>
     </div>
@@ -1096,11 +1228,12 @@ const BACK_MAP = {
   scan:'feed', processing:'scan', result:'scan',
   log:'result', map:'feed', leaderboard:'feed',
   profile:'feed', paywall:'feed',
+  'story-editor':'scan', 'post-editor':'scan',
 };
 const STATUS_TITLES = {
   onboard1:'',onboard2:'',auth:'',feed:'Fishy AI',scan:'',processing:'',
   result:'AI Result',log:'Log Catch',map:'Fishy AI',leaderboard:'Fishy AI',
-  profile:'Profile',paywall:'Fishy AI'
+  profile:'Profile',paywall:'Fishy AI','story-editor':'','post-editor':'New Post',
 };
 
 // ══════════════════════════════════════════
@@ -1399,10 +1532,258 @@ function handleGallerySelect(e) {
   reader.onload = ev => {
     capturedB64  = ev.target.result.split(',')[1];
     capturedMime = file.type;
-    doIdentify();
+    routeCapture();
   };
   reader.readAsDataURL(file);
   e.target.value = '';
+}
+
+// ══════════════════════════════════════════
+//  SCAN MODE SWITCHER
+// ══════════════════════════════════════════
+let scanMode = 'scan';
+const SCAN_LABELS = { scan:'Point at your catch', story:'Take a story photo', post:'Add a photo (optional)' };
+
+function setScanMode(mode) {
+  scanMode = mode;
+  document.querySelectorAll('.scan-mode-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('smt-' + mode)?.classList.add('active');
+  setEl('scan-lbl', SCAN_LABELS[mode]);
+  const frame = document.getElementById('scan-frame');
+  if (frame) frame.style.opacity = mode === 'scan' ? '1' : '0';
+  // In post mode, if no photo just go straight to editor on tab switch
+  if (mode === 'post') {
+    // show a "Skip photo" hint below shutter (handled in post editor)
+  }
+}
+
+function routeCapture() {
+  // Flash
+  const flash = document.getElementById('camera-flash');
+  if (flash) { flash.style.opacity = '1'; setTimeout(() => flash.style.opacity = '0', 150); }
+
+  switch (scanMode) {
+    case 'scan':  doIdentify(); break;
+    case 'story': stopCamera(); initStoryEditor(capturedB64, capturedMime); break;
+    case 'post':  stopCamera(); initPostEditor(capturedB64, capturedMime); break;
+  }
+}
+
+// ══════════════════════════════════════════
+//  STORY EDITOR
+// ══════════════════════════════════════════
+let seTextColor = '#fff';
+const SE_BG_COLORS = ['transparent','#1B2E4B','#000','#0a4a2a','#4a0a0a'];
+let seBgIdx = 0;
+const SE_EMOJIS = ['🐟','🐡','🦈','🎣','🌊','🏖️','🌅','⭐','🔥','💦','🌿','🏔️','🎆','✨','🦐','🦞','🦀','🐙','😄','👍'];
+
+function initStoryEditor(b64, mime) {
+  // Photo background
+  const photo = document.getElementById('se-photo');
+  const bgSolid = document.getElementById('se-bg-solid');
+  if (b64) {
+    photo.style.backgroundImage = `url(data:${mime||'image/jpeg'};base64,${b64})`;
+    photo.style.display = 'block';
+    bgSolid.style.display = 'none';
+  } else {
+    photo.style.backgroundImage = '';
+    photo.style.display = 'none';
+    bgSolid.style.background = '#1B2E4B';
+    bgSolid.style.display = 'block';
+  }
+  // Clear overlays + inputs
+  document.getElementById('se-overlays').innerHTML = '';
+  document.getElementById('se-text-inp').value = '';
+  document.getElementById('se-caption').value = '';
+  document.getElementById('se-text-wrap').style.display = 'none';
+  document.getElementById('se-emoji-picker').style.display = 'none';
+  seBgIdx = 0;
+  // Populate emoji grid
+  const grid = document.getElementById('se-emoji-grid');
+  if (grid) grid.innerHTML = SE_EMOJIS.map(e => `<div class="se-emoji-item" onclick="addSeEmoji('${e}')">${e}</div>`).join('');
+  showScreen('story-editor');
+}
+
+function toggleSeText() {
+  const w = document.getElementById('se-text-wrap');
+  const ep = document.getElementById('se-emoji-picker');
+  ep.style.display = 'none';
+  w.style.display = w.style.display === 'none' ? 'flex' : 'none';
+  if (w.style.display !== 'none') {
+    w.style.flexDirection = 'column';
+    setTimeout(() => document.getElementById('se-text-inp')?.focus(), 100);
+  }
+}
+
+function toggleSeEmoji() {
+  const ep = document.getElementById('se-emoji-picker');
+  const w  = document.getElementById('se-text-wrap');
+  w.style.display = 'none';
+  ep.style.display = ep.style.display === 'none' ? 'block' : 'none';
+}
+
+function closeSePanels() {
+  document.getElementById('se-text-wrap').style.display = 'none';
+  document.getElementById('se-emoji-picker').style.display = 'none';
+}
+
+function setSeColor(color, el) {
+  seTextColor = color;
+  document.querySelectorAll('.se-color').forEach(c => c.classList.remove('sel'));
+  el?.classList.add('sel');
+}
+
+function addSeTextOverlay() {
+  const text = document.getElementById('se-text-inp').value.trim();
+  if (!text) return;
+  const overlays = document.getElementById('se-overlays');
+  const div = document.createElement('div');
+  div.className = 'se-text-overlay';
+  div.style.color = seTextColor;
+  div.style.top = (30 + Math.random() * 30) + '%';
+  div.textContent = text;
+  div.onclick = e => { e.stopPropagation(); div.remove(); };
+  overlays.appendChild(div);
+  document.getElementById('se-text-inp').value = '';
+  document.getElementById('se-text-wrap').style.display = 'none';
+}
+
+function addSeEmoji(emoji) {
+  const overlays = document.getElementById('se-overlays');
+  const div = document.createElement('div');
+  div.className = 'se-text-overlay';
+  div.style.fontSize = '48px';
+  div.style.top = (20 + Math.random() * 40) + '%';
+  div.style.left = (20 + Math.random() * 60) + '%';
+  div.textContent = emoji;
+  div.onclick = e => { e.stopPropagation(); div.remove(); };
+  overlays.appendChild(div);
+  document.getElementById('se-emoji-picker').style.display = 'none';
+}
+
+function cycleStoryBg() {
+  if (capturedB64) return; // only applies when no photo
+  seBgIdx = (seBgIdx + 1) % SE_BG_COLORS.length;
+  const bgSolid = document.getElementById('se-bg-solid');
+  bgSolid.style.background = SE_BG_COLORS[seBgIdx];
+  bgSolid.style.display = 'block';
+}
+
+function postStory() {
+  const caption = document.getElementById('se-caption').value.trim();
+  const overlays = [...document.getElementById('se-overlays').children].map(el => ({
+    text: el.textContent, color: el.style.color, top: el.style.top, left: el.style.left, fontSize: el.style.fontSize,
+  }));
+  const story = {
+    id: Date.now().toString(),
+    photo_b64: capturedB64,
+    mime: capturedMime,
+    caption,
+    overlays,
+    created_at: new Date().toISOString(),
+  };
+  const stories = STORE.get('stories', []);
+  stories.unshift(story);
+  STORE.set('stories', stories.slice(0, 20));
+  // Update the stories row with user's story
+  updateStoriesRow();
+  showToast('Story shared!');
+  showScreen('feed');
+}
+
+function updateStoriesRow() {
+  const stories = STORE.get('stories', []);
+  if (!stories.length) return;
+  const username = STORE.get('username', 'You');
+  const av = username.slice(0, 2).toUpperCase();
+  // Replace "Your cast" story placeholder with user's real story
+  const addStory = document.querySelector('.story.add-story');
+  if (addStory) {
+    addStory.querySelector('span').textContent = username.length > 6 ? username.slice(0,6) : username;
+    const ring = addStory.querySelector('.s-add-ring');
+    if (ring && stories[0]?.photo_b64) {
+      ring.style.cssText = `width:62px;height:62px;border-radius:50%;background:url(data:image/jpeg;base64,${stories[0].photo_b64}) center/cover;border:3px solid var(--navy);`;
+      ring.innerHTML = '';
+    }
+  }
+}
+
+// ══════════════════════════════════════════
+//  POST EDITOR
+// ══════════════════════════════════════════
+function initPostEditor(b64, mime) {
+  const img = document.getElementById('pe-photo-img');
+  const noPhoto = document.getElementById('pe-no-photo');
+  if (b64) {
+    img.src = `data:${mime||'image/jpeg'};base64,${b64}`;
+    img.style.display = 'block';
+    noPhoto.style.display = 'none';
+  } else {
+    img.src = '';
+    img.style.display = 'none';
+    noPhoto.style.display = 'flex';
+  }
+  document.getElementById('pe-caption').value = '';
+  // Avatar
+  const username = STORE.get('username', 'You');
+  setEl('pe-av', username.slice(0, 2).toUpperCase());
+  // Location
+  setEl('pe-location', currentSpot?.name || 'Detecting…');
+  navigator.geolocation?.getCurrentPosition(
+    pos => matchOrNameSpot(pos.coords.latitude, pos.coords.longitude).then(spot => {
+      setEl('pe-location', spot?.name || 'Unknown');
+    }).catch(() => {}),
+    () => setEl('pe-location', 'Unknown')
+  );
+  showScreen('post-editor');
+}
+
+function sharePost() {
+  const caption = document.getElementById('pe-caption').value.trim();
+  if (!caption) { showToast('Add a caption first'); return; }
+  const username = STORE.get('username', 'You');
+  const isPublic = document.getElementById('pe-public-tog')?.classList.contains('on');
+  const post = {
+    id: Date.now().toString(),
+    username,
+    caption,
+    photo_b64: capturedB64,
+    mime: capturedMime,
+    spot_name: document.getElementById('pe-location')?.textContent || 'Unknown',
+    is_public: isPublic,
+    created_at: new Date().toISOString(),
+    likes: 0,
+    liked: false,
+  };
+  const posts = STORE.get('posts', []);
+  posts.unshift(post);
+  STORE.set('posts', posts.slice(0, 50));
+  injectPostIntoFeed(post);
+  showToast('Post shared!');
+  capturedB64 = null;
+  showScreen('feed');
+}
+
+function injectPostIntoFeed(post) {
+  const feedContent = document.getElementById('feed-content');
+  if (!feedContent) return;
+  const av = post.username.slice(0, 2).toUpperCase();
+  const lid = 'like-post-' + post.id;
+  const photo = post.photo_b64
+    ? `<div class="post-photo"><img src="data:${post.mime||'image/jpeg'};base64,${post.photo_b64}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy"></div>`
+    : '';
+  const card = `<div class="card" style="margin-top:8px;" id="post-card-${post.id}">
+    <div class="post-hd"><div class="av">${av}</div><div style="flex:1;"><div class="post-name">${esc(post.username)} <span style="font-size:10px;color:var(--navy);background:rgba(27,46,75,0.1);padding:2px 6px;border-radius:8px;font-weight:600;">You</span></div><div class="post-spot">${PIN_SVG} ${esc(post.spot_name)}</div></div><span class="post-time">just now</span></div>
+    ${photo}
+    <div style="padding:12px 14px 6px;font-size:14px;color:#000;letter-spacing:-0.2px;line-height:1.5;">${esc(post.caption)}</div>
+    <div class="post-actions">
+      <button class="act-btn" id="${lid}" onclick="toggleLike('${lid}')">${HEART_SVG}<span class="like-count">0</span></button>
+      <button class="act-btn" onclick="openComments('post-${post.id}')">${CMT_SVG}<span>0</span></button>
+      <button class="act-btn" style="margin-left:auto;">${BM_SVG}</button>
+    </div>
+    <div class="post-likes">0 likes</div>
+  </div>`;
+  feedContent.insertAdjacentHTML('afterbegin', card);
 }
 
 // ══════════════════════════════════════════
@@ -1419,14 +1800,11 @@ function handleShutter() {
     capturedB64  = canvas.toDataURL('image/jpeg', 0.92).split(',')[1];
     capturedMime = 'image/jpeg';
   } else {
+    // In post mode allow no-photo posts
+    if (scanMode === 'post') { capturedB64 = null; routeCapture(); return; }
     capturedB64 = null;
   }
-
-  // Flash effect
-  const flash = document.getElementById('camera-flash');
-  if (flash) { flash.style.opacity = '1'; setTimeout(() => flash.style.opacity = '0', 150); }
-
-  doIdentify();
+  routeCapture();
 }
 
 function showProcError(msg) {
@@ -1826,8 +2204,10 @@ function initPersistence() {
   // Settings toggles
   if (!STORE.get('notif', true))    document.getElementById('notif-tog')?.classList.remove('on');
   if (!STORE.get('location', true)) document.getElementById('location-tog')?.classList.remove('on');
-  // Local catches in feed
+  // Local catches + posts in feed
   loadLocalCatchesInFeed();
+  loadLocalPostsInFeed();
+  updateStoriesRow();
 }
 
 function updateLikesLabel(card, count) {
@@ -1868,6 +2248,23 @@ function loadLocalCatchesInFeed() {
     </div>`;
   });
   feedContent.insertAdjacentHTML('afterbegin', cards.join(''));
+}
+
+function loadLocalPostsInFeed() {
+  const posts = STORE.get('posts', []);
+  posts.slice(0, 5).forEach(post => injectPostIntoFeed(post));
+  // Restore like states for injected posts
+  const likes = STORE.get('likes', {});
+  posts.slice(0, 5).forEach(post => {
+    const lid = 'like-post-' + post.id;
+    const s = likes[lid];
+    if (!s) return;
+    const btn = document.getElementById(lid);
+    if (!btn) return;
+    if (s.liked) btn.classList.add('liked');
+    btn.querySelector('.like-count').textContent = s.count;
+    updateLikesLabel(btn.closest('.card'), s.count);
+  });
 }
 
 // ── SETTINGS ──
