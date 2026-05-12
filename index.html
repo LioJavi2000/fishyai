@@ -918,8 +918,8 @@ body {
     <!-- ══════ LOG CATCH ══════ -->
     <div class="screen" id="screen-log">
       <div class="log-wrap">
-        <div class="log-hero">
-          <div class="log-fish-ico">🐟</div>
+        <div class="log-hero" id="log-hero">
+          <div class="log-fish-ico" id="log-fish-ico">🐟</div>
           <div class="log-overlay"></div>
         </div>
         <div style="padding:12px 12px 4px;">
@@ -962,12 +962,12 @@ body {
             <div style="font-size:13px;font-weight:700;color:#000;letter-spacing:-0.3px;">What shows on your post</div>
             <div style="font-size:11px;color:var(--gray);margin-top:1px;letter-spacing:-0.2px;">Toggle what others can see</div>
           </div>
-          <div class="log-row"><div class="log-row-l"><span class="log-row-ico">📍</span> Spot name</div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
-          <div class="log-row"><div class="log-row-l"><span class="log-row-ico">⚖️</span> Weight</div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
-          <div class="log-row"><div class="log-row-l"><span class="log-row-ico">📏</span> Length</div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
-          <div class="log-row"><div class="log-row-l"><span class="log-row-ico">🎣</span> Lure used</div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
-          <div class="log-row"><div class="log-row-l"><span class="log-row-ico">✅</span> Keep / release</div><div class="tog" onclick="this.classList.toggle('on')"></div></div>
-          <div class="log-row"><div class="log-row-l"><span class="log-row-ico">🤳</span> Selfie with fish</div><div class="tog" onclick="this.classList.toggle('on')"></div></div>
+          <div class="log-row"><div class="log-row-l"><span class="log-row-ico">📍</span> Spot name</div><div class="tog on" id="tog-spot" onclick="this.classList.toggle('on')"></div></div>
+          <div class="log-row"><div class="log-row-l"><span class="log-row-ico">⚖️</span> Weight</div><div class="tog on" id="tog-weight" onclick="this.classList.toggle('on')"></div></div>
+          <div class="log-row"><div class="log-row-l"><span class="log-row-ico">📏</span> Length</div><div class="tog on" id="tog-length" onclick="this.classList.toggle('on')"></div></div>
+          <div class="log-row"><div class="log-row-l"><span class="log-row-ico">🎣</span> Lure used</div><div class="tog on" id="tog-lure" onclick="this.classList.toggle('on')"></div></div>
+          <div class="log-row"><div class="log-row-l"><span class="log-row-ico">✅</span> Keep / release</div><div class="tog" id="tog-kept" onclick="this.classList.toggle('on')"></div></div>
+          <div class="log-row"><div class="log-row-l"><span class="log-row-ico">🤳</span> Selfie with fish</div><div class="tog" id="tog-selfie" onclick="this.classList.toggle('on')"></div></div>
         </div>
         <button class="btn" id="post-catch-btn" onclick="postCatch()">Post Catch 🎣</button>
       </div>
@@ -1060,6 +1060,28 @@ body {
             <div class="catch-thumb">🐟</div>
           </div>
           <div style="padding-bottom:12px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ STORY VIEWER ══════ -->
+    <div class="screen" id="screen-story-viewer">
+      <div style="background:#000;height:100%;position:relative;overflow:hidden;">
+        <div id="sv-bg" style="position:absolute;inset:0;background:linear-gradient(135deg,#1B2E4B,#0d2a4a);background-size:cover;background-position:center;background-repeat:no-repeat;transition:background-image 0.2s;"></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.55) 0%,transparent 28%,transparent 55%,rgba(0,0,0,0.85) 100%);z-index:1;"></div>
+        <div style="position:absolute;top:0;left:0;right:0;z-index:10;padding:14px 16px;display:flex;align-items:center;gap:12px;">
+          <div class="av" id="sv-av" style="border:2.5px solid rgba(255,255,255,0.8);background:rgba(255,255,255,0.15);color:#fff;flex-shrink:0;font-size:13px;font-weight:700;"></div>
+          <div style="flex:1;">
+            <div style="font-size:14px;font-weight:700;color:#fff;letter-spacing:-0.3px;" id="sv-username"></div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:1px;" id="sv-time"></div>
+          </div>
+          <div onclick="goBack()" style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(8px);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </div>
+        </div>
+        <div style="position:absolute;bottom:0;left:0;right:0;z-index:10;padding:24px 18px 36px;">
+          <div id="sv-species" style="display:inline-block;background:rgba(0,0,0,0.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#fff;font-size:14px;font-weight:700;padding:8px 16px;border-radius:22px;letter-spacing:-0.3px;margin-bottom:10px;"></div>
+          <div style="display:flex;gap:7px;flex-wrap:wrap;" id="sv-details"></div>
         </div>
       </div>
     </div>
@@ -1219,6 +1241,7 @@ let current = 'onboard1';
 let selectedPlan = 'monthly';
 let procTimer = null;
 let toastTimer = null;
+let viewingUserId = null; // null = own profile
 
 const NAV_SCREENS  = ['feed','map','leaderboard','profile'];
 const DARK_SCREENS = ['scan','processing'];
@@ -1229,11 +1252,13 @@ const BACK_MAP = {
   log:'result', map:'feed', leaderboard:'feed',
   profile:'feed', paywall:'feed',
   'story-editor':'scan', 'post-editor':'scan',
+  'story-viewer':'feed',
 };
 const STATUS_TITLES = {
   onboard1:'',onboard2:'',auth:'',feed:'Fishy AI',scan:'',processing:'',
   result:'AI Result',log:'Log Catch',map:'Fishy AI',leaderboard:'Fishy AI',
   profile:'Profile',paywall:'Fishy AI','story-editor':'','post-editor':'New Post',
+  'story-viewer':'',
 };
 
 // ══════════════════════════════════════════
@@ -1264,6 +1289,7 @@ async function init() {
       await loadProfile();
       showScreen('feed');
       loadFeed();
+      loadStoriesRow();
       loadLeaderboard();
     }
     sb.auth.onAuthStateChange(async (_e, session) => {
@@ -1302,10 +1328,11 @@ function showScreen(name, back = false) {
   updateTabBar(name);
 
   if (name === 'scan') startCamera();
-  if (name === 'feed') loadFeed();
+  if (name === 'feed') { loadFeed(); loadStoriesRow(); }
   if (name === 'leaderboard') loadLeaderboard();
   if (name === 'profile') loadProfileScreen();
   if (name === 'map') setTimeout(initMap, 80);
+  if (name !== 'profile' && name !== 'story-viewer') viewingUserId = null;
 }
 
 function updateStatusBar(name) {
@@ -1320,6 +1347,7 @@ function updateStatusBar(name) {
 }
 
 function goBack() {
+  if (current === 'profile') viewingUserId = null;
   const dest = BACK_MAP[current];
   if (dest) showScreen(dest, true);
 }
@@ -1405,6 +1433,7 @@ async function handleAuth() {
     await loadProfile();
     showScreen('feed');
     loadFeed();
+    loadStoriesRow();
     loadLeaderboard();
   } catch (err) {
     // Make common Supabase error messages friendlier
@@ -1436,36 +1465,101 @@ async function loadProfile() {
 }
 
 async function loadProfileScreen() {
-  // Load from localStorage immediately (works without auth)
-  const catches  = STORE.get('catches', []);
-  const username = STORE.get('username', 'Angler');
-  setEl('prof-name', username);
-  setEl('prof-handle', `@${username.toLowerCase().replace(/\s+/g,'_')} · California`);
-  setEl('prof-avatar-initials', username.slice(0, 2).toUpperCase());
-  if (catches.length) {
-    const species = new Set(catches.map(c => c.species)).size;
-    const best    = Math.max(0, ...catches.map(c => parseFloat(c.weight_lbs) || 0));
-    setEl('prof-catches', catches.length);
-    setEl('prof-species', species);
-    setEl('prof-best', best > 0 ? `${best} lb` : '—');
-    document.getElementById('badge-first')?.classList.toggle('locked', catches.length === 0);
-    document.getElementById('badge-species')?.classList.toggle('locked', species < 3);
-    document.getElementById('badge-trophy')?.classList.toggle('locked', best < 10);
+  const uid = viewingUserId || currentUser?.id;
+
+  if (!sb || !uid) {
+    // Offline fallback
+    const catches  = STORE.get('catches', []);
+    const username = STORE.get('username', 'Angler');
+    setEl('prof-name', username);
+    setEl('prof-handle', `@${username.toLowerCase().replace(/\s+/g,'_')} · California`);
+    setEl('prof-avatar-initials', username.slice(0, 2).toUpperCase());
+    if (catches.length) {
+      const species = new Set(catches.map(c => c.species)).size;
+      const best    = Math.max(0, ...catches.map(c => parseFloat(c.weight_lbs) || 0));
+      setEl('prof-catches', catches.length);
+      setEl('prof-species', species);
+      setEl('prof-best', best > 0 ? `${best} lb` : '—');
+    }
+    document.getElementById('follow-btn').style.display = 'none';
+    return;
+  }
+
+  try {
+    // Profile record
+    const { data: profile } = await sb.from('profiles').select('*').eq('id', uid).single();
+    if (profile) {
+      const uname = profile.username;
+      setEl('prof-name', uname);
+      setEl('prof-handle', `@${uname}${profile.state ? ' · ' + profile.state : ' · California 🌊'}`);
+      const avEl = document.getElementById('prof-avatar-initials');
+      if (avEl) {
+        if (profile.avatar_url) {
+          avEl.style.backgroundImage = `url(${esc(profile.avatar_url)})`;
+          avEl.style.backgroundSize = 'cover';
+          avEl.style.backgroundPosition = 'center';
+          avEl.textContent = '';
+        } else {
+          avEl.style.backgroundImage = '';
+          avEl.textContent = uname.slice(0, 2).toUpperCase();
+        }
+      }
+      STATUS_TITLES.profile = uname;
+      setEl('status-title', uname);
+    }
+
+    // Stats + grid in parallel
+    const [catchesRes, follRes] = await Promise.all([
+      sb.from('catches').select('id, species, weight_lbs, photo_url').eq('user_id', uid).eq('is_public', true).order('created_at', { ascending: false }),
+      sb.from('follows').select('*', { count: 'exact', head: true }).eq('following_id', uid),
+    ]);
+
+    const catchList = catchesRes.data || [];
+    const species   = new Set(catchList.map(c => c.species)).size;
+    const best      = Math.max(0, ...catchList.map(c => parseFloat(c.weight_lbs) || 0));
+
+    setEl('prof-catches',   catchList.length);
+    setEl('prof-species',   species);
+    setEl('prof-best',      best > 0 ? `${best} lb` : '—');
+    setEl('prof-followers', follRes.count ?? 0);
+
+    // Follow button
+    const followBtn = document.getElementById('follow-btn');
+    if (followBtn) {
+      if (!currentUser || uid === currentUser.id) {
+        followBtn.style.display = 'none';
+      } else {
+        followBtn.style.display = 'inline-block';
+        followBtn.dataset.uid = uid;
+        const { data: existFol } = await sb.from('follows').select('id').eq('follower_id', currentUser.id).eq('following_id', uid).maybeSingle();
+        followBtn.classList.toggle('following', !!existFol);
+        followBtn.textContent = existFol ? '✓ Following' : '+ Follow';
+      }
+    }
+
+    // Badges
+    const { data: badges } = await sb.from('badges').select('badge_key').eq('user_id', uid);
+    const earned = new Set((badges || []).map(b => b.badge_key));
+    document.getElementById('badge-first')?.classList.toggle('locked',   !earned.has('first_catch'));
+    document.getElementById('badge-species')?.classList.toggle('locked', !earned.has('species_3') && !earned.has('species_10'));
+    document.getElementById('badge-trophy')?.classList.toggle('locked',  !earned.has('trophy_fish'));
+    document.getElementById('badge-legend')?.classList.toggle('locked',  true);
+
+    // Catch grid
     const grid = document.getElementById('catch-grid');
     if (grid) {
-      grid.innerHTML = catches.slice(0, 6).map(c =>
-        c.photo_b64
-          ? `<div class="catch-thumb" style="background:url(data:image/jpeg;base64,${c.photo_b64}) center/cover;"></div>`
-          : `<div class="catch-thumb" style="background:linear-gradient(135deg,#c8ddf0,#5a96c0);"></div>`
-      ).join('');
+      grid.innerHTML = catchList.slice(0, 6).map(c => {
+        const bg = c.photo_url ? `background:url(${esc(c.photo_url)}) center/cover no-repeat;` : '';
+        return `<div class="catch-thumb" style="${bg}" onclick="openStoryViewer('${c.id}')">${c.photo_url ? '' : '🐟'}</div>`;
+      }).join('') || '<div style="grid-column:1/-1;text-align:center;color:var(--gray);padding:20px;font-size:13px;">No catches yet</div>';
     }
-  }
-  // Also try Supabase if logged in
-  if (!sb || !currentUser) return;
-  try {
-    const { count } = await sb.from('follows').select('*', { count: 'exact', head: true }).eq('following_id', currentUser.id);
-    setEl('prof-followers', count ?? 0);
-  } catch {}
+  } catch(e) { console.error('loadProfileScreen:', e); }
+}
+
+function openUserProfile(userId) {
+  if (!userId) return;
+  viewingUserId = (userId === currentUser?.id) ? null : userId;
+  showScreen('profile');
 }
 
 // ══════════════════════════════════════════
@@ -1939,6 +2033,19 @@ function renderResult() {
   }
 
   setEl('log-species-title', f.species || 'Unknown Fish');
+
+  // Show captured photo in log hero
+  const logHero = document.getElementById('log-hero');
+  const logIco  = document.getElementById('log-fish-ico');
+  if (logHero && capturedB64) {
+    logHero.style.backgroundImage    = `url(data:${capturedMime};base64,${capturedB64})`;
+    logHero.style.backgroundSize     = 'cover';
+    logHero.style.backgroundPosition = 'center';
+    if (logIco) logIco.style.display = 'none';
+  } else if (logHero) {
+    logHero.style.backgroundImage = '';
+    if (logIco) logIco.style.display = 'block';
+  }
 }
 
 // ══════════════════════════════════════════
@@ -1951,55 +2058,59 @@ async function postCatch() {
   const spotName = currentSpot?.name || document.getElementById('log-spot-name')?.textContent || 'Unknown Spot';
   const btn      = document.getElementById('post-catch-btn');
 
+  const showSpot   = document.getElementById('tog-spot')?.classList.contains('on') ?? true;
+  const showWeight = document.getElementById('tog-weight')?.classList.contains('on') ?? true;
+  const showLength = document.getElementById('tog-length')?.classList.contains('on') ?? true;
+  const showLure   = document.getElementById('tog-lure')?.classList.contains('on') ?? true;
+  const showKept   = document.getElementById('tog-kept')?.classList.contains('on') ?? false;
+
+  if (!currentUser) { showToast('Sign in to post a catch'); return; }
   if (btn) { btn.textContent = 'Posting…'; btn.disabled = true; }
 
   try {
-    // Save to localStorage (always works, no auth needed)
-    const catchEntry = {
-      id: Date.now().toString(),
-      species:    identifiedFish?.species    || 'Unknown',
-      scientific: identifiedFish?.scientific || '',
-      confidence: identifiedFish?.confidence || null,
-      weight_lbs: weight,
-      length_in:  length,
-      lure_used:  lure,
-      kept:       catchKept,
-      spot_name:  spotName,
-      photo_b64:  capturedB64,
-      created_at: new Date().toISOString(),
-    };
-    const catches = STORE.get('catches', []);
-    catches.unshift(catchEntry);
-    STORE.set('catches', catches.slice(0, 50));
+    let photoUrl = null;
+    let spotId = currentSpot?.id ?? null;
 
-    if (false) { // Supabase DB write (enable when DB is set up)
-      // Create spot record if new
-      let spotId = currentSpot?.id ?? null;
-      if (currentSpot && !currentSpot.id && currentSpot.lat) {
-        const { data: ns } = await sb.from('spots').insert({ name: currentSpot.name, lat: currentSpot.lat, lng: currentSpot.lng }).select().single();
-        if (ns) { spotId = ns.id; currentSpot.id = ns.id; }
+    // Upload photo to Supabase Storage
+    if (capturedB64) {
+      const blob = b64Blob(capturedB64, capturedMime);
+      const path = `${currentUser.id}/${Date.now()}.jpg`;
+      const { data: up } = await sb.storage.from('catches').upload(path, blob, { contentType: capturedMime, upsert: true });
+      if (up) {
+        const { data: urlData } = sb.storage.from('catches').getPublicUrl(path);
+        photoUrl = urlData?.publicUrl ?? null;
       }
-
-      // Upload photo to Storage
-      let photoUrl = null;
-      if (capturedB64) {
-        const blob = b64Blob(capturedB64, capturedMime);
-        const path = `${currentUser.id}/${Date.now()}.jpg`;
-        const { data: up } = await sb.storage.from('catches').upload(path, blob, { contentType: capturedMime, upsert: true });
-        if (up) {
-          const { data: u } = sb.storage.from('catches').getPublicUrl(path);
-          photoUrl = u?.publicUrl;
-        }
-      }
-
-      const { error } = await sb.from('catches').insert({
-        user_id: currentUser.id, species: identifiedFish?.species || 'Unknown',
-        confidence: identifiedFish?.confidence || null, weight_lbs: weight,
-        length_in: length, lure_used: lure, kept: catchKept,
-        spot_id: spotId, spot_name: spotName, photo_url: photoUrl, is_public: true
-      });
-      if (error) throw error;
     }
+
+    // Create spot if new GPS location
+    if (currentSpot && !currentSpot.id && currentSpot.lat) {
+      const { data: ns } = await sb.from('spots').insert({ name: currentSpot.name, lat: currentSpot.lat, lng: currentSpot.lng }).select().single();
+      if (ns) { spotId = ns.id; currentSpot.id = ns.id; }
+    }
+
+    const { data: newCatch, error } = await sb.from('catches').insert({
+      user_id:     currentUser.id,
+      species:     identifiedFish?.species    || 'Unknown',
+      confidence:  identifiedFish?.confidence || null,
+      weight_lbs:  weight,
+      length_in:   length,
+      lure_used:   lure,
+      kept:        catchKept,
+      spot_id:     spotId,
+      spot_name:   spotName,
+      photo_url:   photoUrl,
+      is_public:   true,
+      show_spot:   showSpot,
+      show_weight: showWeight,
+      show_length: showLength,
+      show_lure:   showLure,
+      show_kept:   showKept,
+    }).select().single();
+    if (error) throw error;
+
+    await checkAndAwardBadges();
+
+    capturedB64 = null;
     showToast('Catch posted! 🎣');
     showScreen('feed');
   } catch (err) {
@@ -2007,6 +2118,22 @@ async function postCatch() {
   } finally {
     if (btn) { btn.textContent = 'Post Catch 🎣'; btn.disabled = false; }
   }
+}
+
+async function checkAndAwardBadges() {
+  if (!sb || !currentUser) return;
+  try {
+    const { count: catchCount } = await sb.from('catches').select('*', { count: 'exact', head: true }).eq('user_id', currentUser.id);
+    if (catchCount >= 1) await sb.from('badges').insert({ user_id: currentUser.id, badge_key: 'first_catch' }).then(() => {}).catch(() => {});
+
+    const { data: speciesRows } = await sb.from('catches').select('species').eq('user_id', currentUser.id);
+    const uSp = new Set((speciesRows || []).map(c => c.species)).size;
+    if (uSp >= 3)  await sb.from('badges').insert({ user_id: currentUser.id, badge_key: 'species_3'  }).then(() => {}).catch(() => {});
+    if (uSp >= 10) await sb.from('badges').insert({ user_id: currentUser.id, badge_key: 'species_10' }).then(() => {}).catch(() => {});
+
+    const { data: hw } = await sb.from('catches').select('weight_lbs').eq('user_id', currentUser.id).order('weight_lbs', { ascending: false }).limit(1).maybeSingle();
+    if (hw?.weight_lbs >= 10) await sb.from('badges').insert({ user_id: currentUser.id, badge_key: 'trophy_fish' }).then(() => {}).catch(() => {});
+  } catch {}
 }
 
 function b64Blob(b64, mime) {
@@ -2018,18 +2145,46 @@ function b64Blob(b64, mime) {
 // ══════════════════════════════════════════
 //  FEED
 // ══════════════════════════════════════════
-async function loadFeed() {
-  if (!sb) return;
+let feedPage = 0;
+const FEED_PAGE_SIZE = 10;
+let feedLoading = false;
+let feedAllLoaded = false;
+
+async function loadFeed(append = false) {
+  if (!sb || feedLoading) return;
+  if (!append) { feedPage = 0; feedAllLoaded = false; }
+  if (feedAllLoaded && append) return;
+  feedLoading = true;
+
   try {
+    const from = feedPage * FEED_PAGE_SIZE;
     const { data: catches } = await sb
-      .from('catches').select('*, profiles!catches_user_id_fkey(username)')
-      .eq('is_public', true).order('created_at', { ascending: false }).limit(10);
-    if (!catches?.length) return;
+      .from('catches')
+      .select('*, profiles!catches_user_id_fkey(username, avatar_url)')
+      .eq('is_public', true)
+      .order('created_at', { ascending: false })
+      .range(from, from + FEED_PAGE_SIZE - 1);
+
+    if (!catches?.length) {
+      feedAllLoaded = true;
+      if (!append) {
+        document.getElementById('feed-content').innerHTML =
+          '<div style="text-align:center;padding:48px 20px;color:var(--gray);font-size:14px;letter-spacing:-0.2px;">No catches yet — be the first to post!</div>';
+      }
+      document.getElementById('feed-load-more')?.remove();
+      return;
+    }
+
+    if (catches.length < FEED_PAGE_SIZE) feedAllLoaded = true;
 
     const ids = catches.map(c => c.id);
-    const { data: likes }  = await sb.from('likes').select('catch_id').in('catch_id', ids);
-    const likeMap = {};
-    (likes || []).forEach(l => { likeMap[l.catch_id] = (likeMap[l.catch_id] || 0) + 1; });
+    const [likesRes, cmtRes] = await Promise.all([
+      sb.from('likes').select('catch_id').in('catch_id', ids),
+      sb.from('comments').select('catch_id').in('catch_id', ids),
+    ]);
+    const likeMap = {}, cmtMap = {};
+    (likesRes.data || []).forEach(l => { likeMap[l.catch_id] = (likeMap[l.catch_id] || 0) + 1; });
+    (cmtRes.data  || []).forEach(c => { cmtMap[c.catch_id]  = (cmtMap[c.catch_id]  || 0) + 1; });
 
     const myLikes = new Set();
     if (currentUser) {
@@ -2037,9 +2192,120 @@ async function loadFeed() {
       (ml || []).forEach(l => myLikes.add(l.catch_id));
     }
 
-    document.getElementById('feed-content').innerHTML =
-      catches.map(c => catchCard(c, likeMap[c.id] || 0, myLikes.has(c.id))).join('');
-  } catch {}
+    const html = catches.map(c => catchCard(c, likeMap[c.id] || 0, myLikes.has(c.id), cmtMap[c.id] || 0)).join('');
+    const fc = document.getElementById('feed-content');
+    if (!append) {
+      fc.innerHTML = html;
+    } else {
+      document.getElementById('feed-load-more')?.remove();
+      fc.insertAdjacentHTML('beforeend', html);
+    }
+
+    if (!feedAllLoaded) {
+      fc.insertAdjacentHTML('beforeend',
+        `<div id="feed-load-more" style="text-align:center;padding:16px;color:var(--gray);font-size:13px;cursor:pointer;letter-spacing:-0.2px;" onclick="loadFeed(true)">Load more</div>`);
+    }
+    feedPage++;
+  } catch(e) {
+    console.error('loadFeed:', e);
+  } finally {
+    feedLoading = false;
+  }
+}
+
+// ── STORIES ROW ──
+async function loadStoriesRow() {
+  if (!sb) return;
+  try {
+    const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+
+    let userIds = null;
+    if (currentUser) {
+      const { data: fws } = await sb.from('follows').select('following_id').eq('follower_id', currentUser.id);
+      if (fws?.length) userIds = fws.map(f => f.following_id);
+    }
+
+    let q = sb.from('catches')
+      .select('id, user_id, species, photo_url, created_at, profiles!catches_user_id_fkey(username)')
+      .eq('is_public', true)
+      .gte('created_at', since)
+      .order('created_at', { ascending: false })
+      .limit(30);
+    if (userIds?.length) q = q.in('user_id', userIds);
+
+    const { data: recent } = await q;
+    if (!recent?.length) return;
+
+    // One story per user, skip own
+    const seen = new Set();
+    const stories = recent.filter(c => {
+      if (currentUser && c.user_id === currentUser.id) return false;
+      if (seen.has(c.user_id)) return false;
+      seen.add(c.user_id);
+      return true;
+    }).slice(0, 10);
+    if (!stories.length) return;
+
+    const storyRow = document.querySelector('.story-row');
+    if (!storyRow) return;
+    storyRow.querySelectorAll('.story:not(.add-story)').forEach(el => el.remove());
+
+    const addBtn = storyRow.querySelector('.story.add-story');
+    const html = stories.map(c => {
+      const u = c.profiles?.username || 'angler';
+      const av = u.slice(0, 2).toUpperCase();
+      const bgStyle = c.photo_url
+        ? `background:url(${esc(c.photo_url)}) center/cover no-repeat;`
+        : 'background:#d4e6f5;';
+      return `<div class="story" onclick="openStoryViewer('${c.id}')">
+        <div class="s-ring"><div class="s-gap"><div class="s-av" style="${bgStyle}font-size:${c.photo_url ? '0' : '14px'}">${c.photo_url ? '' : av}</div></div></div>
+        <span>${esc(u.length > 7 ? u.slice(0, 7) : u)}</span>
+      </div>`;
+    }).join('');
+
+    if (addBtn) addBtn.insertAdjacentHTML('afterend', html);
+    else storyRow.insertAdjacentHTML('beforeend', html);
+  } catch(e) { console.error('loadStoriesRow:', e); }
+}
+
+async function openStoryViewer(catchId) {
+  if (!sb) return;
+  try {
+    const { data: c } = await sb.from('catches')
+      .select('*, profiles!catches_user_id_fkey(username)')
+      .eq('id', catchId).single();
+    if (!c) return;
+
+    const bg = document.getElementById('sv-bg');
+    if (bg) {
+      if (c.photo_url) {
+        bg.style.backgroundImage = `url(${esc(c.photo_url)})`;
+      } else {
+        bg.style.backgroundImage = 'none';
+        bg.style.background = 'linear-gradient(135deg,#1B2E4B,#0d2a4a)';
+      }
+    }
+
+    const u = c.profiles?.username || 'angler';
+    setEl('sv-av', u.slice(0, 2).toUpperCase());
+    setEl('sv-username', u);
+    setEl('sv-time', timeAgo(c.created_at));
+    setEl('sv-species', c.species || 'Unknown fish');
+
+    const pills = [];
+    if (c.show_weight !== false && c.weight_lbs) pills.push(`⚖️ ${c.weight_lbs} lbs`);
+    if (c.show_length !== false && c.length_in)  pills.push(`📏 ${c.length_in} in`);
+    if (c.show_lure   !== false && c.lure_used)  pills.push(`🎣 ${esc(c.lure_used)}`);
+    if (c.kept === false) pills.push('Released ✅');
+    if (c.show_spot   !== false && c.spot_name)  pills.push(`📍 ${esc(c.spot_name)}`);
+
+    const det = document.getElementById('sv-details');
+    if (det) det.innerHTML = pills.map(p =>
+      `<div style="background:rgba(255,255,255,0.18);backdrop-filter:blur(8px);color:#fff;font-size:11px;font-weight:500;padding:4px 10px;border-radius:14px;">${p}</div>`
+    ).join('');
+
+    showScreen('story-viewer');
+  } catch(e) { console.error('openStoryViewer:', e); }
 }
 
 function timeAgo(ts) {
@@ -2056,25 +2322,39 @@ const BM_SVG   = `<svg class="bm-svg" width="22" height="22" viewBox="0 0 24 24"
 const PIN_SVG  = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
 const PH_SVG   = `<svg class="ph-fish" viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg"><path d="M5 25 Q25 5 62 18 Q74 10 95 25 Q74 40 62 32 Q25 45 5 25Z" fill="white"/><circle cx="74" cy="22" r="2.5" fill="white"/></svg>`;
 
-function catchCard(c, likes, liked) {
+function catchCard(c, likes, liked, cmtCount = 0) {
   const u   = c.profiles?.username || 'angler';
   const av  = u.slice(0, 2).toUpperCase();
+  const isMe = currentUser && c.user_id === currentUser.id;
+  const nameHtml = isMe
+    ? `${esc(u)} <span style="font-size:10px;color:var(--navy);background:rgba(27,46,75,0.1);padding:2px 6px;border-radius:8px;font-weight:600;">You</span>`
+    : esc(u);
+
   const stats = [
-    c.weight_lbs ? `<b>${c.weight_lbs} lbs</b>` : '',
-    c.length_in  ? `${c.length_in} in` : '',
-    c.lure_used  ? esc(c.lure_used) : '',
-    c.kept === false ? 'Released' : '',
+    (c.show_weight !== false && c.weight_lbs) ? `<b>${c.weight_lbs} lbs</b>` : '',
+    (c.show_length !== false && c.length_in)  ? `${c.length_in} in` : '',
+    (c.show_lure   !== false && c.lure_used)  ? esc(c.lure_used) : '',
+    (c.show_kept   !== false && c.kept === false) ? 'Released' : '',
   ].filter(Boolean).join(' · ');
+
+  const spotHtml = (c.show_spot !== false && c.spot_name)
+    ? `<div class="post-spot">${PIN_SVG} ${esc(c.spot_name)}</div>` : '';
+
   const photo = c.photo_url
     ? `<div class="post-photo"><img src="${esc(c.photo_url)}" alt="${esc(c.species)}" loading="lazy"><div class="post-fish-over"><span class="fish-tag">${esc(c.species)}</span></div></div>`
     : `<div class="post-photo ph-ocean">${PH_SVG}<div class="post-fish-over"><span class="fish-tag">${esc(c.species)}</span></div></div>`;
+
   return `<div class="card" style="margin-top:8px;">
-    <div class="post-hd"><div class="av">${av}</div><div style="flex:1"><div class="post-name">${esc(u)}</div><div class="post-spot">${PIN_SVG} ${esc(c.spot_name||'Unknown')}</div></div><span class="post-time">${timeAgo(c.created_at)}</span></div>
+    <div class="post-hd" style="cursor:pointer;" onclick="openUserProfile('${c.user_id}')">
+      <div class="av">${av}</div>
+      <div style="flex:1"><div class="post-name">${nameHtml}</div>${spotHtml}</div>
+      <span class="post-time">${timeAgo(c.created_at)}</span>
+    </div>
     ${photo}
     <div class="post-actions">
-      <button class="act-btn${liked?' liked':''}" id="like-db-${c.id}" onclick="toggleLikeDb('${c.id}')">${HEART_SVG}<span class="like-count">${likes}</span></button>
-      <button class="act-btn">${CMT_SVG}<span>0</span></button>
-      <button class="act-btn" style="margin-left:auto;" onclick="this.classList.toggle('bookmarked')">${BM_SVG}</button>
+      <button class="act-btn${liked?' liked':''}" id="like-db-${c.id}" onclick="event.stopPropagation();toggleLikeDb('${c.id}')">${HEART_SVG}<span class="like-count">${likes}</span></button>
+      <button class="act-btn" onclick="event.stopPropagation();openComments('${c.id}')">${CMT_SVG}<span>${cmtCount}</span></button>
+      <button class="act-btn" style="margin-left:auto;" onclick="event.stopPropagation();this.classList.toggle('bookmarked')">${BM_SVG}</button>
     </div>
     <div class="post-likes">${likes} like${likes !== 1 ? 's' : ''}</div>
     ${stats ? `<div class="post-stats">${stats}</div>` : ''}
@@ -2102,27 +2382,40 @@ async function toggleLikeDb(catchId) {
 // ══════════════════════════════════════════
 async function loadLeaderboard() {
   if (!sb) return;
+  const listEl = document.getElementById('lb-list-content');
+  if (!listEl) return;
+  listEl.innerHTML = '<div style="text-align:center;padding:32px;color:var(--gray);font-size:13px;">Loading…</div>';
   try {
     const { data } = await sb.from('catches')
-      .select('*, profiles!catches_user_id_fkey(username)')
+      .select('*, profiles!catches_user_id_fkey(username, avatar_url)')
       .not('weight_lbs', 'is', null)
-      .order('weight_lbs', { ascending: false }).limit(10);
-    if (!data?.length) return;
+      .order('weight_lbs', { ascending: false })
+      .limit(25);
+
+    if (!data?.length) {
+      listEl.innerHTML = '<div style="text-align:center;padding:32px;color:var(--gray);font-size:13px;">No weighted catches yet</div>';
+      return;
+    }
+
     const rankCls = i => ['gold','silver','bronze'][i] || '';
-    document.getElementById('lb-list-content').innerHTML = data.map((c, i) => {
-      const u   = c.profiles?.username || 'angler';
+    listEl.innerHTML = data.map((c, i) => {
+      const u    = c.profiles?.username || 'angler';
       const isMe = currentUser && c.user_id === currentUser.id;
-      return `<div class="lb-item${isMe?' lb-you':''}">
-        <div class="lb-rank ${rankCls(i)}">${i+1}</div>
+      const rank = i + 1;
+      const rankStyle = rank === 1 ? 'color:#c9972a' : rank === 2 ? 'color:#8e8e93' : rank === 3 ? 'color:#b5712a' : '';
+      return `<div class="lb-item${isMe ? ' lb-you' : ''}" style="cursor:pointer;" onclick="openUserProfile('${c.user_id}')">
+        <div class="lb-rank ${rankCls(i)}">${rank}</div>
         <div class="av">${u.slice(0,2).toUpperCase()}</div>
         <div class="lb-info">
-          <div class="lb-name">${esc(u)}${isMe?' <span style="font-size:10px;color:var(--navy);font-weight:600;background:rgba(27,46,75,0.1);padding:1px 6px;border-radius:8px;">You</span>':''}</div>
-          <div class="lb-fish">${esc(c.species)}${c.spot_name?' · '+esc(c.spot_name):''}</div>
+          <div class="lb-name">${esc(u)}${isMe ? ' <span style="font-size:10px;color:var(--navy);font-weight:600;background:rgba(27,46,75,0.1);padding:1px 6px;border-radius:8px;">You</span>' : ''}</div>
+          <div class="lb-fish">${esc(c.species)}${c.spot_name ? ' · ' + esc(c.spot_name) : ''}</div>
         </div>
         <div class="lb-weight">${c.weight_lbs} lbs</div>
       </div>`;
     }).join('');
-  } catch {}
+  } catch(e) {
+    listEl.innerHTML = '<div style="text-align:center;padding:32px;color:var(--gray);font-size:13px;">Could not load rankings</div>';
+  }
 }
 
 // ══════════════════════════════════════════
@@ -2204,9 +2497,6 @@ function initPersistence() {
   // Settings toggles
   if (!STORE.get('notif', true))    document.getElementById('notif-tog')?.classList.remove('on');
   if (!STORE.get('location', true)) document.getElementById('location-tog')?.classList.remove('on');
-  // Local catches + posts in feed
-  loadLocalCatchesInFeed();
-  loadLocalPostsInFeed();
   updateStoriesRow();
 }
 
@@ -2310,16 +2600,41 @@ function clearAllData() {
   loadFeed();
 }
 
-function openComments(postId) {
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+async function openComments(postId) {
   activePostId = postId;
-  const list = COMMENTS[postId] || [];
-  const body = document.getElementById('cs-body');
-  body.innerHTML = list.length
-    ? list.map(c => `<div class="cs-comment"><div class="cs-cav">${c.av}</div><div><div class="cs-comment-name">${c.name}</div><div class="cs-comment-text">${c.text}</div><div class="cs-comment-time">${c.time}</div></div></div>`).join('')
-    : '<div class="cs-empty">No comments yet. Be first.</div>';
   document.getElementById('cs-sheet').classList.add('open');
   document.getElementById('cs-backdrop').classList.add('open');
   setTimeout(() => document.getElementById('cs-input')?.focus(), 380);
+
+  const body = document.getElementById('cs-body');
+  body.innerHTML = '<div class="cs-empty">Loading…</div>';
+
+  if (UUID_RE.test(postId) && sb) {
+    try {
+      const { data: cmts } = await sb.from('comments')
+        .select('*, profiles!comments_user_id_fkey(username)')
+        .eq('catch_id', postId)
+        .order('created_at', { ascending: true });
+      renderDbComments(cmts || []);
+      return;
+    } catch {}
+  }
+  // Fallback to static
+  const list = COMMENTS[postId] || [];
+  body.innerHTML = list.length
+    ? list.map(c => `<div class="cs-comment"><div class="cs-cav">${c.av}</div><div><div class="cs-comment-name">${c.name}</div><div class="cs-comment-text">${c.text}</div><div class="cs-comment-time">${c.time}</div></div></div>`).join('')
+    : '<div class="cs-empty">No comments yet. Be first.</div>';
+}
+
+function renderDbComments(cmts) {
+  const body = document.getElementById('cs-body');
+  if (!cmts.length) { body.innerHTML = '<div class="cs-empty">No comments yet. Be first.</div>'; return; }
+  body.innerHTML = cmts.map(c => {
+    const u = c.profiles?.username || 'angler';
+    return `<div class="cs-comment"><div class="cs-cav">${u.slice(0,2).toUpperCase()}</div><div><div class="cs-comment-name">${esc(u)}</div><div class="cs-comment-text">${esc(c.text)}</div><div class="cs-comment-time">${timeAgo(c.created_at)}</div></div></div>`;
+  }).join('');
 }
 
 function closeComments() {
@@ -2329,15 +2644,38 @@ function closeComments() {
   activePostId = null;
 }
 
-function sendComment() {
+async function sendComment() {
   const input = document.getElementById('cs-input');
   const text = input.value.trim();
   if (!text) return;
+
+  if (UUID_RE.test(activePostId) && sb && currentUser) {
+    const sendBtn = document.querySelector('.cs-send');
+    if (sendBtn) sendBtn.disabled = true;
+    input.value = '';
+    try {
+      await sb.from('comments').insert({ user_id: currentUser.id, catch_id: activePostId, text });
+      const { data: cmts } = await sb.from('comments')
+        .select('*, profiles!comments_user_id_fkey(username)')
+        .eq('catch_id', activePostId)
+        .order('created_at', { ascending: true });
+      renderDbComments(cmts || []);
+      // Bump comment count in feed card
+      const likeBtn = document.getElementById(`like-db-${activePostId}`);
+      if (likeBtn) {
+        const cmtSpan = likeBtn.closest('.card')?.querySelectorAll('.act-btn')[1]?.querySelector('span');
+        if (cmtSpan) cmtSpan.textContent = parseInt(cmtSpan.textContent || 0) + 1;
+      }
+    } catch { showToast('Could not post comment'); input.value = text; }
+    finally { if (sendBtn) sendBtn.disabled = false; }
+    return;
+  }
+
+  // Static fallback
   const username = STORE.get('username', 'You');
   const newCmt = { av: username.slice(0,2).toUpperCase(), name: username, text, time: 'just now' };
   if (!COMMENTS[activePostId]) COMMENTS[activePostId] = [];
   COMMENTS[activePostId].unshift(newCmt);
-  // Persist
   const saved = STORE.get('comments', {});
   saved[activePostId] = [newCmt, ...(saved[activePostId] || [])];
   STORE.set('comments', saved);
@@ -2493,10 +2831,30 @@ function setLbTab(el) {
   el.classList.add('active');
 }
 
-function toggleFollow() {
+async function toggleFollow() {
   const btn = document.getElementById('follow-btn');
-  const f = btn.classList.toggle('following');
-  btn.textContent = f ? '✓ Following' : '+ Follow';
+  if (!btn || !currentUser) { showToast('Sign in to follow'); return; }
+  const uid = btn.dataset.uid || viewingUserId;
+  if (!uid || uid === currentUser.id) return;
+
+  const wasFollowing = btn.classList.contains('following');
+  btn.classList.toggle('following', !wasFollowing);
+  btn.textContent = wasFollowing ? '+ Follow' : '✓ Following';
+  const follEl = document.getElementById('prof-followers');
+  if (follEl) follEl.textContent = Math.max(0, parseInt(follEl.textContent) + (wasFollowing ? -1 : 1));
+
+  try {
+    if (wasFollowing) {
+      await sb.from('follows').delete().eq('follower_id', currentUser.id).eq('following_id', uid);
+    } else {
+      await sb.from('follows').insert({ follower_id: currentUser.id, following_id: uid });
+    }
+  } catch {
+    btn.classList.toggle('following', wasFollowing);
+    btn.textContent = wasFollowing ? '✓ Following' : '+ Follow';
+    if (follEl) follEl.textContent = Math.max(0, parseInt(follEl.textContent) + (wasFollowing ? 1 : -1));
+    showToast('Could not update follow');
+  }
 }
 
 function selectPlan(plan) {
