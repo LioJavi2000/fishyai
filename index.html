@@ -929,7 +929,10 @@ body {
             <div class="val" id="res-funfact" style="font-style:italic;"></div>
           </div>
         </div>
-        <button class="btn" onclick="showScreen('log')" style="margin-top:16px;">Log This Catch →</button>
+        <div style="display:flex;gap:10px;margin-top:16px;">
+          <button class="btn" onclick="showScreen('log')" style="flex:1;background:#f2f2f7;color:#1B2E4B;border:1.5px solid rgba(27,46,75,0.18);">Log Catch</button>
+          <button class="btn" onclick="showScreen('log')" style="flex:1;">Post &amp; Log 🎣</button>
+        </div>
       </div>
     </div>
 
@@ -977,8 +980,8 @@ body {
         </div>
         <div class="toggle-card">
           <div style="padding:12px 16px 8px;">
-            <div style="font-size:13px;font-weight:700;color:#000;letter-spacing:-0.3px;">What shows on your post</div>
-            <div style="font-size:11px;color:var(--gray);margin-top:1px;letter-spacing:-0.2px;">Toggle what others can see</div>
+            <div style="font-size:13px;font-weight:700;color:#000;letter-spacing:-0.3px;">Display options</div>
+            <div style="font-size:11px;color:var(--gray);margin-top:1px;letter-spacing:-0.2px;">Choose what others can see if you post</div>
           </div>
           <div class="log-row"><div class="log-row-l"><span class="log-row-ico">📍</span> Spot name</div><div class="tog on" id="tog-spot" onclick="this.classList.toggle('on')"></div></div>
           <div class="log-row"><div class="log-row-l"><span class="log-row-ico">⚖️</span> Weight</div><div class="tog on" id="tog-weight" onclick="this.classList.toggle('on')"></div></div>
@@ -987,7 +990,10 @@ body {
           <div class="log-row"><div class="log-row-l"><span class="log-row-ico">✅</span> Keep / release</div><div class="tog" id="tog-kept" onclick="this.classList.toggle('on')"></div></div>
           <div class="log-row"><div class="log-row-l"><span class="log-row-ico">🤳</span> Selfie with fish</div><div class="tog" id="tog-selfie" onclick="this.classList.toggle('on')"></div></div>
         </div>
-        <button class="btn" id="post-catch-btn" onclick="postCatch()">Post Catch 🎣</button>
+        <div style="display:flex;gap:10px;">
+          <button class="btn" id="log-only-btn" onclick="postCatch(false)" style="flex:1;background:#f2f2f7;color:#1B2E4B;border:1.5px solid rgba(27,46,75,0.18);">Log Only</button>
+          <button class="btn" id="post-catch-btn" onclick="postCatch(true)" style="flex:1;">Post &amp; Log 🎣</button>
+        </div>
       </div>
     </div>
 
@@ -2073,12 +2079,13 @@ function renderResult() {
 // ══════════════════════════════════════════
 //  POST CATCH
 // ══════════════════════════════════════════
-async function postCatch() {
+async function postCatch(isPublic = true) {
   const weight   = parseFloat(document.getElementById('weight-input')?.value) || null;
   const length   = parseFloat(document.getElementById('length-input')?.value) || null;
   const lure     = document.getElementById('lure-input')?.value || null;
   const spotName = currentSpot?.name || document.getElementById('log-spot-name')?.textContent || 'Unknown Spot';
-  const btn      = document.getElementById('post-catch-btn');
+  const btn      = document.getElementById(isPublic ? 'post-catch-btn' : 'log-only-btn');
+  const otherBtn = document.getElementById(isPublic ? 'log-only-btn' : 'post-catch-btn');
 
   const showSpot   = document.getElementById('tog-spot')?.classList.contains('on') ?? true;
   const showWeight = document.getElementById('tog-weight')?.classList.contains('on') ?? true;
@@ -2086,8 +2093,9 @@ async function postCatch() {
   const showLure   = document.getElementById('tog-lure')?.classList.contains('on') ?? true;
   const showKept   = document.getElementById('tog-kept')?.classList.contains('on') ?? false;
 
-  if (!currentUser) { showToast('Sign in to post a catch'); return; }
-  if (btn) { btn.textContent = 'Posting…'; btn.disabled = true; }
+  if (!currentUser) { showToast('Sign in to save a catch'); return; }
+  if (btn) { btn.textContent = 'Saving…'; btn.disabled = true; }
+  if (otherBtn) otherBtn.disabled = true;
 
   try {
     let photoUrl = null;
@@ -2121,7 +2129,7 @@ async function postCatch() {
       spot_id:     spotId,
       spot_name:   spotName,
       photo_url:   photoUrl,
-      is_public:   true,
+      is_public:   isPublic,
       show_spot:   showSpot,
       show_weight: showWeight,
       show_length: showLength,
@@ -2133,12 +2141,13 @@ async function postCatch() {
     await checkAndAwardBadges();
 
     capturedB64 = null;
-    showToast('Catch posted! 🎣');
-    showScreen('feed');
+    showToast(isPublic ? 'Catch posted! 🎣' : 'Catch logged! 📋');
+    showScreen(isPublic ? 'feed' : 'profile');
   } catch (err) {
-    showToast('Failed to post: ' + err.message);
+    showToast('Failed to save: ' + err.message);
   } finally {
-    if (btn) { btn.textContent = 'Post Catch 🎣'; btn.disabled = false; }
+    if (btn) { btn.textContent = isPublic ? 'Post & Log 🎣' : 'Log Only'; btn.disabled = false; }
+    if (otherBtn) otherBtn.disabled = false;
   }
 }
 
