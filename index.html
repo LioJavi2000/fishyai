@@ -680,7 +680,7 @@ body {
           <div class="story"><div class="s-ring"><div class="s-gap"><div class="s-av">CK</div></div></div><span>coastkid</span></div>
           <div class="story"><div class="s-ring"><div class="s-gap"><div class="s-av">PC</div></div></div><span>pro_cast</span></div>
         </div>
-        <!-- Dynamic feed content; fallback static posts shown until Supabase loads -->
+        <!-- feed-content: demo data shows until real Supabase catches exist -->
         <div id="feed-content">
           <div class="card" style="margin-top:8px;">
             <div class="post-hd">
@@ -735,6 +735,24 @@ body {
             </div>
             <div class="post-likes">38 likes</div>
             <div class="post-stats"><b>7.8 lbs</b> · 24 in</div>
+          </div>
+          <div class="card">
+            <div class="post-hd">
+              <div class="av">PC</div>
+              <div style="flex:1"><div class="post-name">pro_cast</div><div class="post-spot"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Big Bear Lake Marina</div></div>
+              <span class="post-time">5h ago</span>
+            </div>
+            <div class="post-photo ph-ocean">
+              <svg class="ph-fish" viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg"><path d="M5 25 Q25 5 62 18 Q74 10 95 25 Q74 40 62 32 Q25 45 5 25Z" fill="white"/><circle cx="74" cy="22" r="2.5" fill="white"/></svg>
+              <div class="post-fish-over"><span class="fish-tag">Rainbow Trout</span></div>
+            </div>
+            <div class="post-actions">
+              <button class="act-btn" id="like-4" onclick="toggleLike('like-4')"><svg class="heart-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="like-count">52</span></button>
+              <button class="act-btn" onclick="openComments('4')"><svg class="cmt-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>5</span></button>
+              <button class="act-btn" style="margin-left:auto;" onclick="this.classList.toggle('bookmarked')"><svg class="bm-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></button>
+            </div>
+            <div class="post-likes">52 likes</div>
+            <div class="post-stats"><b>3.1 lbs</b> · 22 in · Rapala Original Floating</div>
           </div>
         </div>
       </div>
@@ -1518,10 +1536,14 @@ async function loadProfileScreen() {
     const species   = new Set(catchList.map(c => c.species)).size;
     const best      = Math.max(0, ...catchList.map(c => parseFloat(c.weight_lbs) || 0));
 
-    setEl('prof-catches',   catchList.length);
-    setEl('prof-species',   species);
-    setEl('prof-best',      best > 0 ? `${best} lb` : '—');
-    setEl('prof-followers', follRes.count ?? 0);
+    if (catchList.length > 0) {
+      setEl('prof-catches',   catchList.length);
+      setEl('prof-species',   species);
+      setEl('prof-best',      best > 0 ? `${best} lb` : '—');
+    }
+    if ((follRes.count ?? 0) > 0) {
+      setEl('prof-followers', follRes.count);
+    }
 
     // Follow button
     const followBtn = document.getElementById('follow-btn');
@@ -1547,11 +1569,11 @@ async function loadProfileScreen() {
 
     // Catch grid
     const grid = document.getElementById('catch-grid');
-    if (grid) {
+    if (grid && catchList.length > 0) {
       grid.innerHTML = catchList.slice(0, 6).map(c => {
         const bg = c.photo_url ? `background:url(${esc(c.photo_url)}) center/cover no-repeat;` : '';
         return `<div class="catch-thumb" style="${bg}" onclick="openStoryViewer('${c.id}')">${c.photo_url ? '' : '🐟'}</div>`;
-      }).join('') || '<div style="grid-column:1/-1;text-align:center;color:var(--gray);padding:20px;font-size:13px;">No catches yet</div>';
+      }).join('');
     }
   } catch(e) { console.error('loadProfileScreen:', e); }
 }
@@ -2167,10 +2189,6 @@ async function loadFeed(append = false) {
 
     if (!catches?.length) {
       feedAllLoaded = true;
-      if (!append) {
-        document.getElementById('feed-content').innerHTML =
-          '<div style="text-align:center;padding:48px 20px;color:var(--gray);font-size:14px;letter-spacing:-0.2px;">No catches yet — be the first to post!</div>';
-      }
       document.getElementById('feed-load-more')?.remove();
       return;
     }
@@ -2384,7 +2402,6 @@ async function loadLeaderboard() {
   if (!sb) return;
   const listEl = document.getElementById('lb-list-content');
   if (!listEl) return;
-  listEl.innerHTML = '<div style="text-align:center;padding:32px;color:var(--gray);font-size:13px;">Loading…</div>';
   try {
     const { data } = await sb.from('catches')
       .select('*, profiles!catches_user_id_fkey(username, avatar_url)')
@@ -2392,10 +2409,7 @@ async function loadLeaderboard() {
       .order('weight_lbs', { ascending: false })
       .limit(25);
 
-    if (!data?.length) {
-      listEl.innerHTML = '<div style="text-align:center;padding:32px;color:var(--gray);font-size:13px;">No weighted catches yet</div>';
-      return;
-    }
+    if (!data?.length) return;
 
     const rankCls = i => ['gold','silver','bronze'][i] || '';
     listEl.innerHTML = data.map((c, i) => {
