@@ -319,7 +319,7 @@ body {
 
 /* ── SCAN MODE TABS ── */
 .scan-mode-bar{display:flex;align-items:center;justify-content:center;gap:2px;background:rgba(0,0,0,0.38);border-radius:22px;padding:4px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);}
-.scan-mode-tab{padding:7px 18px;border-radius:18px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.55);cursor:pointer;transition:all 0.22s var(--ease);letter-spacing:-0.2px;-webkit-tap-highlight-color:transparent;white-space:nowrap;}
+.scan-mode-tab{padding:6px 11px;border-radius:18px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.55);cursor:pointer;transition:all 0.22s var(--ease);letter-spacing:-0.2px;-webkit-tap-highlight-color:transparent;white-space:nowrap;}
 .scan-mode-tab.active{background:#fff;color:#000;box-shadow:0 2px 8px rgba(0,0,0,0.18);}
 
 /* ── STORY EDITOR ── */
@@ -775,16 +775,21 @@ body {
           <div id="scan-no-camera" style="display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:3;text-align:center;padding:16px 24px;background:rgba(0,0,0,0.6);border-radius:14px;backdrop-filter:blur(8px);">
             <div style="font-size:13px;color:rgba(255,255,255,0.8);line-height:1.5;">Camera unavailable.<br>Use 🖼️ to upload a photo.</div>
           </div>
+          <!-- Measure canvas — full cam-view, pointer events controlled via JS -->
+          <canvas id="measure-canvas" style="position:absolute;inset:0;width:100%;height:100%;z-index:6;pointer-events:none;touch-action:none;display:none;"></canvas>
+          <!-- Measure panel — sits above canvas, shows readout + action buttons -->
+          <div id="measure-panel" style="position:absolute;bottom:0;left:0;right:0;z-index:9;display:none;"></div>
           <div class="scan-overlay">
             <div class="scan-lbl" id="scan-lbl">Point at your catch</div>
             <div class="scan-frame" id="scan-frame"></div>
             <div style="display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;">
-              <div class="scan-mode-bar">
-                <div class="scan-mode-tab active" id="smt-scan"  onclick="setScanMode('scan')">Scan Fish</div>
-                <div class="scan-mode-tab"         id="smt-story" onclick="setScanMode('story')">Story</div>
-                <div class="scan-mode-tab"         id="smt-post"  onclick="setScanMode('post')">Post</div>
+              <div class="scan-mode-bar" id="scan-mode-bar">
+                <div class="scan-mode-tab active" id="smt-scan"    onclick="setScanMode('scan')">Scan Fish</div>
+                <div class="scan-mode-tab"        id="smt-story"   onclick="setScanMode('story')">Story</div>
+                <div class="scan-mode-tab"        id="smt-post"    onclick="setScanMode('post')">Post</div>
+                <div class="scan-mode-tab"        id="smt-measure" onclick="setScanMode('measure')">Measure</div>
               </div>
-              <div class="scan-controls">
+              <div class="scan-controls" id="scan-controls-row">
                 <div class="gallery-btn" title="Gallery" onclick="document.getElementById('gallery-input').click()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
                 <div class="shutter" onclick="handleShutter()"></div>
                 <div class="flip-btn" title="Flip" onclick="flipCamera()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.8" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg></div>
@@ -1356,6 +1361,12 @@ function showScreen(name, back = false) {
   if (name === 'leaderboard') loadLeaderboard();
   if (name === 'profile') loadProfileScreen();
   if (name === 'map') setTimeout(initMap, 80);
+  if (name === 'log' && measuredLength !== null) {
+    setTimeout(() => {
+      const inp = document.getElementById('length-input');
+      if (inp) inp.value = measuredLength;
+    }, 250);
+  }
   if (name !== 'profile' && name !== 'story-viewer') viewingUserId = null;
 }
 
@@ -1664,19 +1675,22 @@ function handleGallerySelect(e) {
 //  SCAN MODE SWITCHER
 // ══════════════════════════════════════════
 let scanMode = 'scan';
-const SCAN_LABELS = { scan:'Point at your catch', story:'Take a story photo', post:'Add a photo (optional)' };
+const SCAN_LABELS = {
+  scan:    'Point at your catch',
+  story:   'Take a story photo',
+  post:    'Add a photo (optional)',
+  measure: 'Tap head → drag to tail',
+};
 
 function setScanMode(mode) {
+  if (scanMode === 'measure' && mode !== 'measure') exitMeasureMode();
   scanMode = mode;
   document.querySelectorAll('.scan-mode-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('smt-' + mode)?.classList.add('active');
-  setEl('scan-lbl', SCAN_LABELS[mode]);
+  setEl('scan-lbl', SCAN_LABELS[mode] || '');
   const frame = document.getElementById('scan-frame');
   if (frame) frame.style.opacity = mode === 'scan' ? '1' : '0';
-  // In post mode, if no photo just go straight to editor on tab switch
-  if (mode === 'post') {
-    // show a "Skip photo" hint below shutter (handled in post editor)
-  }
+  if (mode === 'measure') enterMeasureMode();
 }
 
 function routeCapture() {
@@ -1689,6 +1703,217 @@ function routeCapture() {
     case 'story': stopCamera(); initStoryEditor(capturedB64, capturedMime); break;
     case 'post':  stopCamera(); initPostEditor(capturedB64, capturedMime); break;
   }
+}
+
+// ══════════════════════════════════════════
+//  MEASURE FISH
+// ══════════════════════════════════════════
+let measureState   = 'idle';  // 'idle' | 'placed' | 'done'
+let measurePt1     = null;    // {x,y} canvas px
+let measurePt2     = null;
+let measuredLength = null;    // inches (null until measurement used)
+
+function enterMeasureMode() {
+  const canvas   = document.getElementById('measure-canvas');
+  const panel    = document.getElementById('measure-panel');
+  const controls = document.getElementById('scan-controls-row');
+  const overlay  = document.querySelector('.scan-overlay');
+
+  if (controls) controls.style.display = 'none';
+  if (overlay)  overlay.style.pointerEvents = 'none';
+  if (canvas) {
+    canvas.style.display = '';
+    canvas.style.pointerEvents = 'auto';
+    canvas.width  = canvas.offsetWidth  || 322;
+    canvas.height = canvas.offsetHeight || 520;
+    canvas.addEventListener('pointerdown', onMeasureDown);
+    canvas.addEventListener('pointermove', onMeasureMove);
+    canvas.addEventListener('pointerup',   onMeasureUp);
+  }
+  if (panel) panel.style.display = '';
+
+  measureState = 'idle';
+  measurePt1 = measurePt2 = null;
+  redrawMeasure();
+  renderMeasurePanel();
+}
+
+function exitMeasureMode() {
+  const canvas   = document.getElementById('measure-canvas');
+  const panel    = document.getElementById('measure-panel');
+  const controls = document.getElementById('scan-controls-row');
+  const overlay  = document.querySelector('.scan-overlay');
+
+  canvas?.removeEventListener('pointerdown', onMeasureDown);
+  canvas?.removeEventListener('pointermove', onMeasureMove);
+  canvas?.removeEventListener('pointerup',   onMeasureUp);
+  if (canvas) { canvas.style.display = 'none'; canvas.style.pointerEvents = 'none'; const ctx = canvas.getContext('2d'); ctx.clearRect(0,0,canvas.width,canvas.height); }
+  if (panel)    panel.style.display = 'none';
+  if (controls) controls.style.removeProperty('display');
+  if (overlay)  overlay.style.removeProperty('pointer-events');
+}
+
+function getMeasurePos(e) {
+  const canvas = document.getElementById('measure-canvas');
+  if (!canvas) return null;
+  const rect = canvas.getBoundingClientRect();
+  const sx = canvas.width  / rect.width;
+  const sy = canvas.height / rect.height;
+  return { x: (e.clientX - rect.left) * sx, y: (e.clientY - rect.top) * sy };
+}
+
+function measureScale() {
+  const canvas = document.getElementById('measure-canvas');
+  // Assume ~18 inches visible across the camera frame at typical fishing distance
+  return (canvas?.width || 322) / 18;
+}
+
+function onMeasureDown(e) {
+  e.preventDefault();
+  if (measureState !== 'idle') return;
+  const pos = getMeasurePos(e);
+  if (!pos) return;
+  measurePt1 = pos;
+  measureState = 'placed';
+  redrawMeasure(pos);
+  renderMeasurePanel();
+}
+
+function onMeasureMove(e) {
+  if (measureState !== 'placed') return;
+  e.preventDefault();
+  const pos = getMeasurePos(e);
+  if (!pos) return;
+  redrawMeasure(pos);
+  const dist = Math.hypot(pos.x - measurePt1.x, pos.y - measurePt1.y);
+  const inches = Math.max(0.1, dist / measureScale()).toFixed(1);
+  const el = document.getElementById('measure-readout');
+  if (el) el.textContent = inches + '"';
+}
+
+function onMeasureUp(e) {
+  if (measureState !== 'placed') return;
+  e.preventDefault();
+  const pos = getMeasurePos(e);
+  if (!pos) return;
+  const dist = Math.hypot(pos.x - measurePt1.x, pos.y - measurePt1.y);
+  if (dist < 15) return; // ignore accidental single tap
+  measurePt2 = pos;
+  measuredLength = Math.max(0.1, +(dist / measureScale()).toFixed(1));
+  measureState = 'done';
+  redrawMeasure();
+  renderMeasurePanel();
+}
+
+function redrawMeasure(livePos) {
+  const canvas = document.getElementById('measure-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (measureState === 'idle' || !measurePt1) return;
+
+  const end   = livePos || measurePt2;
+  if (!end) return;
+  const done  = measureState === 'done';
+  const color = done ? '#34c759' : '#FFD700';
+
+  // Dashed measurement line
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.lineWidth   = 2.5;
+  ctx.setLineDash([7, 5]);
+  ctx.beginPath();
+  ctx.moveTo(measurePt1.x, measurePt1.y);
+  ctx.lineTo(end.x, end.y);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.restore();
+
+  // End-point dots
+  _drawMDot(ctx, measurePt1.x, measurePt1.y, color);
+  _drawMDot(ctx, end.x, end.y, done ? color : 'rgba(255,255,255,0.75)');
+
+  // Mid-line label
+  const mx   = (measurePt1.x + end.x) / 2;
+  const my   = (measurePt1.y + end.y) / 2;
+  const dist = Math.hypot(end.x - measurePt1.x, end.y - measurePt1.y);
+  const lbl  = Math.max(0.1, dist / measureScale()).toFixed(1) + '"';
+  _drawMLabel(ctx, mx, my, lbl);
+}
+
+function _drawMDot(ctx, x, y, color) {
+  ctx.beginPath(); ctx.arc(x, y, 10, 0, Math.PI*2); ctx.fillStyle = 'rgba(0,0,0,0.32)'; ctx.fill();
+  ctx.beginPath(); ctx.arc(x, y, 7,  0, Math.PI*2); ctx.fillStyle = '#fff'; ctx.fill();
+  ctx.beginPath(); ctx.arc(x, y, 4.5,0, Math.PI*2); ctx.fillStyle = color;  ctx.fill();
+}
+
+function _drawMLabel(ctx, x, y, text) {
+  ctx.save();
+  ctx.font = 'bold 14px -apple-system,Helvetica,sans-serif';
+  const tw = ctx.measureText(text).width;
+  const bw = tw + 20, bh = 28;
+  ctx.fillStyle = 'rgba(0,0,0,0.72)';
+  if (ctx.roundRect) ctx.roundRect(x - bw/2, y - bh/2, bw, bh, 8);
+  else ctx.rect(x - bw/2, y - bh/2, bw, bh);
+  ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, x, y);
+  ctx.restore();
+}
+
+function renderMeasurePanel() {
+  const panel = document.getElementById('measure-panel');
+  if (!panel) return;
+
+  if (measureState === 'done') {
+    panel.innerHTML = `<div style="background:rgba(0,0,0,0.75);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:20px 20px 0 0;padding:14px 16px 24px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+        <div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.5);letter-spacing:-0.1px;margin-bottom:4px;">Estimated length</div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <button onclick="nudgeMeasure(-0.5)" style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.14);border:none;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;">−</button>
+            <div id="measure-readout" style="font-size:28px;font-weight:700;color:#fff;letter-spacing:-0.5px;min-width:72px;text-align:center;">${measuredLength}"</div>
+            <button onclick="nudgeMeasure(0.5)"  style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.14);border:none;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;">+</button>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <button onclick="useMeasurement()" style="background:#34c759;color:#fff;border:none;border-radius:12px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">Use &amp; Scan →</button>
+          <button onclick="resetMeasure()"   style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);border:none;border-radius:12px;padding:8px 18px;font-size:12px;font-weight:600;cursor:pointer;">Measure Again</button>
+        </div>
+      </div>
+    </div>`;
+  } else {
+    const hint = measureState === 'idle' ? 'Tap the HEAD of the fish' : 'Now tap the TAIL of the fish';
+    panel.innerHTML = `<div style="background:rgba(0,0,0,0.65);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:20px 20px 0 0;padding:12px 20px 24px;text-align:center;">
+      <div id="measure-readout" style="font-size:30px;font-weight:700;color:#fff;letter-spacing:-0.5px;">—</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.55);margin-top:3px;letter-spacing:-0.2px;">${hint}</div>
+      ${measureState === 'idle' ? `<button onclick="setScanMode('scan')" style="margin-top:10px;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);border:none;border-radius:10px;padding:6px 16px;font-size:12px;font-weight:600;cursor:pointer;">Cancel</button>` : ''}
+    </div>`;
+  }
+}
+
+function nudgeMeasure(delta) {
+  if (measuredLength === null) return;
+  measuredLength = Math.max(0.1, +(measuredLength + delta).toFixed(1));
+  const el = document.getElementById('measure-readout');
+  if (el) el.textContent = measuredLength + '"';
+  redrawMeasure();
+}
+
+function resetMeasure() {
+  measureState = 'idle';
+  measurePt1 = measurePt2 = null;
+  const canvas = document.getElementById('measure-canvas');
+  if (canvas) { const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height); }
+  renderMeasurePanel();
+}
+
+function useMeasurement() {
+  if (measuredLength === null) return;
+  setScanMode('scan');
+  showToast(`Length ${measuredLength}" saved — tap shutter to scan`);
 }
 
 // ══════════════════════════════════════════
@@ -2141,6 +2366,7 @@ async function postCatch(isPublic = true) {
     await checkAndAwardBadges();
 
     capturedB64 = null;
+    measuredLength = null;
     showToast(isPublic ? 'Catch posted! 🎣' : 'Catch logged! 📋');
     showScreen(isPublic ? 'feed' : 'profile');
   } catch (err) {
