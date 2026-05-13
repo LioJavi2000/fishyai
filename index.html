@@ -474,17 +474,36 @@ body {
 .follow-btn{background:rgba(255,255,255,0.15);color:#fff;font-size:12px;font-weight:600;padding:7px 20px;border-radius:20px;border:1px solid rgba(255,255,255,0.3);cursor:pointer;font-family:inherit;margin-top:12px;transition:transform 0.15s var(--spring),background 0.2s;-webkit-tap-highlight-color:transparent;}
 .follow-btn:active{transform:scale(0.93);}
 .follow-btn.following{background:rgba(255,255,255,0.08);}
-.prof-content{margin:-22px 12px 0;}
-.badge-list{display:flex;gap:8px;flex-wrap:wrap;}
-.badge-item{background:#fff;border-radius:12px;padding:8px 12px;display:flex;align-items:center;gap:6px;box-shadow:0 1px 4px rgba(0,0,0,0.06);transition:transform 0.18s var(--spring);cursor:pointer;}
-.badge-item:active{transform:scale(0.93);}
-.badge-item.locked{opacity:0.4;}
-.badge-nm{font-size:11px;font-weight:600;color:var(--navy);letter-spacing:-0.2px;}
+.prof-content{margin:-22px 0 0;background:var(--bg);border-radius:22px 22px 0 0;padding-top:16px;min-height:200px;}
+.badge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 12px;}
+.badge-item{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;padding:8px 2px;border-radius:14px;transition:transform 0.18s var(--spring);-webkit-tap-highlight-color:transparent;}
+.badge-item:active{transform:scale(0.88);}
+.badge-item.locked{opacity:0.28;filter:grayscale(1);}
+.badge-img{width:68px;height:68px;border-radius:50%;object-fit:cover;display:block;}
+.badge-nm{font-size:9.5px;font-weight:700;color:var(--navy);text-align:center;line-height:1.25;letter-spacing:-0.1px;}
 .catch-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.catch-thumb{background:linear-gradient(145deg,#c8ddf0,#8fb8d8);border-radius:12px;height:80px;display:flex;align-items:center;justify-content:center;font-size:30px;cursor:pointer;transition:transform 0.18s var(--spring);}
+.catch-thumb{background:linear-gradient(145deg,#c8ddf0,#8fb8d8);border-radius:12px;height:80px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 0.18s var(--spring);background-size:cover;background-position:center;}
 .catch-thumb:active{transform:scale(0.93);}
 .catch-thumb:nth-child(2n){background:linear-gradient(145deg,#d4ecd4,#8fc898);}
 .catch-thumb:nth-child(3n){background:linear-gradient(145deg,#f0d4c8,#d8908f);}
+/* ── BADGE DETAIL POPUP ── */
+.badge-detail-overlay{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.22s ease;}
+.badge-detail-overlay.open{opacity:1;pointer-events:all;}
+.badge-detail-card{background:#fff;border-radius:26px;padding:28px 22px 22px;margin:20px;max-width:290px;width:100%;text-align:center;transform:scale(0.88) translateY(16px);transition:transform 0.3s var(--spring);}
+.badge-detail-overlay.open .badge-detail-card{transform:scale(1) translateY(0);}
+/* ── BADGE EARN CELEBRATION ── */
+@keyframes earn-overlay-in{from{opacity:0}to{opacity:1}}
+@keyframes badge-earn-bounce{0%{transform:scale(0.2) rotate(-20deg);opacity:0}55%{transform:scale(1.18) rotate(3deg);opacity:1}75%{transform:scale(0.94) rotate(-1deg)}100%{transform:scale(1) rotate(0deg);opacity:1}}
+@keyframes earn-txt-up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes confetti-fall{0%{transform:translateY(0) rotate(0deg) scale(1);opacity:1}100%{transform:translateY(130px) rotate(var(--r,360deg)) scale(0.6);opacity:0}}
+.badge-earn-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;flex-direction:column;align-items:center;justify-content:center;animation:earn-overlay-in 0.25s ease both;}
+.badge-earn-img{width:190px;height:190px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 6px rgba(255,255,255,0.12),0 0 80px rgba(255,220,100,0.18);animation:badge-earn-bounce 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.15s both;}
+.badge-earn-unlocked{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-top:28px;animation:earn-txt-up 0.45s ease 0.75s both;}
+.badge-earn-name{font-size:26px;font-weight:800;color:#fff;letter-spacing:-0.7px;margin-top:6px;text-align:center;animation:earn-txt-up 0.45s ease 0.85s both;}
+.badge-earn-desc{font-size:13px;color:rgba(255,255,255,0.55);margin-top:5px;line-height:1.5;text-align:center;padding:0 28px;animation:earn-txt-up 0.45s ease 0.95s both;}
+.badge-earn-btn{margin-top:34px;background:rgba(255,255,255,0.12);border:1.5px solid rgba(255,255,255,0.25);color:#fff;font-size:15px;font-weight:700;padding:13px 44px;border-radius:30px;cursor:pointer;font-family:inherit;letter-spacing:-0.3px;animation:earn-txt-up 0.45s ease 1.05s both;-webkit-tap-highlight-color:transparent;}
+.badge-earn-btn:active{background:rgba(255,255,255,0.22);}
+.earn-confetti{position:absolute;top:30%;animation:confetti-fall var(--dur,1s) ease-in var(--delay,0s) both;border-radius:2px;}
 
 /* ── PAYWALL ── */
 .pw-wrap{background:#fff;min-height:100%;padding-bottom:28px;}
@@ -1106,20 +1125,32 @@ body {
         </div>
         <div class="prof-content">
           <div class="sec-hd">Badges</div>
-          <div class="badge-list">
-            <div class="badge-item" id="badge-first"><span style="font-size:16px;">🎣</span><div class="badge-nm">First Catch</div></div>
-            <div class="badge-item" id="badge-species"><span style="font-size:16px;">🐠</span><div class="badge-nm">10 Species</div></div>
-            <div class="badge-item locked" id="badge-trophy"><span style="font-size:16px;">🏆</span><div class="badge-nm">Trophy Fish</div></div>
-            <div class="badge-item locked" id="badge-legend"><span style="font-size:16px;">⭐</span><div class="badge-nm">Local Legend</div></div>
+          <div class="badge-grid" id="badge-list">
+            <div class="badge-item locked" id="badge-first-catch" onclick="showBadgeDetail('first_catch')">
+              <img class="badge-img" src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260513_012942_037722db-7811-406c-9019-9dbd2921e546_min.webp" loading="lazy">
+              <div class="badge-nm">First Catch</div>
+            </div>
+            <div class="badge-item locked" id="badge-species-hunter" onclick="showBadgeDetail('species_hunter')">
+              <img class="badge-img" src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260513_012945_8a0c9260-afa2-4a1f-93a2-d49f8618ccd1_min.webp" loading="lazy">
+              <div class="badge-nm">Species Hunter</div>
+            </div>
+            <div class="badge-item locked" id="badge-explorer" onclick="showBadgeDetail('explorer')">
+              <img class="badge-img" src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260513_012948_26d64c5a-ee52-4349-9105-82083bcc4df2_min.webp" loading="lazy">
+              <div class="badge-nm">Explorer</div>
+            </div>
+            <div class="badge-item locked" id="badge-lucky-or-skill" onclick="showBadgeDetail('lucky_or_skill')">
+              <img class="badge-img" src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260513_012952_06ca5861-5016-4d67-a478-f749b6398ae6_min.webp" loading="lazy">
+              <div class="badge-nm">Lucky or Skill</div>
+            </div>
           </div>
           <div class="sec-hd">My Catches</div>
           <div class="catch-grid" id="catch-grid">
-            <div class="catch-thumb">🐟</div>
-            <div class="catch-thumb">🐡</div>
-            <div class="catch-thumb">🎣</div>
-            <div class="catch-thumb">🐠</div>
-            <div class="catch-thumb">🦈</div>
-            <div class="catch-thumb">🐟</div>
+            <div class="catch-thumb"><svg width="36" height="20" viewBox="0 0 100 55" fill="rgba(255,255,255,0.5)"><path d="M8 28Q28 6 64 19Q77 10 96 28Q77 46 64 37Q28 50 8 28Z"/><circle cx="76" cy="22" r="3.5" fill="rgba(255,255,255,0.8)"/></svg></div>
+            <div class="catch-thumb"><svg width="36" height="20" viewBox="0 0 100 55" fill="rgba(255,255,255,0.5)"><path d="M8 28Q28 6 64 19Q77 10 96 28Q77 46 64 37Q28 50 8 28Z"/><circle cx="76" cy="22" r="3.5" fill="rgba(255,255,255,0.8)"/></svg></div>
+            <div class="catch-thumb"><svg width="36" height="20" viewBox="0 0 100 55" fill="rgba(255,255,255,0.5)"><path d="M8 28Q28 6 64 19Q77 10 96 28Q77 46 64 37Q28 50 8 28Z"/><circle cx="76" cy="22" r="3.5" fill="rgba(255,255,255,0.8)"/></svg></div>
+            <div class="catch-thumb"><svg width="36" height="20" viewBox="0 0 100 55" fill="rgba(255,255,255,0.5)"><path d="M8 28Q28 6 64 19Q77 10 96 28Q77 46 64 37Q28 50 8 28Z"/><circle cx="76" cy="22" r="3.5" fill="rgba(255,255,255,0.8)"/></svg></div>
+            <div class="catch-thumb"><svg width="36" height="20" viewBox="0 0 100 55" fill="rgba(255,255,255,0.5)"><path d="M8 28Q28 6 64 19Q77 10 96 28Q77 46 64 37Q28 50 8 28Z"/><circle cx="76" cy="22" r="3.5" fill="rgba(255,255,255,0.8)"/></svg></div>
+            <div class="catch-thumb"><svg width="36" height="20" viewBox="0 0 100 55" fill="rgba(255,255,255,0.5)"><path d="M8 28Q28 6 64 19Q77 10 96 28Q77 46 64 37Q28 50 8 28Z"/><circle cx="76" cy="22" r="3.5" fill="rgba(255,255,255,0.8)"/></svg></div>
           </div>
           <div style="padding-bottom:12px;"></div>
         </div>
@@ -1606,17 +1637,18 @@ async function loadProfileScreen() {
     // Badges
     const { data: badges } = await sb.from('badges').select('badge_key').eq('user_id', uid);
     const earned = new Set((badges || []).map(b => b.badge_key));
-    document.getElementById('badge-first')?.classList.toggle('locked',   !earned.has('first_catch'));
-    document.getElementById('badge-species')?.classList.toggle('locked', !earned.has('species_3') && !earned.has('species_10'));
-    document.getElementById('badge-trophy')?.classList.toggle('locked',  !earned.has('trophy_fish'));
-    document.getElementById('badge-legend')?.classList.toggle('locked',  true);
+    document.getElementById('badge-first-catch')?.classList.toggle('locked',    !earned.has('first_catch'));
+    document.getElementById('badge-species-hunter')?.classList.toggle('locked', !earned.has('species_hunter'));
+    document.getElementById('badge-explorer')?.classList.toggle('locked',       !earned.has('explorer'));
+    document.getElementById('badge-lucky-or-skill')?.classList.toggle('locked', !earned.has('lucky_or_skill'));
 
     // Catch grid
     const grid = document.getElementById('catch-grid');
     if (grid && catchList.length > 0) {
       grid.innerHTML = catchList.slice(0, 6).map(c => {
         const bg = c.photo_url ? `background:url(${esc(c.photo_url)}) center/cover no-repeat;` : '';
-        return `<div class="catch-thumb" style="${bg}" onclick="openStoryViewer('${c.id}')">${c.photo_url ? '' : '🐟'}</div>`;
+        const fishSvg = `<svg width="36" height="20" viewBox="0 0 100 55" fill="rgba(255,255,255,0.5)"><path d="M8 28Q28 6 64 19Q77 10 96 28Q77 46 64 37Q28 50 8 28Z"/><circle cx="76" cy="22" r="3.5" fill="rgba(255,255,255,0.8)"/></svg>`;
+        return `<div class="catch-thumb" style="${bg}" onclick="openStoryViewer('${c.id}')">${c.photo_url ? '' : fishSvg}</div>`;
       }).join('');
     }
   } catch(e) { console.error('loadProfileScreen:', e); }
@@ -2312,20 +2344,98 @@ async function postCatch(isPublic = true) {
   }
 }
 
+// ══════════════════════════════════════════
+//  BADGE CONFIG
+// ══════════════════════════════════════════
+const BADGES = {
+  first_catch:    { name: 'First Catch',     desc: 'Log your very first catch.',                   img: 'https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260513_012942_037722db-7811-406c-9019-9dbd2921e546_min.webp' },
+  species_hunter: { name: 'Species Hunter',  desc: 'Identify and log 10 different fish species.',  img: 'https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260513_012945_8a0c9260-afa2-4a1f-93a2-d49f8618ccd1_min.webp' },
+  explorer:       { name: 'Explorer',        desc: 'Catch fish at 5 different fishing spots.',     img: 'https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260513_012948_26d64c5a-ee52-4349-9105-82083bcc4df2_min.webp' },
+  lucky_or_skill: { name: 'Lucky or Skill',  desc: 'Log 3 catches in a single day.',               img: 'https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260513_012952_06ca5861-5016-4d67-a478-f749b6398ae6_min.webp' },
+};
+
+function showBadgeDetail(key) {
+  const b = BADGES[key]; if (!b) return;
+  const el = document.getElementById('badge-detail-overlay');
+  document.getElementById('bdp-img').src = b.img;
+  document.getElementById('bdp-name').textContent = b.name;
+  document.getElementById('bdp-desc').textContent = b.desc;
+  const earnedEl = document.getElementById('badge-' + key.replace(/_/g, '-'));
+  const isEarned = earnedEl && !earnedEl.classList.contains('locked');
+  const statusEl = document.getElementById('bdp-status');
+  statusEl.textContent = isEarned ? '✓ EARNED' : 'NOT YET EARNED';
+  statusEl.style.color = isEarned ? '#34c759' : '#8e8e93';
+  el.classList.add('open');
+}
+function closeBadgeDetail() {
+  document.getElementById('badge-detail-overlay')?.classList.remove('open');
+}
+
+function showBadgeEarnPopup(key) {
+  return new Promise(resolve => {
+    const b = BADGES[key]; if (!b) { resolve(); return; }
+    const wrap = document.getElementById('badge-earn-overlay');
+    const CONFETTI_COLORS = ['#FFD60A','#34c759','#007AFF','#FF375F','#FF9F0A','#5E5CE6','#ffffff'];
+    const confettiHtml = Array.from({length: 22}, (_, i) => {
+      const color = CONFETTI_COLORS[i % CONFETTI_COLORS.length];
+      const size  = 6 + Math.random() * 7;
+      const left  = 5 + Math.random() * 90;
+      const delay = (Math.random() * 0.6).toFixed(2);
+      const dur   = (0.9 + Math.random() * 0.5).toFixed(2);
+      const rot   = Math.round(Math.random() * 720 - 360);
+      return `<div class="earn-confetti" style="left:${left}%;width:${size}px;height:${size}px;background:${color};--delay:${delay}s;--dur:${dur}s;--r:${rot}deg;border-radius:${Math.random()>0.5?'50%':'2px'};"></div>`;
+    }).join('');
+    wrap.className = 'badge-earn-overlay';
+    wrap.style.display = 'flex';
+    wrap.innerHTML = confettiHtml + `
+      <img class="badge-earn-img" src="${b.img}">
+      <div class="badge-earn-unlocked">Badge Unlocked</div>
+      <div class="badge-earn-name">${b.name}</div>
+      <div class="badge-earn-desc">${b.desc}</div>
+      <button class="badge-earn-btn" id="badge-earn-close-btn">Awesome!</button>
+    `;
+    document.getElementById('badge-earn-close-btn').onclick = () => {
+      wrap.style.display = 'none';
+      wrap.innerHTML = '';
+      resolve();
+    };
+  });
+}
+
 async function checkAndAwardBadges() {
   if (!sb || !currentUser) return;
+  const newlyEarned = [];
   try {
-    const { count: catchCount } = await sb.from('catches').select('*', { count: 'exact', head: true }).eq('user_id', currentUser.id);
-    if (catchCount >= 1) await sb.from('badges').insert({ user_id: currentUser.id, badge_key: 'first_catch' }).then(() => {}).catch(() => {});
+    const [existRes, catchRes] = await Promise.all([
+      sb.from('badges').select('badge_key').eq('user_id', currentUser.id),
+      sb.from('catches').select('species, spot_name, created_at').eq('user_id', currentUser.id),
+    ]);
+    const alreadyEarned = new Set((existRes.data || []).map(b => b.badge_key));
+    const catches = catchRes.data || [];
 
-    const { data: speciesRows } = await sb.from('catches').select('species').eq('user_id', currentUser.id);
-    const uSp = new Set((speciesRows || []).map(c => c.species)).size;
-    if (uSp >= 3)  await sb.from('badges').insert({ user_id: currentUser.id, badge_key: 'species_3'  }).then(() => {}).catch(() => {});
-    if (uSp >= 10) await sb.from('badges').insert({ user_id: currentUser.id, badge_key: 'species_10' }).then(() => {}).catch(() => {});
+    const tryAward = async (key) => {
+      if (alreadyEarned.has(key)) return;
+      const { error } = await sb.from('badges').insert({ user_id: currentUser.id, badge_key: key });
+      if (!error) newlyEarned.push(key);
+    };
 
-    const { data: hw } = await sb.from('catches').select('weight_lbs').eq('user_id', currentUser.id).order('weight_lbs', { ascending: false }).limit(1).maybeSingle();
-    if (hw?.weight_lbs >= 10) await sb.from('badges').insert({ user_id: currentUser.id, badge_key: 'trophy_fish' }).then(() => {}).catch(() => {});
-  } catch {}
+    // First Catch — any catch at all
+    if (catches.length >= 1) await tryAward('first_catch');
+
+    // Species Hunter — 10 unique species
+    if (new Set(catches.map(c => c.species)).size >= 10) await tryAward('species_hunter');
+
+    // Explorer — catches at 5+ distinct spots
+    if (new Set(catches.map(c => c.spot_name).filter(Boolean)).size >= 5) await tryAward('explorer');
+
+    // Lucky or Skill — 3+ catches on same calendar day
+    const byDay = {};
+    catches.forEach(c => { const d = c.created_at?.slice(0, 10); if (d) byDay[d] = (byDay[d] || 0) + 1; });
+    if (Object.values(byDay).some(n => n >= 3)) await tryAward('lucky_or_skill');
+
+  } catch(e) { console.error('checkAndAwardBadges:', e); }
+
+  for (const key of newlyEarned) await showBadgeEarnPopup(key);
 }
 
 function b64Blob(b64, mime) {
@@ -3077,5 +3187,20 @@ function updateTime() {
 // ══════════════════════════════════════════
 init();
 </script>
+
+<!-- ══════ BADGE DETAIL POPUP ══════ -->
+<div class="badge-detail-overlay" id="badge-detail-overlay" onclick="closeBadgeDetail()">
+  <div class="badge-detail-card" onclick="event.stopPropagation()">
+    <img id="bdp-img" class="badge-img" style="width:110px;height:110px;margin-bottom:14px;box-shadow:0 4px 24px rgba(0,0,0,0.15);">
+    <div id="bdp-name" style="font-size:20px;font-weight:800;color:#000;letter-spacing:-0.5px;"></div>
+    <div id="bdp-desc" style="font-size:13px;color:var(--gray);margin-top:6px;line-height:1.5;"></div>
+    <div id="bdp-status" style="margin-top:12px;font-size:12px;font-weight:700;letter-spacing:0.5px;"></div>
+    <button onclick="closeBadgeDetail()" style="margin-top:18px;width:100%;background:var(--navy);color:#fff;border:none;padding:13px;border-radius:14px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;letter-spacing:-0.3px;">Done</button>
+  </div>
+</div>
+
+<!-- ══════ BADGE EARN CELEBRATION ══════ -->
+<div id="badge-earn-overlay" style="display:none;"></div>
+
 </body>
 </html>
