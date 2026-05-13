@@ -585,8 +585,8 @@ body {
 .ru-continue{margin-top:32px;background:var(--navy);color:#fff;border:none;border-radius:22px;padding:14px 50px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;letter-spacing:-0.3px;animation:ru-name-in 0.4s ease 2.5s both;-webkit-tap-highlight-color:transparent;}
 .ru-continue:active{opacity:0.7;}
 
-/* ── RANK ICON (inline) ── */
-.rank-icon-sm{display:inline-flex;align-items:center;vertical-align:middle;margin-left:4px;flex-shrink:0;}
+/* ── RANK ICON (inline badge) ── */
+.rank-icon-sm{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;margin-left:4px;flex-shrink:0;width:20px;height:20px;border-radius:50%;position:relative;top:-1px;background-image:linear-gradient(135deg,rgba(255,255,255,0.32) 0%,transparent 55%);}
 
 /* ── PROFILE RANK DISPLAY ── */
 .prof-rank-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.09);border-radius:14px;padding:10px 16px;margin:10px 0 2px;max-width:268px;}
@@ -606,8 +606,8 @@ body {
 .rjh-node::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:66px;height:66px;border-radius:50%;background:var(--tc,transparent);opacity:0;filter:blur(12px);z-index:0;pointer-events:none;}
 .rjh-node.rjh-current::before{opacity:0.2;}
 .rjh-icon-ring{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;flex-shrink:0;transition:transform 0.2s var(--spring),box-shadow 0.2s;}
-.rjh-node.rjh-unlocked .rjh-icon-ring{background:var(--tc);box-shadow:0 3px 10px var(--tc-shadow,rgba(0,0,0,0.2));}
-.rjh-node.rjh-current .rjh-icon-ring{background:var(--tc);box-shadow:0 0 0 3px #fff,0 0 0 5px var(--tc),0 4px 18px var(--tc-shadow,rgba(0,0,0,0.3));animation:rk-pulse 1.5s ease-in-out infinite;}
+.rjh-node.rjh-unlocked .rjh-icon-ring{background:linear-gradient(135deg,rgba(255,255,255,0.28) 0%,transparent 55%) var(--tc);box-shadow:0 3px 12px var(--tc-shadow,rgba(0,0,0,0.25));}
+.rjh-node.rjh-current .rjh-icon-ring{background:linear-gradient(135deg,rgba(255,255,255,0.28) 0%,transparent 55%) var(--tc);box-shadow:0 0 0 3px #fff,0 0 0 5px var(--tc),0 4px 18px var(--tc-shadow,rgba(0,0,0,0.3));animation:rk-pulse 1.5s ease-in-out infinite;}
 .rjh-node.rjh-locked .rjh-icon-ring{background:rgba(0,0,0,0.04);border:1.5px solid rgba(0,0,0,0.08);opacity:0.38;}
 .rjh-check{position:absolute;bottom:-1px;right:-1px;width:18px;height:18px;border-radius:50%;background:#34c759;display:flex;align-items:center;justify-content:center;border:2px solid #fff;z-index:2;}
 .rjh-badge{position:absolute;top:-3px;left:-3px;width:17px;height:17px;border-radius:50%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;z-index:2;}
@@ -807,7 +807,7 @@ body {
           <div class="card" style="margin-top:8px;">
             <div class="post-hd">
               <div class="av">JF</div>
-              <div style="flex:1"><div class="post-name">jake_fisher</div><div class="post-spot"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Lake Elsinore South Cove</div></div>
+              <div style="flex:1"><div class="post-name">jake_fisher<span class="rank-icon-sm" title="Pro" style="background-color:#C0C0C0;box-shadow:0 2px 8px #C0C0C066;"><svg width="11" height="11" viewBox="0 0 24 24"><path d="M10.5 2L9.5 7.5L12 6L14.5 7.5L13.5 2Z" fill="#fff"/><circle cx="12" cy="15.5" r="6.5" fill="#fff"/><circle cx="12" cy="15.5" r="4.5" fill="none" stroke="rgba(0,0,0,0.2)" stroke-width="1.5"/></svg></span></div><div class="post-spot"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Lake Elsinore South Cove</div></div>
               <span class="post-time">2m ago</span>
             </div>
             <div class="post-photo ph-ocean">
@@ -825,7 +825,7 @@ body {
           <div class="card">
             <div class="post-hd">
               <div class="av">MR</div>
-              <div style="flex:1"><div class="post-name">maria_reels</div><div class="post-spot"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Santa Monica Pier</div></div>
+              <div style="flex:1"><div class="post-name">maria_reels<span class="rank-icon-sm" title="Skilled" style="background-color:#CD7F32;box-shadow:0 2px 8px #CD7F3266;"><svg width="11" height="11" viewBox="0 0 24 24"><ellipse cx="12" cy="10" rx="4.5" ry="7.5" fill="#fff"/><path d="M12 17.5L12 18.5Q12 21 14.5 21Q17 21 17 18.5Q17 16.5 14.5 16.5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="2.5" r="1.2" fill="none" stroke="#fff" stroke-width="1.5"/></svg></span></div><div class="post-spot"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Santa Monica Pier</div></div>
               <span class="post-time">1h ago</span>
             </div>
             <div class="post-photo ph-green">
@@ -843,7 +843,7 @@ body {
           <div class="card">
             <div class="post-hd">
               <div class="av">BB</div>
-              <div style="flex:1"><div class="post-name">big_bass_co</div><div class="post-spot"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Prado Basin East Shore</div></div>
+              <div style="flex:1"><div class="post-name">big_bass_co<span class="rank-icon-sm" title="Master" style="background-color:#FFD700;box-shadow:0 2px 8px #FFD70066;"><svg width="11" height="11" viewBox="0 0 24 24"><path d="M2.5 19L6 8L10 14.5L12 6L14 14.5L18 8L21.5 19Z" fill="#fff"/><rect x="2.5" y="19" width="19" height="2.8" rx="1.3" fill="#fff"/><circle cx="12" cy="7" r="1.5" fill="rgba(0,0,0,0.2)"/></svg></span></div><div class="post-spot"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Prado Basin East Shore</div></div>
               <span class="post-time">3h ago</span>
             </div>
             <div class="post-photo ph-gold">
@@ -861,7 +861,7 @@ body {
           <div class="card">
             <div class="post-hd">
               <div class="av">PC</div>
-              <div style="flex:1"><div class="post-name">pro_cast</div><div class="post-spot"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Big Bear Lake Marina</div></div>
+              <div style="flex:1"><div class="post-name">pro_cast<span class="rank-icon-sm" title="Champion" style="background-color:#B9F2FF;box-shadow:0 2px 8px #B9F2FF66;"><svg width="11" height="11" viewBox="0 0 24 24"><path d="M12 13.5Q9 10 6.5 7.5Q5 10.5 6 13.5Q5 16.5 6.5 19Q9 16.5 12 13.5Z" fill="#fff"/><path d="M12 13.5Q15 10 17.5 7.5Q19 10.5 18 13.5Q19 16.5 17.5 19Q15 16.5 12 13.5Z" fill="#fff"/><path d="M9.5 20.5L12 23L14.5 20.5L13.5 22.5H10.5Z" fill="#fff"/></svg></span></div><div class="post-spot"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Big Bear Lake Marina</div></div>
               <span class="post-time">5h ago</span>
             </div>
             <div class="post-photo ph-ocean">
@@ -2745,7 +2745,7 @@ function catchCard(c, likes, liked, cmtCount = 0) {
   const rankNum  = c.profiles?.current_rank || 1;
   const rankData = RANKS[rankNum - 1] || RANKS[0];
   const tc       = TIER_COLORS[rankData.tier];
-  const rankBadge = `<span class="rank-icon-sm" title="${rankData.name}">${rankSvg(rankNum, 14, tc)}</span>`;
+  const rankBadge = `<span class="rank-icon-sm" title="${rankData.name}" style="background-color:${tc};box-shadow:0 2px 8px ${tc}55;">${rankSvg(rankNum, 11, '#fff')}</span>`;
   const nameHtml = isMe
     ? `${esc(u)}${rankBadge} <span style="font-size:10px;color:var(--navy);background:rgba(27,46,75,0.1);padding:2px 6px;border-radius:8px;font-weight:600;">You</span>`
     : `${esc(u)}${rankBadge}`;
@@ -2821,7 +2821,7 @@ async function loadLeaderboard() {
       const rNum   = c.profiles?.current_rank || 1;
       const rData  = RANKS[rNum - 1] || RANKS[0];
       const rtc    = TIER_COLORS[rData.tier];
-      const rBadge = `<span class="rank-icon-sm" title="${rData.name}">${rankSvg(rNum, 13, rtc)}</span>`;
+      const rBadge = `<span class="rank-icon-sm" title="${rData.name}" style="background-color:${rtc};box-shadow:0 2px 8px ${rtc}55;">${rankSvg(rNum, 11, '#fff')}</span>`;
       return `<div class="lb-item${isMe ? ' lb-you' : ''}" style="cursor:pointer;" onclick="openUserProfile('${c.user_id}')">
         <div class="lb-rank ${rankCls(i)}">${pos}</div>
         <div class="av">${u.slice(0,2).toUpperCase()}</div>
