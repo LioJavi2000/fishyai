@@ -552,7 +552,7 @@ body {
 @keyframes ru-name-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 @keyframes ru-confetti{0%{transform:translateY(0) rotate(0deg) scale(1);opacity:1}100%{transform:translateY(var(--fy,200px)) rotate(var(--r,360deg)) scale(0.3);opacity:0}}
 @keyframes rk-pulse{0%,100%{box-shadow:0 0 0 0 var(--tc,#CD7F32)}50%{box-shadow:0 0 0 7px transparent,0 0 22px 3px var(--tc,#CD7F32)}}
-@keyframes rj-fade{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+@keyframes rj-fade{from{opacity:0;transform:translateY(8px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
 
 /* ── STRIKES EARNED POPUP ── */
 .sp-overlay{position:absolute;inset:0;z-index:9200;background:rgba(0,0,0,0.91);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 0 16px;animation:sp-overlay-in 0.2s ease both;}
@@ -597,21 +597,31 @@ body {
 .prof-rank-bar-inner{height:100%;border-radius:3px;transition:width 0.8s cubic-bezier(0.25,0.46,0.45,0.94);}
 .prof-rank-bar-lbl{margin-top:5px;font-size:10px;color:rgba(255,255,255,0.38);letter-spacing:-0.1px;}
 
-/* ── RANK JOURNEY ── */
-.rj-wrap{padding:0 12px 20px;}
-.rj-container{position:relative;padding-left:32px;}
-.rj-spine{position:absolute;left:11px;top:14px;bottom:14px;width:2px;background:var(--sep);}
-.rj-row{display:flex;align-items:center;gap:12px;padding:9px 0;cursor:pointer;-webkit-tap-highlight-color:transparent;position:relative;}
-.rj-dot{width:24px;height:24px;border-radius:50%;border:2px solid #e0e0e0;background:#f5f5f7;display:flex;align-items:center;justify-content:center;position:absolute;left:-32px;z-index:1;flex-shrink:0;transition:border-color 0.2s,background 0.2s;}
-.rj-row.rj-unlocked .rj-dot{border-color:var(--tc,#CD7F32);background:var(--tc,#CD7F32);}
-.rj-row.rj-current .rj-dot{border-color:var(--tc,#CD7F32);background:var(--tc,#CD7F32);animation:rk-pulse 1.5s ease-in-out infinite;}
-.rj-row.rj-locked .rj-dot{opacity:0.35;}
-.rj-right{flex:1;}
-.rj-name{font-size:13px;font-weight:700;color:#000;letter-spacing:-0.3px;}
-.rj-row.rj-locked .rj-name{color:#ccc;}
-.rj-sub{font-size:11px;color:var(--gray);margin-top:1px;letter-spacing:-0.1px;}
-.rj-row.rj-unlocked .rj-sub,.rj-row.rj-current .rj-sub{color:var(--tc,#CD7F32);}
-.rj-check{flex-shrink:0;}
+/* ── RANK JOURNEY (HORIZONTAL) ── */
+.rj-wrap{padding:0 0 8px;overflow:hidden;}
+.rjh-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:8px 20px 16px;scrollbar-width:none;}
+.rjh-scroll::-webkit-scrollbar{display:none;}
+.rjh-track{display:flex;align-items:flex-start;width:max-content;}
+.rjh-node{display:flex;flex-direction:column;align-items:center;width:74px;cursor:pointer;-webkit-tap-highlight-color:transparent;position:relative;opacity:0;}
+.rjh-node::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:66px;height:66px;border-radius:50%;background:var(--tc,transparent);opacity:0;filter:blur(12px);z-index:0;pointer-events:none;}
+.rjh-node.rjh-current::before{opacity:0.2;}
+.rjh-icon-ring{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;flex-shrink:0;transition:transform 0.2s var(--spring),box-shadow 0.2s;}
+.rjh-node.rjh-unlocked .rjh-icon-ring{background:var(--tc);box-shadow:0 3px 10px var(--tc-shadow,rgba(0,0,0,0.2));}
+.rjh-node.rjh-current .rjh-icon-ring{background:var(--tc);box-shadow:0 0 0 3px #fff,0 0 0 5px var(--tc),0 4px 18px var(--tc-shadow,rgba(0,0,0,0.3));animation:rk-pulse 1.5s ease-in-out infinite;}
+.rjh-node.rjh-locked .rjh-icon-ring{background:rgba(0,0,0,0.04);border:1.5px solid rgba(0,0,0,0.08);opacity:0.38;}
+.rjh-check{position:absolute;bottom:-1px;right:-1px;width:18px;height:18px;border-radius:50%;background:#34c759;display:flex;align-items:center;justify-content:center;border:2px solid #fff;z-index:2;}
+.rjh-badge{position:absolute;top:-3px;left:-3px;width:17px;height:17px;border-radius:50%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;z-index:2;}
+.rjh-label{font-size:10.5px;font-weight:700;color:#111;margin-top:8px;letter-spacing:-0.3px;text-align:center;line-height:1.2;position:relative;z-index:1;}
+.rjh-node.rjh-unlocked .rjh-label,.rjh-node.rjh-current .rjh-label{color:var(--tc);}
+.rjh-node.rjh-locked .rjh-label{color:rgba(0,0,0,0.22);}
+.rjh-sub{font-size:8.5px;color:rgba(0,0,0,0.38);text-align:center;margin-top:2px;width:70px;line-height:1.3;letter-spacing:-0.1px;position:relative;z-index:1;}
+.rjh-node.rjh-unlocked .rjh-sub{color:var(--tc);opacity:0.75;}
+.rjh-node.rjh-current .rjh-sub{color:var(--tc);}
+.rjh-node.rjh-locked .rjh-sub{color:rgba(0,0,0,0.18);}
+.rjh-connector{flex-shrink:0;width:24px;height:3px;border-radius:2px;align-self:flex-start;margin-top:25.5px;}
+.rjh-conn-done{background:var(--tc,#ccc);}
+.rjh-conn-active{background:var(--tc,#ccc);opacity:0.3;}
+.rjh-conn-locked{background:rgba(0,0,0,0.07);}
 
 /* ── RANK PREVIEW MODAL ── */
 .rp-overlay{position:fixed;inset:0;z-index:9400;background:rgba(0,0,0,0.58);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.22s ease;}
@@ -3321,16 +3331,26 @@ const TIER_COLORS = {
 function rankSvg(rankNum, size, color) {
   const c = color || 'currentColor';
   const shapes = {
-    1:  `<circle cx="12" cy="12" r="7.5" fill="${c}"/>`,
-    2:  `<circle cx="12" cy="12" r="9" fill="none" stroke="${c}" stroke-width="2.5"/><circle cx="12" cy="12" r="4" fill="${c}"/>`,
-    3:  `<path d="M12 2.5L21.5 12L12 21.5L2.5 12Z" fill="${c}"/>`,
-    4:  `<path d="M12 2L20.5 5.8V13.5C20.5 17.6 16.7 20.6 12 22C7.3 20.6 3.5 17.6 3.5 13.5V5.8Z" fill="${c}"/>`,
-    5:  `<path d="M12 2L14.47 9.11H22L15.76 13.61L18.24 20.71L12 16.22L5.76 20.71L8.24 13.61L2 9.11H9.53Z" fill="${c}"/>`,
-    6:  `<path d="M12 2L20.66 7V17L12 22L3.34 17V7Z" fill="${c}"/>`,
-    7:  `<path d="M3 17.5V9L6.8 13.2L12 4.5L17.2 13.2L21 9V17.5H3Z" fill="${c}"/><rect x="3" y="17.5" width="18" height="2.8" rx="1.2" fill="${c}"/>`,
-    8:  `<path d="M12 1.5L14.5 7.5H21L16 11.5L18.5 18.5L12 14.5L5.5 18.5L8 11.5L3 7.5H9.5Z" fill="${c}"/><circle cx="12" cy="12" r="3" fill="none" stroke="rgba(0,0,0,0.18)" stroke-width="1.5"/>`,
-    9:  `<circle cx="12" cy="12" r="10" fill="none" stroke="${c}" stroke-width="1.8"/><path d="M12 5.2L13.4 9.6L18 8.4L15.2 12L18 15.6L13.4 14.4L12 18.8L10.6 14.4L6 15.6L8.8 12L6 8.4L10.6 9.6Z" fill="${c}"/>`,
-    10: `<circle cx="12" cy="12" r="10.5" fill="none" stroke="${c}" stroke-width="1.2"/><circle cx="12" cy="12" r="8" fill="none" stroke="${c}" stroke-width="0.7"/><path d="M12 4.8L13.3 9L17.8 7.8L15.3 11.5L17.8 15.2L13.3 14L12 18.2L10.7 14L6.2 15.2L8.7 11.5L6.2 7.8L10.7 9Z" fill="${c}"/>`,
+    // Beginner — fishing hook
+    1: `<circle cx="12" cy="3.5" r="1.6" fill="none" stroke="${c}" stroke-width="1.8"/><path d="M12 5L12 16Q12 22.5 18 22.5Q22.5 22.5 22.5 18Q22.5 14 18 14" fill="none" stroke="${c}" stroke-width="2.2" stroke-linecap="round"/><path d="M18 14L15.5 12" stroke="${c}" stroke-width="2" stroke-linecap="round"/>`,
+    // Regular — fish silhouette
+    2: `<path d="M3.5 12Q9.5 5.5 15.5 12Q9.5 18.5 3.5 12Z" fill="${c}"/><path d="M15.5 8.5L22 6V18L15.5 15.5Z" fill="${c}"/><circle cx="8" cy="10.5" r="1.4" fill="rgba(0,0,0,0.4)"/>`,
+    // Skilled — spoon lure
+    3: `<ellipse cx="12" cy="10" rx="4.5" ry="7.5" fill="${c}"/><path d="M12 17.5L12 18.5Q12 21 14.5 21Q17 21 17 18.5Q17 16.5 14.5 16.5" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="2.5" r="1.2" fill="none" stroke="${c}" stroke-width="1.5"/>`,
+    // Experienced — fishing rod
+    4: `<rect x="2" y="19.5" width="4.5" height="3" rx="1.4" fill="${c}"/><path d="M4.2 19.5L4.2 6" stroke="${c}" stroke-width="2.5" stroke-linecap="round"/><path d="M4.2 6L20 9.5" stroke="${c}" stroke-width="1.3" stroke-linecap="round"/><path d="M20 9.5L21 18" stroke="${c}" stroke-width="0.9" stroke-linecap="round"/><ellipse cx="21" cy="19.5" rx="2" ry="1.5" fill="${c}"/>`,
+    // Expert — trophy cup
+    5: `<path d="M7.5 4H16.5L15.5 14Q15 17.5 12 17.5Q9 17.5 8.5 14Z" fill="${c}"/><path d="M7.5 5Q4.5 5 4.5 8.5Q4.5 12 7.5 12" fill="none" stroke="${c}" stroke-width="2.1" stroke-linecap="round"/><path d="M16.5 5Q19.5 5 19.5 8.5Q19.5 12 16.5 12" fill="none" stroke="${c}" stroke-width="2.1" stroke-linecap="round"/><rect x="11" y="17.5" width="2" height="2.5" fill="${c}"/><rect x="7.5" y="20" width="9" height="2.5" rx="1.2" fill="${c}"/>`,
+    // Pro — tournament medal
+    6: `<path d="M10.5 2L9.5 7.5L12 6L14.5 7.5L13.5 2Z" fill="${c}"/><circle cx="12" cy="15.5" r="6.5" fill="${c}"/><circle cx="12" cy="15.5" r="4.5" fill="none" stroke="rgba(0,0,0,0.2)" stroke-width="1.5"/><path d="M12 12.5L12.8 15H15.4L13.3 16.3L14.1 18.9L12 17.5L9.9 18.9L10.7 16.3L8.6 15H11.2Z" fill="rgba(0,0,0,0.22)"/>`,
+    // Master — crown
+    7: `<path d="M2.5 19L6 8L10 14.5L12 6L14 14.5L18 8L21.5 19Z" fill="${c}"/><rect x="2.5" y="19" width="19" height="2.8" rx="1.3" fill="${c}"/><circle cx="12" cy="7" r="1.5" fill="rgba(0,0,0,0.22)"/><circle cx="3" cy="8.5" r="1.2" fill="rgba(0,0,0,0.18)"/><circle cx="21" cy="8.5" r="1.2" fill="rgba(0,0,0,0.18)"/>`,
+    // Elite — winged shield
+    8: `<path d="M12 2L19.5 5.5V13C19.5 17 16 20.5 12 22C8 20.5 4.5 17 4.5 13V5.5Z" fill="${c}"/><path d="M4.5 9.5Q1.5 8.5 1 12Q1.5 15.5 4.5 14.5" fill="${c}" opacity="0.75"/><path d="M19.5 9.5Q22.5 8.5 23 12Q22.5 15.5 19.5 14.5" fill="${c}" opacity="0.75"/><path d="M12 7.5L13 10.5H16.3L13.6 12.4L14.6 15.4L12 13.5L9.4 15.4L10.4 12.4L7.7 10.5H11Z" fill="rgba(0,0,0,0.22)"/>`,
+    // Champion — laurel wreath
+    9: `<path d="M12 13.5Q9 10 6.5 7.5Q5 10.5 6 13.5Q5 16.5 6.5 19Q9 16.5 12 13.5Z" fill="${c}"/><path d="M12 13.5Q15 10 17.5 7.5Q19 10.5 18 13.5Q19 16.5 17.5 19Q15 16.5 12 13.5Z" fill="${c}"/><path d="M9.5 20.5L12 23L14.5 20.5L13.5 22.5H10.5Z" fill="${c}"/><path d="M12 9.5L12.9 12.2H15.7L13.4 13.8L14.3 16.5L12 14.9L9.7 16.5L10.6 13.8L8.3 12.2H11.1Z" fill="rgba(0,0,0,0.22)"/>`,
+    // Legend — phoenix flame
+    10: `<path d="M12 2C12 2 17 8 17 13C17 17 15 20 12 22C9 20 7 17 7 13C7 8 12 2 12 2Z" fill="${c}"/><path d="M12 9C12 9 15 12 15 15C15 17.5 13.5 19.5 12 21C10.5 19.5 9 17.5 9 15C9 12 12 9 12 9Z" fill="rgba(0,0,0,0.22)"/>`,
   };
   return `<svg width="${size}" height="${size}" viewBox="0 0 24 24">${shapes[rankNum] || shapes[1]}</svg>`;
 }
@@ -3562,48 +3582,52 @@ function loadRankJourney(totalStrikes) {
   if (!content) return;
   const current = getRankFromStrikes(totalStrikes);
 
-  const rows = RANKS.map((r, i) => {
+  let nodesHtml = '';
+  RANKS.forEach((r, i) => {
     const tc       = TIER_COLORS[r.tier];
-    const isUnlocked = totalStrikes >= r.min && r.n < current.n;
+    const tcAlpha  = tc + '55';
+    const isUnlocked = r.n < current.n;
     const isCurrent  = r.n === current.n;
     const isLocked   = r.n > current.n;
-    const stateClass = isUnlocked ? 'rj-unlocked' : isCurrent ? 'rj-current' : 'rj-locked';
-    const dotStyle   = `--tc:${tc};`;
-    const checkHtml  = isUnlocked
-      ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="${tc}"/><path d="M7 12l3.5 3.5L17 8" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+    const stateClass = isUnlocked ? 'rjh-unlocked' : isCurrent ? 'rjh-current' : 'rjh-locked';
+    const iconColor  = isLocked ? 'rgba(0,0,0,0.25)' : '#fff';
+    const nextRank   = RANKS[r.n];
+    const subTxt = isUnlocked
+      ? 'Completed'
       : isCurrent
-        ? `<div style="width:8px;height:8px;border-radius:50%;background:${tc};"></div>`
-        : '';
-
-    const iconHtml = rankSvg(r.n, isLocked ? 11 : 13, isLocked ? '#bbb' : tc);
-    const subTxt   = isUnlocked ? 'Completed'
-      : isCurrent ? `${Math.max(0, (RANKS[r.n]?.min || r.min) - totalStrikes).toLocaleString()} Strikes to ${RANKS[r.n]?.name || 'max'}`
-      : `${r.min.toLocaleString()} Strikes needed`;
-
-    const delay = `animation-delay:${i * 0.05}s;`;
+        ? (nextRank ? `${Math.max(0,nextRank.min-totalStrikes).toLocaleString()} needed` : 'MAX RANK')
+        : `${r.min.toLocaleString()} pts`;
+    const checkHtml = isUnlocked
+      ? `<div class="rjh-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 12l4.5 4.5L19 7" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`
+      : '';
     const onclick = isLocked ? `onclick="showRankPreview(${r.n})"` : '';
-    return `<div class="rj-row ${stateClass}" style="${dotStyle}${delay}opacity:0;" ${onclick}>
-      <div class="rj-dot">${iconHtml}</div>
-      <div class="rj-right">
-        <div class="rj-name">${r.name}</div>
-        <div class="rj-sub">${subTxt}</div>
-      </div>
-      <div class="rj-check">${checkHtml}</div>
+    nodesHtml += `<div class="rjh-node ${stateClass}" style="--tc:${tc};--tc-shadow:${tcAlpha};animation-delay:${i*0.06}s;" ${onclick}>
+      <div class="rjh-icon-ring">${rankSvg(r.n,26,iconColor)}${checkHtml}<div class="rjh-badge">${r.n}</div></div>
+      <div class="rjh-label">${r.name}</div>
+      <div class="rjh-sub">${subTxt}</div>
     </div>`;
-  }).join('');
+    if (i < RANKS.length - 1) {
+      const connClass = isUnlocked ? 'rjh-conn-done' : isCurrent ? 'rjh-conn-active' : 'rjh-conn-locked';
+      const connStyle = isUnlocked ? `style="background:${tc};"` : isCurrent ? `style="background:${tc};"` : '';
+      nodesHtml += `<div class="rjh-connector ${connClass}" ${connStyle}></div>`;
+    }
+  });
 
-  content.innerHTML = `<div class="rj-container"><div class="rj-spine"></div>${rows}</div>`;
+  content.innerHTML = `<div class="rjh-scroll"><div class="rjh-track">${nodesHtml}</div></div>`;
 
   // Stagger fade-in
-  content.querySelectorAll('.rj-row').forEach((el, i) => {
-    setTimeout(() => { el.style.opacity = ''; el.style.animation = `rj-fade 0.35s ease both`; }, i * 55);
+  content.querySelectorAll('.rjh-node').forEach((el, i) => {
+    setTimeout(() => { el.style.opacity = ''; el.style.animation = 'rj-fade 0.38s cubic-bezier(0.34,1.56,0.64,1) both'; }, i * 65);
   });
 
   // Scroll to current rank
   setTimeout(() => {
-    const currentEl = content.querySelector('.rj-current');
-    currentEl?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }, 500);
+    const scrollEl  = content.querySelector('.rjh-scroll');
+    const currentEl = content.querySelector('.rjh-current');
+    if (scrollEl && currentEl) {
+      scrollEl.scrollLeft = currentEl.offsetLeft - (scrollEl.offsetWidth / 2) + (currentEl.offsetWidth / 2);
+    }
+  }, 550);
 }
 
 // ── RANK PREVIEW MODAL ──
