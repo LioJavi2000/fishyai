@@ -406,7 +406,9 @@ body {
 .log-row{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-bottom:0.5px solid var(--bg);}
 .log-row:last-child{border-bottom:none;}
 .log-row-l{display:flex;align-items:center;gap:10px;font-size:13px;color:#000;font-weight:500;letter-spacing:-0.2px;}
-.log-row-ico{font-size:16px;width:22px;text-align:center;}
+.log-row-ico{width:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.nudge-btn{width:30px;height:30px;border-radius:8px;background:rgba(27,46,75,0.08);border:none;font-size:20px;font-weight:400;color:#1B2E4B;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;padding:0;-webkit-tap-highlight-color:transparent;}
+.nudge-btn:active{background:rgba(27,46,75,0.18);}
 .log-inp{background:var(--bg);border:none;border-radius:8px;padding:6px 10px;font-size:13px;font-family:inherit;color:#000;width:100px;outline:none;letter-spacing:-0.2px;text-align:right;}
 .lure-field{position:relative;}
 .lure-drop{position:absolute;top:100%;left:0;right:0;background:#fff;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,0.12);z-index:50;overflow:hidden;display:none;margin-top:4px;}
@@ -915,27 +917,25 @@ body {
           <div class="res-section" id="res-measurement-section">
             <div style="display:flex;gap:12px;margin-bottom:8px;">
               <div style="flex:1;">
-                <div class="lbl" style="margin-bottom:2px;">Length</div>
-                <div id="res-length-display" style="font-size:20px;font-weight:700;color:#1B2E4B;letter-spacing:-0.4px;">—</div>
-                <div id="res-length-conf" style="font-size:10px;font-weight:600;margin-top:2px;display:flex;align-items:center;gap:4px;"></div>
+                <div class="lbl" style="margin-bottom:6px;">Length</div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <button class="nudge-btn" onclick="nudgeAiLength(-0.5)">−</button>
+                  <div id="res-length-display" style="font-size:18px;font-weight:700;color:#1B2E4B;letter-spacing:-0.4px;flex:1;text-align:center;">—</div>
+                  <button class="nudge-btn" onclick="nudgeAiLength(0.5)">+</button>
+                </div>
+                <div id="res-length-conf" style="font-size:10px;font-weight:600;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:4px;"></div>
               </div>
               <div style="flex:1;">
-                <div class="lbl" style="margin-bottom:2px;">Weight</div>
-                <div id="res-weight-display" style="font-size:20px;font-weight:700;color:#1B2E4B;letter-spacing:-0.4px;">—</div>
-                <div id="res-weight-conf" style="font-size:10px;font-weight:600;margin-top:2px;display:flex;align-items:center;gap:4px;"></div>
+                <div class="lbl" style="margin-bottom:6px;">Weight</div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <button class="nudge-btn" onclick="nudgeAiWeight(-0.1)">−</button>
+                  <div id="res-weight-display" style="font-size:18px;font-weight:700;color:#1B2E4B;letter-spacing:-0.4px;flex:1;text-align:center;">—</div>
+                  <button class="nudge-btn" onclick="nudgeAiWeight(0.1)">+</button>
+                </div>
+                <div id="res-weight-conf" style="font-size:10px;font-weight:600;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:4px;"></div>
               </div>
             </div>
-            <div id="res-measure-note" style="font-size:11px;color:var(--gray);line-height:1.5;font-style:italic;margin-bottom:10px;"></div>
-            <div style="display:flex;gap:8px;">
-              <div style="flex:1;">
-                <div style="font-size:11px;color:var(--gray);margin-bottom:3px;letter-spacing:-0.2px;">Enter exact length (in)</div>
-                <input id="res-length-input" type="number" step="0.5" placeholder="—" class="log-inp" style="width:100%;font-size:14px;">
-              </div>
-              <div style="flex:1;">
-                <div style="font-size:11px;color:var(--gray);margin-bottom:3px;letter-spacing:-0.2px;">Enter exact weight (lbs)</div>
-                <input id="res-weight-input" type="number" step="0.1" placeholder="—" class="log-inp" style="width:100%;font-size:14px;">
-              </div>
-            </div>
+            <div id="res-measure-note" style="font-size:11px;color:var(--gray);line-height:1.5;font-style:italic;"></div>
           </div>
           <!-- Habitat -->
           <div class="res-section">
@@ -961,16 +961,10 @@ body {
               <div class="lure-chip"><svg width="10" height="13" viewBox="0 0 10 13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="5" cy="2" r="1.1" fill="currentColor" stroke="none"/><path d="M5 3.1v5.2"/><path d="M5 8.3c0 2.3 3.2 2.3 3.2 0"/><path d="M8.2 8.3l0.8 1.7"/></svg>Spinnerbaits</div>
             </div>
           </div>
-          <!-- Fun fact -->
-          <div class="res-section" id="res-funfact-section" style="border-bottom:none;margin-bottom:0;padding-bottom:0;">
-            <div class="lbl">Did you know?</div>
-            <div class="val" id="res-funfact" style="font-style:italic;"></div>
-          </div>
         </div>
-        <div style="display:flex;gap:10px;margin-top:16px;padding:0 12px;">
-          <button class="btn" onclick="goToLog()" style="flex:1;background:#f2f2f7;color:#1B2E4B;border:1.5px solid rgba(27,46,75,0.18);">Log Catch</button>
-          <button class="btn" onclick="goToLog()" style="flex:1;">Post &amp; Log
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="margin-left:4px;vertical-align:middle;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        <div style="margin-top:16px;padding:0 12px 12px;">
+          <button class="btn" onclick="goToLog()" style="width:100%;">Continue
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="margin-left:6px;vertical-align:middle;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
         </div>
       </div>
@@ -980,24 +974,28 @@ body {
     <div class="screen" id="screen-log">
       <div class="log-wrap">
         <div class="log-hero" id="log-hero">
-          <div class="log-fish-ico" id="log-fish-ico">🐟</div>
+          <div class="log-fish-ico" id="log-fish-ico"><svg width="72" height="40" viewBox="0 0 100 56" fill="rgba(255,255,255,0.45)"><path d="M8 28Q28 6 64 19Q77 10 96 28Q77 46 64 37Q28 50 8 28Z"/><circle cx="76" cy="22" r="3.5" fill="rgba(255,255,255,0.7)"/></svg></div>
           <div class="log-overlay"></div>
         </div>
-        <div style="padding:12px 12px 4px;">
+        <div style="padding:12px 12px 20px;">
           <div id="log-species-title" style="font-size:16px;font-weight:700;color:#000;letter-spacing:-0.4px;">Largemouth Bass</div>
-          <div style="font-size:12px;color:var(--gray);margin-top:2px;letter-spacing:-0.2px;">📍 <span id="log-spot-name">Auto-detecting location…</span> · Just now</div>
+          <div style="font-size:12px;color:var(--gray);margin-top:2px;letter-spacing:-0.2px;display:flex;align-items:center;gap:3px;overflow:hidden;">
+            <svg width="9" height="12" viewBox="0 0 9 12" fill="#8e8e93" style="flex-shrink:0;"><path d="M4.5 0C2.6 0 1 1.6 1 3.5 1 6.1 4.5 12 4.5 12S8 6.1 8 3.5C8 1.6 6.4 0 4.5 0zm0 5C3.7 5 3 4.3 3 3.5S3.7 2 4.5 2 6 2.7 6 3.5 5.3 5 4.5 5z"/></svg>
+            <span id="log-spot-name" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px;">Auto-detecting location…</span>
+            <span style="flex-shrink:0;">· Just now</span>
+          </div>
         </div>
         <div class="log-card">
           <div class="log-row">
-            <div class="log-row-l"><span class="log-row-ico">⚖️</span> Weight</div>
+            <div class="log-row-l"><span class="log-row-ico"><svg width="14" height="16" viewBox="0 0 14 16" fill="none" stroke="#1B2E4B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="10" height="9" rx="2"/><path d="M5 6C5 4.3 9 4.3 9 6"/></svg></span> Weight</div>
             <div style="display:flex;align-items:center;gap:6px;"><input class="log-inp" id="weight-input" type="number" placeholder="0.0" style="width:70px;"> <span style="font-size:12px;color:var(--gray);">lbs</span></div>
           </div>
           <div class="log-row">
-            <div class="log-row-l"><span class="log-row-ico">📏</span> Length</div>
+            <div class="log-row-l"><span class="log-row-ico"><svg width="16" height="10" viewBox="0 0 16 10" fill="none" stroke="#1B2E4B" stroke-width="1.4" stroke-linecap="round"><rect x="0.7" y="0.7" width="14.6" height="8.6" rx="1.8"/><line x1="3.5" y1="0.7" x2="3.5" y2="4.5"/><line x1="6.5" y1="0.7" x2="6.5" y2="3"/><line x1="9.5" y1="0.7" x2="9.5" y2="4.5"/><line x1="12.5" y1="0.7" x2="12.5" y2="3"/></svg></span> Length</div>
             <div style="display:flex;align-items:center;gap:6px;"><input class="log-inp" id="length-input" type="number" placeholder="0" style="width:70px;"> <span style="font-size:12px;color:var(--gray);">in</span></div>
           </div>
           <div class="log-row" style="flex-direction:column;align-items:stretch;gap:8px;">
-            <div class="log-row-l"><span class="log-row-ico">🎣</span> Lure used</div>
+            <div class="log-row-l"><span class="log-row-ico"><svg width="10" height="14" viewBox="0 0 10 13" fill="none" stroke="#1B2E4B" stroke-width="1.7" stroke-linecap="round"><circle cx="5" cy="2" r="1.1" fill="#1B2E4B" stroke="none"/><path d="M5 3.1v5.2"/><path d="M5 8.3c0 2.3 3.2 2.3 3.2 0"/><path d="M8.2 8.3l0.8 1.7"/></svg></span> Lure used</div>
             <div class="lure-field">
               <input class="inp" id="lure-input" placeholder="Search lures…" onclick="toggleLureDropdown()" readonly style="cursor:pointer;">
               <div class="lure-drop" id="lure-dropdown">
@@ -1011,7 +1009,7 @@ body {
             </div>
           </div>
           <div class="log-row">
-            <div class="log-row-l"><span class="log-row-ico">🔄</span> Keep or release?</div>
+            <div class="log-row-l"><span class="log-row-ico"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#1B2E4B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2v4h-4"/><path d="M2 14v-4h4"/><path d="M14 6A6 6 0 0 0 3.5 3.5L2 6"/><path d="M2 10a6 6 0 0 0 10.5 2.5L14 10"/></svg></span> Keep or release?</div>
             <div style="display:flex;gap:8px;">
               <div id="keep-btn" onclick="setKept(true)" style="padding:5px 10px;border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;background:rgba(27,46,75,0.1);color:var(--navy);transition:background 0.15s,color 0.15s,font-weight 0.1s;">Keep</div>
               <div id="release-btn" onclick="setKept(false)" style="padding:5px 10px;border-radius:10px;font-size:11px;font-weight:500;cursor:pointer;background:var(--bg);color:var(--gray);transition:background 0.15s,color 0.15s,font-weight 0.1s;">Release</div>
@@ -1023,12 +1021,12 @@ body {
             <div style="font-size:13px;font-weight:700;color:#000;letter-spacing:-0.3px;">Display options</div>
             <div style="font-size:11px;color:var(--gray);margin-top:1px;letter-spacing:-0.2px;">Choose what others can see if you post</div>
           </div>
-          <div class="log-row"><div class="log-row-l"><span class="log-row-ico">📍</span> Spot name</div><div class="tog on" id="tog-spot" onclick="this.classList.toggle('on')"></div></div>
-          <div class="log-row"><div class="log-row-l"><span class="log-row-ico">⚖️</span> Weight</div><div class="tog on" id="tog-weight" onclick="this.classList.toggle('on')"></div></div>
-          <div class="log-row"><div class="log-row-l"><span class="log-row-ico">📏</span> Length</div><div class="tog on" id="tog-length" onclick="this.classList.toggle('on')"></div></div>
-          <div class="log-row"><div class="log-row-l"><span class="log-row-ico">🎣</span> Lure used</div><div class="tog on" id="tog-lure" onclick="this.classList.toggle('on')"></div></div>
-          <div class="log-row"><div class="log-row-l"><span class="log-row-ico">✅</span> Keep / release</div><div class="tog" id="tog-kept" onclick="this.classList.toggle('on')"></div></div>
-          <div class="log-row"><div class="log-row-l"><span class="log-row-ico">🤳</span> Selfie with fish</div><div class="tog" id="tog-selfie" onclick="this.classList.toggle('on')"></div></div>
+          <div class="log-row"><div class="log-row-l"><span class="log-row-ico"><svg width="9" height="12" viewBox="0 0 9 12" fill="#1B2E4B"><path d="M4.5 0C2.6 0 1 1.6 1 3.5 1 6.1 4.5 12 4.5 12S8 6.1 8 3.5C8 1.6 6.4 0 4.5 0zm0 5C3.7 5 3 4.3 3 3.5S3.7 2 4.5 2 6 2.7 6 3.5 5.3 5 4.5 5z"/></svg></span> Spot name</div><div class="tog on" id="tog-spot" onclick="this.classList.toggle('on')"></div></div>
+          <div class="log-row"><div class="log-row-l"><span class="log-row-ico"><svg width="14" height="16" viewBox="0 0 14 16" fill="none" stroke="#1B2E4B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="10" height="9" rx="2"/><path d="M5 6C5 4.3 9 4.3 9 6"/></svg></span> Weight</div><div class="tog on" id="tog-weight" onclick="this.classList.toggle('on')"></div></div>
+          <div class="log-row"><div class="log-row-l"><span class="log-row-ico"><svg width="16" height="10" viewBox="0 0 16 10" fill="none" stroke="#1B2E4B" stroke-width="1.4" stroke-linecap="round"><rect x="0.7" y="0.7" width="14.6" height="8.6" rx="1.8"/><line x1="3.5" y1="0.7" x2="3.5" y2="4.5"/><line x1="6.5" y1="0.7" x2="6.5" y2="3"/><line x1="9.5" y1="0.7" x2="9.5" y2="4.5"/><line x1="12.5" y1="0.7" x2="12.5" y2="3"/></svg></span> Length</div><div class="tog on" id="tog-length" onclick="this.classList.toggle('on')"></div></div>
+          <div class="log-row"><div class="log-row-l"><span class="log-row-ico"><svg width="10" height="14" viewBox="0 0 10 13" fill="none" stroke="#1B2E4B" stroke-width="1.7" stroke-linecap="round"><circle cx="5" cy="2" r="1.1" fill="#1B2E4B" stroke="none"/><path d="M5 3.1v5.2"/><path d="M5 8.3c0 2.3 3.2 2.3 3.2 0"/><path d="M8.2 8.3l0.8 1.7"/></svg></span> Lure used</div><div class="tog on" id="tog-lure" onclick="this.classList.toggle('on')"></div></div>
+          <div class="log-row"><div class="log-row-l"><span class="log-row-ico"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#1B2E4B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="7"/><path d="M5 8l2 2 4-4"/></svg></span> Keep / release</div><div class="tog" id="tog-kept" onclick="this.classList.toggle('on')"></div></div>
+          <div class="log-row"><div class="log-row-l"><span class="log-row-ico"><svg width="16" height="13" viewBox="0 0 18 14" fill="none" stroke="#1B2E4B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 5C1 3.9 1.9 3 3 3h1.4l1-2h5.2l1 2H15c1.1 0 2 .9 2 2v6c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V5z"/><circle cx="9" cy="8" r="2.3"/></svg></span> Fish Picture</div><div class="tog" id="tog-selfie" onclick="this.classList.toggle('on')"></div></div>
         </div>
         <div style="display:flex;gap:10px;">
           <button class="btn" id="log-only-btn" onclick="postCatch(false)" style="flex:1;background:#f2f2f7;color:#1B2E4B;border:1.5px solid rgba(27,46,75,0.18);">Log Only</button>
@@ -1735,9 +1733,24 @@ function routeCapture() {
 //  AI MEASUREMENT (second API call)
 // ══════════════════════════════════════════
 let fishMeasurement = null;
+let aiLength = null, aiWeight = null;
+
+function nudgeAiLength(delta) {
+  if (aiLength === null) return;
+  aiLength = Math.max(0, Math.round((aiLength + delta) * 2) / 2);
+  const el = document.getElementById('res-length-display');
+  if (el) el.textContent = aiLength % 1 === 0 ? aiLength + ' in' : aiLength.toFixed(1) + ' in';
+}
+function nudgeAiWeight(delta) {
+  if (aiWeight === null) return;
+  aiWeight = Math.max(0, Math.round((aiWeight + delta) * 10) / 10);
+  const el = document.getElementById('res-weight-display');
+  if (el) el.textContent = aiWeight.toFixed(1) + ' lbs';
+}
 
 async function doMeasure(imageBase64, mimeType, species) {
   fishMeasurement = null;
+  aiLength = null; aiWeight = null;
   try {
     if (imageBase64) {
       const resp = await fetch('/api/measure', {
@@ -1766,12 +1779,10 @@ async function doMeasure(imageBase64, mimeType, species) {
 }
 
 function goToLog() {
-  const resLen = parseFloat(document.getElementById('res-length-input')?.value) || null;
-  const resWt  = parseFloat(document.getElementById('res-weight-input')?.value)  || null;
   showScreen('log');
   setTimeout(() => {
-    if (resLen !== null) { const i = document.getElementById('length-input'); if (i) i.value = resLen; }
-    if (resWt  !== null) { const i = document.getElementById('weight-input');  if (i) i.value = resWt;  }
+    if (aiLength !== null) { const i = document.getElementById('length-input'); if (i) i.value = aiLength; }
+    if (aiWeight !== null) { const i = document.getElementById('weight-input');  if (i) i.value = aiWeight; }
   }, 250);
 }
 
@@ -2148,15 +2159,6 @@ function renderResult() {
   const lureEl = document.getElementById('res-lures');
   if (lureEl) lureEl.innerHTML = (f.lures || []).map(l => `<div class="lure-chip">${hookSvg}${esc(l)}</div>`).join('');
 
-  const factEl = document.getElementById('res-funfact');
-  const factSec = document.getElementById('res-funfact-section');
-  if (factEl && f.funFact) {
-    factEl.textContent = f.funFact;
-    if (factSec) factSec.style.display = '';
-  } else if (factSec) {
-    factSec.style.display = 'none';
-  }
-
   setEl('log-species-title', f.species || 'Unknown Fish');
 
   // Show captured photo in log hero
@@ -2190,20 +2192,20 @@ function renderMeasurementSection() {
   const wtEl    = document.getElementById('res-weight-display');
   const wtConf  = document.getElementById('res-weight-conf');
   const noteEl  = document.getElementById('res-measure-note');
-  const lenInp  = document.getElementById('res-length-input');
-  const wtInp   = document.getElementById('res-weight-input');
 
   if (!m) {
+    aiLength = null; aiWeight = null;
     if (lenEl) lenEl.textContent = '—';
     if (wtEl)  wtEl.textContent  = '—';
     return;
   }
 
   // Length display
+  aiLength = m.estimated_length_inches;
   if (lenEl) {
     const lc = m.length_confidence || 'low';
     let lenTxt;
-    if (lc === 'high')   lenTxt = `${m.estimated_length_inches} in`;
+    if (lc === 'high')        lenTxt = `${m.estimated_length_inches} in`;
     else if (lc === 'medium') lenTxt = `~${m.estimated_length_inches} in`;
     else {
       const lo = Math.round(m.estimated_length_inches * 0.85);
@@ -2211,15 +2213,15 @@ function renderMeasurementSection() {
       lenTxt = `~${lo}–${hi} in`;
     }
     lenEl.textContent = lenTxt;
-    if (lenConf) { lenConf.innerHTML = `${confDot(lc)}<span style="color:${CONF_COLOR[lc]||'var(--gray)'}">${CONF_LBL[lc]||''}</span>`; }
-    if (lenInp && lc !== 'low') lenInp.value = m.estimated_length_inches;
+    if (lenConf) lenConf.innerHTML = `${confDot(lc)}<span style="color:${CONF_COLOR[lc]||'var(--gray)'}">${CONF_LBL[lc]||''}</span>`;
   }
 
   // Weight display
+  aiWeight = m.estimated_weight_lbs;
   if (wtEl) {
     const wc = m.weight_confidence || 'low';
     let wtTxt;
-    if (wc === 'high')   wtTxt = `${m.estimated_weight_lbs} lbs`;
+    if (wc === 'high')        wtTxt = `${m.estimated_weight_lbs} lbs`;
     else if (wc === 'medium') wtTxt = `~${m.estimated_weight_lbs} lbs`;
     else {
       const lo = (m.estimated_weight_lbs * 0.75).toFixed(1);
@@ -2227,8 +2229,7 @@ function renderMeasurementSection() {
       wtTxt = `~${lo}–${hi} lbs`;
     }
     wtEl.textContent = wtTxt;
-    if (wtConf) { wtConf.innerHTML = `${confDot(wc)}<span style="color:${CONF_COLOR[wc]||'var(--gray)'}">${CONF_LBL[wc]||''}</span>`; }
-    if (wtInp && wc !== 'low') wtInp.value = m.estimated_weight_lbs;
+    if (wtConf) wtConf.innerHTML = `${confDot(wc)}<span style="color:${CONF_COLOR[wc]||'var(--gray)'}">${CONF_LBL[wc]||''}</span>`;
   }
 
   if (noteEl) noteEl.textContent = m.measurement_note || '';
@@ -2300,6 +2301,7 @@ async function postCatch(isPublic = true) {
 
     capturedB64 = null;
     fishMeasurement = null;
+    aiLength = null; aiWeight = null;
     showToast(isPublic ? 'Catch posted! 🎣' : 'Catch logged! 📋');
     showScreen(isPublic ? 'feed' : 'profile');
   } catch (err) {
