@@ -8,6 +8,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const dir = join(__dirname, 'temporary screenshots');
 const url = process.argv[2] || 'http://localhost:3333';
 const label = process.argv[3] ? `-${process.argv[3]}` : '';
+const screenName = process.argv[4] || null;
 
 await mkdir(dir, { recursive: true });
 
@@ -32,6 +33,10 @@ const browser = await puppeteer.launch({
 const page = await browser.newPage();
 await page.goto(url, { waitUntil: 'networkidle0', timeout: 20000 });
 await new Promise(r => setTimeout(r, 800));
+if (screenName) {
+  await page.evaluate((s) => { if (typeof showScreen === 'function') showScreen(s); }, screenName);
+  await new Promise(r => setTimeout(r, 600));
+}
 await page.screenshot({ path: outPath, fullPage: false });
 await browser.close();
 console.log(`Screenshot saved → ${outPath}`);
