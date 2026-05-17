@@ -347,16 +347,17 @@ body {
 @keyframes fish-float{0%,100%{transform:translateY(0) scaleX(-1)}50%{transform:translateY(-9px) scaleX(-1)}}
 .cam-glow{position:absolute;width:260px;height:260px;background:radial-gradient(circle,rgba(14,165,233,0.1) 0%,transparent 70%);border-radius:50%;pointer-events:none;}
 .scan-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:24px 0 28px;z-index:5;}
-.scan-frame{width:168px;height:168px;position:relative;}
-.scan-frame::before,.scan-frame::after{content:'';position:absolute;width:28px;height:28px;border-color:rgba(14,165,233,0.9);border-style:solid;}
-.scan-frame::before{top:0;left:0;border-width:3px 0 0 3px;border-radius:6px 0 0 0;}
-.scan-frame::after{top:0;right:0;border-width:3px 3px 0 0;border-radius:0 6px 0 0;}
-.scan-frame-bl,.scan-frame-br{position:absolute;width:28px;height:28px;border-color:rgba(14,165,233,0.9);border-style:solid;}
-.scan-frame-bl{bottom:0;left:0;border-width:0 0 3px 3px;border-radius:0 0 0 6px;}
-.scan-frame-br{bottom:0;right:0;border-width:0 3px 3px 0;border-radius:0 0 6px 0;}
-@keyframes scan-line{0%{top:8px;opacity:1}90%{top:calc(100% - 8px);opacity:1}100%{top:calc(100% - 8px);opacity:0}}
-.scan-line{position:absolute;left:8px;right:8px;height:1.5px;background:linear-gradient(90deg,transparent,rgba(14,165,233,0.9),transparent);top:8px;animation:scan-line 2.2s cubic-bezier(0.45,0,0.55,1) infinite;}
-.scan-lbl{color:#fff;font-size:13px;font-weight:500;background:rgba(0,0,0,0.55);padding:7px 18px;border-radius:20px;backdrop-filter:blur(10px);letter-spacing:-0.2px;border:0.5px solid rgba(255,255,255,0.1);}
+@keyframes scan-bracket-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.7;transform:scale(0.97)}}
+@keyframes scan-glow-ring{0%,100%{opacity:0;transform:scale(0.92)}50%{opacity:0.12;transform:scale(1.06)}}
+.scan-frame{width:190px;height:190px;position:relative;animation:scan-bracket-pulse 2.4s ease-in-out infinite;}
+.scan-frame::before,.scan-frame::after{content:'';position:absolute;width:34px;height:34px;border-color:rgba(255,255,255,0.96);border-style:solid;transition:opacity 0.3s;}
+.scan-frame::before{top:0;left:0;border-width:3px 0 0 3px;border-radius:8px 0 0 0;}
+.scan-frame::after{top:0;right:0;border-width:3px 3px 0 0;border-radius:0 8px 0 0;}
+.scan-frame-bl,.scan-frame-br{position:absolute;width:34px;height:34px;border-color:rgba(255,255,255,0.96);border-style:solid;}
+.scan-frame-bl{bottom:0;left:0;border-width:0 0 3px 3px;border-radius:0 0 0 8px;}
+.scan-frame-br{bottom:0;right:0;border-width:0 3px 3px 0;border-radius:0 0 8px 0;}
+.scan-frame-glow{position:absolute;inset:-12px;border-radius:20px;background:rgba(255,255,255,0.05);animation:scan-glow-ring 2.4s ease-in-out infinite;pointer-events:none;}
+.scan-lbl{color:#fff;font-size:13px;font-weight:600;background:rgba(0,0,0,0.42);padding:8px 20px;border-radius:22px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);letter-spacing:-0.3px;border:0.5px solid rgba(255,255,255,0.18);text-shadow:0 1px 3px rgba(0,0,0,0.3);}
 .scan-controls{display:flex;align-items:center;justify-content:center;width:100%;padding:0 36px;position:relative;}
 .gallery-btn{width:40px;height:40px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.35);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:transform 0.15s var(--spring),background 0.2s;-webkit-tap-highlight-color:transparent;position:absolute;left:36px;background:rgba(255,255,255,0.06);backdrop-filter:blur(8px);}
 .gallery-btn:active{transform:scale(0.88);background:rgba(255,255,255,0.12);}
@@ -376,26 +377,79 @@ body {
 .se-photo{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat;}
 .se-bg-solid{position:absolute;inset:0;}
 .se-top{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:14px 16px 0;}
-.se-back-btn{width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(8px);}
+.se-back-btn{width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:0.5px solid rgba(255,255,255,0.15);}
 .se-tools{display:flex;gap:8px;}
-.se-tool{width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,0.4);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(8px);-webkit-tap-highlight-color:transparent;}
-.se-tool:active{transform:scale(0.88);}
+.se-tool{width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.45);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:0.5px solid rgba(255,255,255,0.15);-webkit-tap-highlight-color:transparent;transition:transform 0.15s var(--spring),background 0.15s;}
+.se-tool:active{transform:scale(0.85);background:rgba(255,255,255,0.2);}
 .se-overlays{position:absolute;inset:0;z-index:6;pointer-events:none;}
-.se-text-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:22px;font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,0.5);text-align:center;white-space:pre-wrap;max-width:80%;letter-spacing:-0.3px;pointer-events:all;cursor:move;}
-.se-text-input-wrap{position:absolute;bottom:0;left:0;right:0;z-index:20;background:rgba(0,0,0,0.7);backdrop-filter:blur(16px);padding:12px 16px 16px;}
-.se-color-row{display:flex;gap:8px;margin-bottom:10px;}
-.se-color{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2.5px solid rgba(255,255,255,0.5);-webkit-tap-highlight-color:transparent;flex-shrink:0;}
-.se-color.sel{border-color:#fff;transform:scale(1.2);}
-.se-text-inp{width:100%;background:rgba(255,255,255,0.12);border:none;border-radius:12px;padding:10px 12px;font-size:15px;font-family:inherit;color:#fff;outline:none;letter-spacing:-0.2px;resize:none;}
-.se-text-inp::placeholder{color:rgba(255,255,255,0.4);}
-.se-add-btn{background:var(--navy);color:#fff;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;margin-top:8px;width:100%;}
-.se-emoji-picker{position:absolute;bottom:0;left:0;right:0;z-index:20;background:rgba(0,0,0,0.85);backdrop-filter:blur(16px);padding:16px;border-radius:22px 22px 0 0;}
-.se-emoji-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;max-height:180px;overflow-y:auto;}
-.se-emoji-item{font-size:24px;text-align:center;cursor:pointer;padding:4px;border-radius:8px;-webkit-tap-highlight-color:transparent;}
-.se-emoji-item:active{background:rgba(255,255,255,0.15);}
-.se-bottom{background:#000;padding:12px 16px 20px;display:flex;flex-direction:column;gap:10px;}
-.se-caption-inp{background:rgba(255,255,255,0.1);border:none;border-radius:12px;padding:11px 14px;font-size:14px;font-family:inherit;color:#fff;outline:none;letter-spacing:-0.2px;width:100%;}
-.se-caption-inp::placeholder{color:rgba(255,255,255,0.4);}
+.se-text-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:22px;font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,0.5);text-align:center;white-space:pre-wrap;max-width:82%;letter-spacing:-0.3px;pointer-events:all;cursor:move;padding:6px 10px;border-radius:8px;}
+.se-text-input-wrap{position:absolute;bottom:0;left:0;right:0;z-index:20;background:rgba(0,0,0,0.78);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:14px 16px 20px;border-top:0.5px solid rgba(255,255,255,0.08);}
+/* Color swatches row */
+.se-color-row{display:flex;gap:6px;margin-bottom:10px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;}
+.se-color-row::-webkit-scrollbar{display:none;}
+.se-color{width:26px;height:26px;border-radius:50%;cursor:pointer;border:2.5px solid rgba(255,255,255,0.35);-webkit-tap-highlight-color:transparent;flex-shrink:0;transition:transform 0.15s var(--spring),border-color 0.15s;}
+.se-color.sel{border-color:#fff;transform:scale(1.25);}
+/* Font style row */
+.se-font-row{display:flex;gap:6px;margin-bottom:10px;}
+.se-font-btn{flex:1;padding:6px 4px;border-radius:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);color:#fff;font-size:11px;font-weight:600;cursor:pointer;text-align:center;-webkit-tap-highlight-color:transparent;transition:background 0.15s;}
+.se-font-btn.active-font{background:rgba(255,255,255,0.28);border-color:rgba(255,255,255,0.5);}
+/* Text size row */
+.se-size-row{display:flex;gap:6px;align-items:center;margin-bottom:10px;}
+.se-size-lbl{font-size:11px;color:rgba(255,255,255,0.5);font-weight:600;letter-spacing:0.3px;text-transform:uppercase;flex-shrink:0;}
+.se-size-btn{width:30px;height:28px;border-radius:8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);color:#fff;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;transition:background 0.15s;flex-shrink:0;}
+.se-size-btn.active-size{background:rgba(255,255,255,0.28);border-color:rgba(255,255,255,0.5);}
+/* Align row */
+.se-align-row{display:flex;gap:6px;align-items:center;margin-bottom:10px;}
+.se-align-btn{width:34px;height:28px;border-radius:8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;transition:background 0.15s;}
+.se-align-btn.active-align{background:rgba(255,255,255,0.28);border-color:rgba(255,255,255,0.5);}
+.se-text-inp{width:100%;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:11px 14px;font-size:15px;font-family:inherit;color:#fff;outline:none;letter-spacing:-0.2px;resize:none;transition:border-color 0.2s;}
+.se-text-inp:focus{border-color:rgba(255,255,255,0.4);}
+.se-text-inp::placeholder{color:rgba(255,255,255,0.35);}
+.se-add-btn{background:linear-gradient(135deg,#fff 0%,#f0f0f0 100%);color:#000;border:none;border-radius:12px;padding:11px 18px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:10px;width:100%;letter-spacing:-0.3px;box-shadow:0 4px 16px rgba(0,0,0,0.3);}
+.se-add-btn:active{transform:scale(0.97);}
+/* Emoji picker */
+.se-emoji-picker{position:absolute;bottom:0;left:0;right:0;z-index:20;background:rgba(0,0,0,0.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:16px 16px 20px;border-radius:24px 24px 0 0;border-top:0.5px solid rgba(255,255,255,0.1);}
+.se-emoji-cats{display:flex;gap:8px;margin-bottom:12px;overflow-x:auto;scrollbar-width:none;}
+.se-emoji-cats::-webkit-scrollbar{display:none;}
+.se-emoji-cat{font-size:18px;padding:4px 8px;border-radius:10px;cursor:pointer;flex-shrink:0;background:rgba(255,255,255,0.08);-webkit-tap-highlight-color:transparent;}
+.se-emoji-cat.active-cat{background:rgba(255,255,255,0.22);}
+.se-emoji-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;max-height:160px;overflow-y:auto;}
+.se-emoji-item{font-size:26px;text-align:center;cursor:pointer;padding:4px;border-radius:10px;-webkit-tap-highlight-color:transparent;transition:background 0.1s;}
+.se-emoji-item:active{background:rgba(255,255,255,0.18);}
+/* Bottom bar */
+.se-bottom{background:#000;padding:12px 16px 22px;display:flex;flex-direction:column;gap:10px;}
+.se-caption-inp{background:rgba(255,255,255,0.09);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:12px 14px;font-size:14px;font-family:inherit;color:#fff;outline:none;letter-spacing:-0.2px;width:100%;transition:border-color 0.2s;}
+.se-caption-inp:focus{border-color:rgba(255,255,255,0.35);}
+.se-caption-inp::placeholder{color:rgba(255,255,255,0.35);}
+
+/* ── FEED COMPOSER ── */
+.feed-composer-card{background:#fff;border-radius:var(--card-r);margin:8px 10px 4px;box-shadow:var(--card-shadow);overflow:hidden;}
+.feed-composer-top{display:flex;align-items:center;gap:12px;padding:13px 14px 0;}
+.feed-composer-input{flex:1;background:var(--bg);border-radius:22px;padding:10px 16px;font-size:14px;font-family:inherit;color:#000;cursor:pointer;letter-spacing:-0.2px;border:none;outline:none;text-align:left;-webkit-tap-highlight-color:transparent;}
+.feed-composer-input::placeholder{color:var(--gray);}
+.feed-composer-divider{height:0.5px;background:var(--sep);margin:10px 0 0;}
+.feed-composer-actions{display:flex;align-items:center;padding:8px 10px 10px;gap:4px;}
+.feed-composer-action{display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:12px;font-size:12px;font-weight:600;color:var(--gray);cursor:pointer;border:none;background:none;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:background 0.15s;}
+.feed-composer-action:active{background:var(--bg);}
+/* Expanded inline composer */
+.feed-composer-expanded{background:#fff;border-radius:var(--card-r);margin:0 10px 8px;box-shadow:0 4px 24px rgba(0,0,0,0.1),0 1px 4px rgba(0,0,0,0.06);overflow:hidden;}
+.fce-header{display:flex;align-items:center;justify-content:space-between;padding:13px 14px 10px;border-bottom:0.5px solid var(--sep);}
+.fce-title{font-size:15px;font-weight:700;color:#000;letter-spacing:-0.4px;}
+.fce-close{width:28px;height:28px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:var(--gray);}
+.fce-body{padding:12px 14px;}
+.fce-av-row{display:flex;gap:11px;align-items:flex-start;}
+.fce-textarea{flex:1;border:none;outline:none;font-size:15px;font-family:inherit;color:#000;resize:none;letter-spacing:-0.2px;line-height:1.55;min-height:80px;background:transparent;}
+.fce-textarea::placeholder{color:var(--gray);}
+.fce-photo-preview{margin:10px 0 0;border-radius:14px;overflow:hidden;position:relative;display:none;}
+.fce-photo-preview img{width:100%;max-height:180px;object-fit:cover;display:block;}
+.fce-photo-remove{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:#fff;}
+.fce-footer{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 14px;border-top:0.5px solid var(--sep);}
+.fce-footer-actions{display:flex;gap:4px;}
+.fce-icon-btn{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--bg);border:none;-webkit-tap-highlight-color:transparent;transition:background 0.15s;}
+.fce-icon-btn:active{background:rgba(0,0,0,0.09);}
+.fce-share-btn{background:linear-gradient(135deg,#1B2E4B,#0e4a80);color:#fff;border:none;border-radius:22px;padding:9px 22px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;letter-spacing:-0.3px;box-shadow:0 4px 16px rgba(14,74,128,0.3);-webkit-tap-highlight-color:transparent;transition:transform 0.15s var(--spring),opacity 0.15s;}
+.fce-share-btn:active{transform:scale(0.95);opacity:0.85;}
+.fce-share-btn:disabled{opacity:0.4;}
 
 /* ── POST EDITOR ── */
 .pe-wrap{height:100%;background:#fff;display:flex;flex-direction:column;overflow-y:auto;}
@@ -550,10 +604,8 @@ body {
 .badge-img{width:58px;height:58px;border-radius:50%;object-fit:cover;display:block;box-shadow:0 3px 10px rgba(0,0,0,0.12);}
 .badge-nm{font-size:9px;font-weight:700;color:var(--navy);text-align:center;line-height:1.25;letter-spacing:-0.1px;}
 .catch-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:0 12px;}
-.catch-thumb{background:linear-gradient(145deg,#c8ddf0,#8fb8d8);border-radius:14px;height:90px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 0.18s var(--spring),opacity 0.15s;background-size:cover;background-position:center;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.catch-thumb{background:linear-gradient(145deg,#c8ddf0,#8fb8d8);border-radius:16px;height:100px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 0.18s var(--spring),opacity 0.15s;background-size:cover;background-position:center;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,0.1);}
 .catch-thumb:active{transform:scale(0.93);opacity:0.88;}
-.catch-thumb:nth-child(2n){background:linear-gradient(145deg,#d4ecd4,#8fc898);}
-.catch-thumb:nth-child(3n){background:linear-gradient(145deg,#f0d4c8,#d8908f);}
 /* ── BADGE DETAIL POPUP ── */
 .badge-detail-overlay{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.22s ease;}
 .badge-detail-overlay.open{opacity:1;pointer-events:all;}
@@ -732,12 +784,151 @@ body {
     padding-bottom: max(22px, env(safe-area-inset-bottom));
   }
 }
+
+/* ══ OVERALL POLISH — Apple/Instagram aesthetic ══ */
+
+/* Smoother card interactions */
+.card {
+  transition: transform 0.22s var(--spring), box-shadow 0.22s var(--ease), opacity 0.18s;
+}
+.card:active { transform: scale(0.982); opacity: 0.96; }
+
+/* Bottom nav: active icon gets a soft background pill */
+.nav-item.active .nav-icon {
+  background: rgba(27,46,75,0.1);
+  transition: background 0.2s var(--ease), transform 0.18s var(--spring);
+}
+.nav-item .nav-icon {
+  transition: transform 0.18s var(--spring), background 0.18s;
+}
+.nav-item:active .nav-icon { transform: scale(0.78); }
+
+/* Feed header: tighter, cleaner */
+.feed-hd {
+  box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+}
+
+/* Post composer button looks more like a real input */
+.feed-composer-input {
+  color: var(--gray);
+  font-weight: 400;
+  transition: background 0.15s;
+}
+.feed-composer-input:active { background: #e8eaed; }
+
+/* Action buttons: slightly softer active */
+.act-btn:active { background: rgba(0,0,0,0.04); transform: scale(0.86); }
+
+/* Smoother screen transitions */
+.screen {
+  transition: opacity 0.32s var(--ease), transform 0.32s var(--ease);
+}
+.screen.active { transition: opacity 0.28s var(--ease), transform 0.28s var(--ease); }
+
+/* Toast: slightly bigger, better font */
+#toast {
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: -0.25px;
+  border-radius: 22px;
+  padding: 11px 20px;
+}
+
+/* Buttons: crisper press */
+.btn { transition: transform 0.14s var(--spring), box-shadow 0.18s, opacity 0.15s; }
+.btn:active { transform: scale(0.96); }
+
+/* Input fields: better focus glow */
+.inp:focus {
+  border-color: rgba(27,46,75,0.35);
+  box-shadow: 0 0 0 3px rgba(27,46,75,0.08);
+}
+
+/* Stories row: slightly larger tap target */
+.story { padding: 2px; }
+.story:active { transform: scale(0.88); }
+
+/* Profile: header gradient is richer */
+.prof-hd {
+  background: linear-gradient(160deg,#1a3656 0%,#1B2E4B 45%,#0d2145 100%);
+}
+
+/* Scan pill: richer gradient */
+.scan-pill {
+  background: linear-gradient(135deg, #1B2E4B 0%, #0d4070 50%, #0ea5e9 100%);
+  box-shadow: 0 5px 18px rgba(27,46,75,0.45), 0 1px 5px rgba(14,165,233,0.35);
+}
+.nav-scan:active .scan-pill { transform: scale(0.84); }
+
+/* Map card: subtle depth */
+.map-sheet {
+  box-shadow: 0 -12px 48px rgba(0,0,0,0.22), 0 -2px 8px rgba(0,0,0,0.08);
+}
+
+/* Comments sheet: slightly softer */
+.cs-sheet { box-shadow: 0 -10px 44px rgba(0,0,0,0.16); }
+
+/* Back button: slightly more visible */
+.back-btn { opacity: 0.85; }
+.back-btn:hover { opacity: 1; }
+
+/* Settings/sheets: better handle */
+.cs-handle, .map-sheet-handle {
+  width: 40px;
+  height: 4.5px;
+  border-radius: 3px;
+  background: rgba(0,0,0,0.12);
+}
+
+/* Leaderboard items: spring on tap */
+.lb-item { transition: transform 0.16s var(--spring), box-shadow 0.16s; }
+.lb-item:active { transform: scale(0.96); }
+
+/* Feed composer expanded: soft entry animation */
+@keyframes composer-drop {
+  from { opacity:0; transform:translateY(-8px) scale(0.99); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
+.feed-composer-expanded[style*="block"] {
+  animation: composer-drop 0.22s var(--ease) both;
+}
+
+/* Better post photo overlay */
+.post-fish-over .fish-tag {
+  font-weight: 700;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Story editor: cleaner bg */
+.se-text-inp:focus {
+  border-color: rgba(255,255,255,0.4);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.08);
+}
+
+/* Rank badges: slightly more pop */
+.badge-item {
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);
+}
+.badge-item:active { transform: scale(0.86); }
+
+/* Catch grid: better depth */
+.catch-thumb {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.06);
+}
+
+/* Profile stats: subtle separator upgrade */
+.prof-stats {
+  background: rgba(255,255,255,0.09);
+  border: 0.5px solid rgba(255,255,255,0.12);
+}
 </style>
 </head>
 <body>
 
 <!-- HIDDEN: gallery file input + capture canvas -->
 <input type="file" id="gallery-input" accept="image/*" style="display:none" onchange="handleGallerySelect(event)">
+<input type="file" id="fce-gallery-input" accept="image/*" multiple style="display:none" onchange="handleFcePhotoSelect(event)">
 <canvas id="camera-canvas" style="display:none"></canvas>
 
 <!-- TOAST -->
@@ -860,15 +1051,65 @@ body {
           </div>
         </div>
         <div class="story-row">
-          <div class="story add-story" onclick="showScreen('scan')">
-            <div class="s-add-ring"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
-            <span>Your cast</span>
+          <div class="story add-story" onclick="openStoryCamera()">
+            <div class="s-add-ring" id="my-story-ring"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+            <span>Your story</span>
           </div>
           <div class="story"><div class="s-ring"><div class="s-gap"><div class="s-av"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260516_041916_bc956048-5daf-45e3-aa38-bf595050beb9_min.webp" alt="JF" loading="lazy"></div></div></div><span>jake_f</span></div>
           <div class="story"><div class="s-ring"><div class="s-gap"><div class="s-av"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260516_041919_5ef67412-3b08-44ec-a1fe-ef5c99bf825c_min.webp" alt="MR" loading="lazy"></div></div></div><span>maria_r</span></div>
           <div class="story"><div class="s-ring"><div class="s-gap"><div class="s-av"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260516_042039_4bb16f25-7c2a-4f2e-a5c7-2a3dba2af0d1_min.webp" alt="BB" loading="lazy"></div></div></div><span>big_bass</span></div>
           <div class="story"><div class="s-ring"><div class="s-gap"><div class="s-av">CK</div></div></div><span>coastkid</span></div>
           <div class="story"><div class="s-ring"><div class="s-gap"><div class="s-av"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260516_042042_dda38cec-6628-4b01-aba6-f384f55f8103_min.webp" alt="PC" loading="lazy"></div></div></div><span>pro_cast</span></div>
+        </div>
+        <!-- FEED POST COMPOSER -->
+        <div class="feed-composer-card" id="feed-composer-collapsed">
+          <div class="feed-composer-top">
+            <div class="av" id="feed-composer-av" style="flex-shrink:0;">Me</div>
+            <button class="feed-composer-input" placeholder="What's happening on the water?" onclick="expandFeedComposer()" id="feed-composer-btn">What's happening on the water?</button>
+          </div>
+          <div class="feed-composer-divider"></div>
+          <div class="feed-composer-actions">
+            <button class="feed-composer-action" onclick="expandFeedComposerWithPhoto()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              Photo
+            </button>
+            <button class="feed-composer-action" onclick="expandFeedComposer()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              Location
+            </button>
+            <button class="feed-composer-action" onclick="expandFeedComposer()" style="margin-left:auto;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Catch
+            </button>
+          </div>
+        </div>
+        <!-- EXPANDED FEED COMPOSER (hidden by default) -->
+        <div class="feed-composer-expanded" id="feed-composer-expanded" style="display:none;">
+          <div class="fce-header">
+            <span class="fce-title">New Post</span>
+            <div class="fce-close" onclick="collapseFeedComposer()">✕</div>
+          </div>
+          <div class="fce-body">
+            <div class="fce-av-row">
+              <div class="av" id="fce-av">Me</div>
+              <textarea class="fce-textarea" id="fce-textarea" placeholder="Share a catch, tip, or question…" rows="3" oninput="updateFceShareBtn()"></textarea>
+            </div>
+            <div class="fce-photo-preview" id="fce-photo-preview">
+              <img id="fce-photo-img" src="" alt="">
+              <div class="fce-photo-remove" onclick="removeFcePhoto()">✕</div>
+            </div>
+          </div>
+          <div class="fce-footer">
+            <div class="fce-footer-actions">
+              <button class="fce-icon-btn" onclick="triggerFcePhotoUpload()" title="Add photo">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </button>
+              <button class="fce-icon-btn" title="Location" onclick="showToast('Location tagging coming soon')">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </button>
+            </div>
+            <button class="fce-share-btn" id="fce-share-btn" onclick="shareFeedPost()" disabled>Share</button>
+          </div>
         </div>
         <!-- feed-content: demo data shows until real Supabase catches exist -->
         <div id="feed-content">
@@ -967,12 +1208,11 @@ body {
           </div>
           <div class="scan-overlay">
             <div class="scan-lbl" id="scan-lbl">Point at your catch</div>
-            <div class="scan-frame" id="scan-frame"><div class="scan-frame-bl"></div><div class="scan-frame-br"></div><div class="scan-line"></div></div>
+            <div class="scan-frame" id="scan-frame"><div class="scan-frame-bl"></div><div class="scan-frame-br"></div><div class="scan-frame-glow"></div></div>
             <div style="display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;">
               <div class="scan-mode-bar" id="scan-mode-bar">
                 <div class="scan-mode-tab active" id="smt-scan"  onclick="setScanMode('scan')">Scan Fish</div>
                 <div class="scan-mode-tab"        id="smt-story" onclick="setScanMode('story')">Story</div>
-                <div class="scan-mode-tab"        id="smt-post"  onclick="setScanMode('post')">Post</div>
               </div>
               <div class="scan-controls" id="scan-controls-row">
                 <div class="gallery-btn" title="Gallery" onclick="document.getElementById('gallery-input').click()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
@@ -993,27 +1233,66 @@ body {
           <div class="se-bg-solid" id="se-bg-solid" style="display:none;"></div>
           <div class="se-overlays" id="se-overlays"></div>
           <div class="se-top">
-            <div class="se-back-btn" onclick="showScreen('scan');startCamera()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+            <div class="se-back-btn" onclick="showScreen('scan');startCamera()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></div>
             <div class="se-tools">
-              <div class="se-tool" onclick="event.stopPropagation();toggleSeText()" title="Add text">Aa</div>
-              <div class="se-tool" onclick="event.stopPropagation();toggleSeEmoji()" title="Emoji">☺</div>
-              <div class="se-tool" onclick="event.stopPropagation();cycleStoryBg()" title="Background" id="se-bg-btn">◑</div>
+              <div class="se-tool" onclick="event.stopPropagation();toggleSeText()" title="Add text" id="se-tool-text">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h16M4 12h10M4 18h12"/></svg>
+              </div>
+              <div class="se-tool" onclick="event.stopPropagation();toggleSeEmoji()" title="Emoji" style="font-size:17px;">😊</div>
+              <div class="se-tool" onclick="event.stopPropagation();cycleStoryBg()" title="Background" id="se-bg-btn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l4 4"/></svg>
+              </div>
             </div>
           </div>
           <!-- Text input panel -->
           <div class="se-text-input-wrap" id="se-text-wrap" style="display:none;" onclick="event.stopPropagation()">
+            <!-- Color swatches -->
             <div class="se-color-row" id="se-colors">
               <div class="se-color sel" style="background:#fff;" onclick="setSeColor('#fff',this)"></div>
+              <div class="se-color" style="background:#000;" onclick="setSeColor('#000',this)"></div>
               <div class="se-color" style="background:#FFD700;" onclick="setSeColor('#FFD700',this)"></div>
               <div class="se-color" style="background:#FF6B6B;" onclick="setSeColor('#FF6B6B',this)"></div>
+              <div class="se-color" style="background:#FF3CAC;" onclick="setSeColor('#FF3CAC',this)"></div>
               <div class="se-color" style="background:#4ECDC4;" onclick="setSeColor('#4ECDC4',this)"></div>
+              <div class="se-color" style="background:#45B7D1;" onclick="setSeColor('#45B7D1',this)"></div>
+              <div class="se-color" style="background:#96CEB4;" onclick="setSeColor('#96CEB4',this)"></div>
+              <div class="se-color" style="background:#0ea5e9;" onclick="setSeColor('#0ea5e9',this)"></div>
               <div class="se-color" style="background:#1B2E4B;" onclick="setSeColor('#1B2E4B',this)"></div>
+            </div>
+            <!-- Font styles -->
+            <div class="se-font-row" id="se-fonts">
+              <button class="se-font-btn active-font" onclick="setSeFont('default',this)" style="font-family:inherit;">Classic</button>
+              <button class="se-font-btn" onclick="setSeFont('bold',this)" style="font-weight:900;font-family:inherit;">Bold</button>
+              <button class="se-font-btn" onclick="setSeFont('mono',this)" style="font-family:monospace;font-size:10px;">Mono</button>
+              <button class="se-font-btn" onclick="setSeFont('rounded',this)" style="border-radius:20px;font-style:normal;">Rounded</button>
+            </div>
+            <!-- Text size + align -->
+            <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+              <div class="se-size-row" style="flex:1;gap:5px;">
+                <span class="se-size-lbl">Size</span>
+                <button class="se-size-btn active-size" onclick="setSeSize(18,this)">S</button>
+                <button class="se-size-btn" onclick="setSeSize(26,this)">M</button>
+                <button class="se-size-btn" onclick="setSeSize(36,this)">L</button>
+                <button class="se-size-btn" onclick="setSeSize(48,this)">XL</button>
+              </div>
+              <div style="display:flex;gap:5px;">
+                <button class="se-align-btn active-align" onclick="setSeAlign('left',this)" title="Align left">
+                  <svg width="13" height="11" viewBox="0 0 13 11" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><line x1="0" y1="2" x2="13" y2="2"/><line x1="0" y1="6" x2="9" y2="6"/><line x1="0" y1="10" x2="11" y2="10"/></svg>
+                </button>
+                <button class="se-align-btn" onclick="setSeAlign('center',this)" title="Align center">
+                  <svg width="13" height="11" viewBox="0 0 13 11" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><line x1="0" y1="2" x2="13" y2="2"/><line x1="2" y1="6" x2="11" y2="6"/><line x1="1" y1="10" x2="12" y2="10"/></svg>
+                </button>
+                <button class="se-align-btn" onclick="setSeAlign('right',this)" title="Align right">
+                  <svg width="13" height="11" viewBox="0 0 13 11" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><line x1="0" y1="2" x2="13" y2="2"/><line x1="4" y1="6" x2="13" y2="6"/><line x1="2" y1="10" x2="13" y2="10"/></svg>
+                </button>
+              </div>
             </div>
             <textarea class="se-text-inp" id="se-text-inp" placeholder="Type something…" rows="2"></textarea>
             <button class="se-add-btn" onclick="addSeTextOverlay()">Add to Story</button>
           </div>
           <!-- Emoji picker -->
           <div class="se-emoji-picker" id="se-emoji-picker" style="display:none;" onclick="event.stopPropagation()">
+            <div class="se-emoji-cats" id="se-emoji-cats"></div>
             <div class="se-emoji-grid" id="se-emoji-grid"></div>
           </div>
         </div>
@@ -1330,12 +1609,36 @@ body {
           </div>
           <div class="sec-hd">My Catches</div>
           <div class="catch-grid" id="catch-grid">
-            <div class="catch-thumb"><svg width="36" height="20" viewBox="0 0 100 55" fill="rgba(255,255,255,0.5)"><path d="M8 28Q28 6 64 19Q77 10 96 28Q77 46 64 37Q28 50 8 28Z"/><circle cx="76" cy="22" r="3.5" fill="rgba(255,255,255,0.8)"/></svg></div>
-            <div class="catch-thumb"><svg width="36" height="20" viewBox="0 0 100 55" fill="rgba(255,255,255,0.5)"><path d="M8 28Q28 6 64 19Q77 10 96 28Q77 46 64 37Q28 50 8 28Z"/><circle cx="76" cy="22" r="3.5" fill="rgba(255,255,255,0.8)"/></svg></div>
-            <div class="catch-thumb"><svg width="36" height="20" viewBox="0 0 100 55" fill="rgba(255,255,255,0.5)"><path d="M8 28Q28 6 64 19Q77 10 96 28Q77 46 64 37Q28 50 8 28Z"/><circle cx="76" cy="22" r="3.5" fill="rgba(255,255,255,0.8)"/></svg></div>
-            <div class="catch-thumb"><svg width="36" height="20" viewBox="0 0 100 55" fill="rgba(255,255,255,0.5)"><path d="M8 28Q28 6 64 19Q77 10 96 28Q77 46 64 37Q28 50 8 28Z"/><circle cx="76" cy="22" r="3.5" fill="rgba(255,255,255,0.8)"/></svg></div>
-            <div class="catch-thumb"><svg width="36" height="20" viewBox="0 0 100 55" fill="rgba(255,255,255,0.5)"><path d="M8 28Q28 6 64 19Q77 10 96 28Q77 46 64 37Q28 50 8 28Z"/><circle cx="76" cy="22" r="3.5" fill="rgba(255,255,255,0.8)"/></svg></div>
-            <div class="catch-thumb"><svg width="36" height="20" viewBox="0 0 100 55" fill="rgba(255,255,255,0.5)"><path d="M8 28Q28 6 64 19Q77 10 96 28Q77 46 64 37Q28 50 8 28Z"/><circle cx="76" cy="22" r="3.5" fill="rgba(255,255,255,0.8)"/></svg></div>
+            <!-- CA Halibut — sandy olive -->
+            <div class="catch-thumb" style="background:linear-gradient(145deg,#b8a878 0%,#7a6845 100%);position:relative;align-items:flex-end;justify-content:flex-start;">
+              <svg style="position:absolute;top:50%;left:50%;transform:translate(-50%,-58%) scaleY(0.45)" width="88" height="88" viewBox="0 0 100 100" fill="rgba(255,255,255,0.28)"><ellipse cx="50" cy="50" rx="48" ry="22"/><path d="M5 50 L18 35 L18 65 Z" fill="rgba(255,255,255,0.22)"/><circle cx="28" cy="42" r="5" fill="rgba(255,255,255,0.45)"/></svg>
+              <div style="position:absolute;bottom:7px;left:8px;background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;letter-spacing:-0.1px;">CA Halibut</div>
+            </div>
+            <!-- Yellowtail — electric gold/blue -->
+            <div class="catch-thumb" style="background:linear-gradient(145deg,#1a6fa8 0%,#0d4a78 60%,#c8a832 100%);position:relative;align-items:flex-end;justify-content:flex-start;">
+              <svg style="position:absolute;top:50%;left:50%;transform:translate(-50%,-55%)" width="82" height="42" viewBox="0 0 100 50" fill="rgba(255,255,255,0.28)"><path d="M6 25Q28 8 70 18Q82 10 96 25Q82 40 70 32Q28 42 6 25Z"/><path d="M82 8L96 15V25L96 35L82 42Z" fill="rgba(255,255,255,0.18)"/><circle cx="30" cy="20" r="4" fill="rgba(255,255,255,0.5)"/></svg>
+              <div style="position:absolute;bottom:7px;left:8px;background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;letter-spacing:-0.1px;">Yellowtail</div>
+            </div>
+            <!-- White Seabass — silver-blue -->
+            <div class="catch-thumb" style="background:linear-gradient(145deg,#8ab8d8 0%,#3a6898 100%);position:relative;">
+              <svg style="position:absolute;top:50%;left:50%;transform:translate(-50%,-55%)" width="80" height="40" viewBox="0 0 100 50" fill="rgba(255,255,255,0.32)"><path d="M8 25Q30 10 68 20Q80 12 94 25Q80 38 68 30Q30 40 8 25Z"/><path d="M80 12L94 22V25V28L80 38Z" fill="rgba(255,255,255,0.2)"/><circle cx="32" cy="21" r="3.5" fill="rgba(255,255,255,0.55)"/></svg>
+              <div style="position:absolute;bottom:7px;left:8px;background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;letter-spacing:-0.1px;">White Seabass</div>
+            </div>
+            <!-- Calico Bass — spotted olive-green -->
+            <div class="catch-thumb" style="background:linear-gradient(145deg,#6a8c5a 0%,#3d5c30 100%);position:relative;">
+              <svg style="position:absolute;top:50%;left:50%;transform:translate(-50%,-55%)" width="76" height="48" viewBox="0 0 100 62" fill="rgba(255,255,255,0.28)"><path d="M10 31Q30 10 64 22Q76 13 93 31Q76 49 64 40Q30 52 10 31Z"/><path d="M76 14L93 28V31V34L76 48Z" fill="rgba(255,255,255,0.2)"/><circle cx="32" cy="25" r="3" fill="rgba(255,255,255,0.5)"/><circle cx="44" cy="30" r="2.5" fill="rgba(255,255,255,0.38)"/><circle cx="54" cy="24" r="2" fill="rgba(255,255,255,0.38)"/></svg>
+              <div style="position:absolute;bottom:7px;left:8px;background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;letter-spacing:-0.1px;">Calico Bass</div>
+            </div>
+            <!-- Bonito — steel-blue with stripes -->
+            <div class="catch-thumb" style="background:linear-gradient(145deg,#2d5a8a 0%,#1a3a6a 50%,#4a7aaa 100%);position:relative;">
+              <svg style="position:absolute;top:50%;left:50%;transform:translate(-50%,-55%)" width="84" height="38" viewBox="0 0 110 48" fill="rgba(255,255,255,0.26)"><path d="M6 24Q35 8 78 18Q90 10 106 24Q90 38 78 30Q35 40 6 24Z"/><path d="M90 10L106 22V24V26L90 38Z" fill="rgba(255,255,255,0.18)"/><line x1="45" y1="15" x2="38" y2="33" stroke="rgba(255,255,255,0.22)" stroke-width="2"/><line x1="52" y1="14" x2="45" y2="32" stroke="rgba(255,255,255,0.22)" stroke-width="2"/><line x1="59" y1="13" x2="52" y2="31" stroke="rgba(255,255,255,0.22)" stroke-width="2"/><circle cx="28" cy="20" r="3.5" fill="rgba(255,255,255,0.5)"/></svg>
+              <div style="position:absolute;bottom:7px;left:8px;background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;letter-spacing:-0.1px;">Pacific Bonito</div>
+            </div>
+            <!-- Rockfish — vivid orange-red -->
+            <div class="catch-thumb" style="background:linear-gradient(145deg,#c85a20 0%,#8a2800 60%,#e87840 100%);position:relative;">
+              <svg style="position:absolute;top:50%;left:50%;transform:translate(-50%,-55%)" width="74" height="50" viewBox="0 0 96 64" fill="rgba(255,255,255,0.28)"><path d="M12 32Q32 12 62 24Q74 14 91 32Q74 50 62 40Q32 52 12 32Z"/><path d="M74 16L91 30V32V34L74 48Z" fill="rgba(255,255,255,0.2)"/><path d="M62 14L56 8L68 8Z" fill="rgba(255,255,255,0.25)"/><path d="M68 12L66 6L74 10Z" fill="rgba(255,255,255,0.2)"/><circle cx="34" cy="26" r="3.5" fill="rgba(255,255,255,0.55)"/></svg>
+              <div style="position:absolute;bottom:7px;left:8px;background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;letter-spacing:-0.1px;">Rockfish</div>
+            </div>
           </div>
           <div style="padding-bottom:12px;"></div>
         </div>
@@ -1932,7 +2235,6 @@ let scanMode = 'scan';
 const SCAN_LABELS = {
   scan:  'Point at your catch',
   story: 'Take a story photo',
-  post:  'Add a photo (optional)',
 };
 
 function setScanMode(mode) {
@@ -1941,7 +2243,14 @@ function setScanMode(mode) {
   document.getElementById('smt-' + mode)?.classList.add('active');
   setEl('scan-lbl', SCAN_LABELS[mode] || '');
   const frame = document.getElementById('scan-frame');
-  if (frame) frame.style.opacity = mode === 'scan' ? '1' : '0';
+  if (frame) frame.style.opacity = mode === 'scan' ? '1' : '0.6';
+}
+
+// Open camera in story mode from feed
+function openStoryCamera() {
+  setScanMode('story');
+  showScreen('scan');
+  startCamera();
 }
 
 function routeCapture() {
@@ -2017,9 +2326,19 @@ function goToLog() {
 //  STORY EDITOR
 // ══════════════════════════════════════════
 let seTextColor = '#fff';
-const SE_BG_COLORS = ['transparent','#1B2E4B','#000','#0a4a2a','#4a0a0a'];
+let seTextSize = 18;
+let seTextAlign = 'left';
+let seTextFont = 'default';
+const SE_BG_COLORS = ['transparent','#1B2E4B','#000','#0a4a2a','#4a0a0a','#2a0a4a','#4a3000'];
 let seBgIdx = 0;
-const SE_EMOJIS = ['🐟','🐡','🦈','🎣','🌊','🏖️','🌅','⭐','🔥','💦','🌿','🏔️','🎆','✨','🦐','🦞','🦀','🐙','😄','👍'];
+
+const SE_EMOJI_CATS = {
+  '🎣': ['🐟','🐡','🦈','🎣','🦐','🦞','🦀','🐙','🐋','🐬','🐠','🦑','🦭','🐚','🐌','🦆'],
+  '🌊': ['🌊','🏖️','🌅','🌄','🌊','🏝️','⛵','🚤','🎿','🏄','🤿','🚣','⛵','🌤️','☀️','🌙'],
+  '😊': ['😄','😎','🤙','👍','💪','🎉','🔥','✨','💫','⭐','❤️','🥇','🏆','🎯','💯','🤩'],
+  '🌿': ['🌿','🌲','🌳','🍃','🌾','🌱','🪨','🏔️','⛰️','🌻','🌸','💐','🍀','🌺','🌵','🎋'],
+};
+let seActiveCat = '🎣';
 
 function initStoryEditor(b64, mime) {
   // Photo background
@@ -2042,9 +2361,18 @@ function initStoryEditor(b64, mime) {
   document.getElementById('se-text-wrap').style.display = 'none';
   document.getElementById('se-emoji-picker').style.display = 'none';
   seBgIdx = 0;
-  // Populate emoji grid
-  const grid = document.getElementById('se-emoji-grid');
-  if (grid) grid.innerHTML = SE_EMOJIS.map(e => `<div class="se-emoji-item" onclick="addSeEmoji('${e}')">${e}</div>`).join('');
+  // Reset text controls to defaults
+  seTextColor = '#fff';
+  seTextSize = 18;
+  seTextAlign = 'left';
+  seTextFont = 'default';
+  document.querySelectorAll('.se-color').forEach((c,i) => i === 0 ? c.classList.add('sel') : c.classList.remove('sel'));
+  document.querySelectorAll('.se-font-btn').forEach((b,i) => i === 0 ? b.classList.add('active-font') : b.classList.remove('active-font'));
+  document.querySelectorAll('.se-size-btn').forEach((b,i) => i === 0 ? b.classList.add('active-size') : b.classList.remove('active-size'));
+  document.querySelectorAll('.se-align-btn').forEach((b,i) => i === 0 ? b.classList.add('active-align') : b.classList.remove('active-align'));
+  // Populate emoji category tabs + grid
+  seActiveCat = '🎣';
+  renderSeEmojiCats();
   showScreen('story-editor');
 }
 
@@ -2059,11 +2387,30 @@ function toggleSeText() {
   }
 }
 
+function renderSeEmojiCats() {
+  const cats = document.getElementById('se-emoji-cats');
+  const grid = document.getElementById('se-emoji-grid');
+  if (!cats || !grid) return;
+  cats.innerHTML = Object.keys(SE_EMOJI_CATS).map(cat =>
+    `<div class="se-emoji-cat${cat === seActiveCat ? ' active-cat' : ''}" onclick="selectSeEmojiCat('${cat}')">${cat}</div>`
+  ).join('');
+  grid.innerHTML = (SE_EMOJI_CATS[seActiveCat] || []).map(e =>
+    `<div class="se-emoji-item" onclick="addSeEmoji('${e}')">${e}</div>`
+  ).join('');
+}
+
+function selectSeEmojiCat(cat) {
+  seActiveCat = cat;
+  renderSeEmojiCats();
+}
+
 function toggleSeEmoji() {
   const ep = document.getElementById('se-emoji-picker');
   const w  = document.getElementById('se-text-wrap');
   w.style.display = 'none';
-  ep.style.display = ep.style.display === 'none' ? 'block' : 'none';
+  const showing = ep.style.display !== 'none';
+  ep.style.display = showing ? 'none' : 'block';
+  if (!showing) renderSeEmojiCats();
 }
 
 function closeSePanels() {
@@ -2077,6 +2424,24 @@ function setSeColor(color, el) {
   el?.classList.add('sel');
 }
 
+function setSeFont(font, el) {
+  seTextFont = font;
+  document.querySelectorAll('.se-font-btn').forEach(b => b.classList.remove('active-font'));
+  el?.classList.add('active-font');
+}
+
+function setSeSize(size, el) {
+  seTextSize = size;
+  document.querySelectorAll('.se-size-btn').forEach(b => b.classList.remove('active-size'));
+  el?.classList.add('active-size');
+}
+
+function setSeAlign(align, el) {
+  seTextAlign = align;
+  document.querySelectorAll('.se-align-btn').forEach(b => b.classList.remove('active-align'));
+  el?.classList.add('active-align');
+}
+
 function addSeTextOverlay() {
   const text = document.getElementById('se-text-inp').value.trim();
   if (!text) return;
@@ -2084,7 +2449,18 @@ function addSeTextOverlay() {
   const div = document.createElement('div');
   div.className = 'se-text-overlay';
   div.style.color = seTextColor;
-  div.style.top = (30 + Math.random() * 30) + '%';
+  div.style.fontSize = seTextSize + 'px';
+  div.style.textAlign = seTextAlign;
+  div.style.top = (25 + Math.random() * 35) + '%';
+  div.style.left = '8%';
+  div.style.width = '84%';
+  const fontMap = {
+    bold: 'font-weight:900;',
+    mono: 'font-family:monospace;',
+    rounded: 'letter-spacing:0.5px;border-radius:6px;padding:2px 6px;background:rgba(0,0,0,0.3);',
+    default: '',
+  };
+  div.style.cssText += (fontMap[seTextFont] || '');
   div.textContent = text;
   div.onclick = e => { e.stopPropagation(); div.remove(); };
   overlays.appendChild(div);
@@ -2150,6 +2526,127 @@ function updateStoriesRow() {
       ring.innerHTML = '';
     }
   }
+}
+
+// ══════════════════════════════════════════
+//  FEED COMPOSER
+// ══════════════════════════════════════════
+let fcePhotoB64 = null;
+let fcePhotoMime = null;
+
+function expandFeedComposer() {
+  document.getElementById('feed-composer-collapsed').style.display = 'none';
+  const exp = document.getElementById('feed-composer-expanded');
+  exp.style.display = 'block';
+  exp.style.animation = 'card-rise 0.25s var(--ease) both';
+  setTimeout(() => document.getElementById('fce-textarea')?.focus(), 80);
+  // Sync avatar initials
+  const username = STORE.get('username', 'Me');
+  const av = username.slice(0, 2).toUpperCase();
+  setEl('fce-av', av);
+  setEl('feed-composer-av', av);
+}
+
+function collapseFeedComposer() {
+  document.getElementById('feed-composer-expanded').style.display = 'none';
+  document.getElementById('feed-composer-collapsed').style.display = 'block';
+  document.getElementById('fce-textarea').value = '';
+  removeFcePhoto();
+  document.getElementById('fce-share-btn').disabled = true;
+}
+
+function expandFeedComposerWithPhoto() {
+  expandFeedComposer();
+  setTimeout(() => triggerFcePhotoUpload(), 150);
+}
+
+function triggerFcePhotoUpload() {
+  document.getElementById('fce-gallery-input')?.click();
+}
+
+function handleFcePhotoSelect(event) {
+  const file = event.target.files?.[0];
+  if (!file) return;
+  fcePhotoMime = file.type || 'image/jpeg';
+  const reader = new FileReader();
+  reader.onload = e => {
+    const dataUrl = e.target.result;
+    fcePhotoB64 = dataUrl.split(',')[1];
+    const img = document.getElementById('fce-photo-img');
+    const preview = document.getElementById('fce-photo-preview');
+    if (img) img.src = dataUrl;
+    if (preview) preview.style.display = 'block';
+    updateFceShareBtn();
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
+}
+
+function removeFcePhoto() {
+  fcePhotoB64 = null;
+  fcePhotoMime = null;
+  const img = document.getElementById('fce-photo-img');
+  const preview = document.getElementById('fce-photo-preview');
+  if (img) img.src = '';
+  if (preview) preview.style.display = 'none';
+  updateFceShareBtn();
+}
+
+function updateFceShareBtn() {
+  const text = document.getElementById('fce-textarea')?.value.trim() || '';
+  const btn = document.getElementById('fce-share-btn');
+  if (btn) btn.disabled = !text && !fcePhotoB64;
+}
+
+async function shareFeedPost() {
+  const text = document.getElementById('fce-textarea')?.value.trim();
+  if (!text && !fcePhotoB64) return;
+  const btn = document.getElementById('fce-share-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sharing…'; }
+  const username = STORE.get('username', 'You');
+  const post = {
+    id: Date.now().toString(),
+    username,
+    caption: text || '',
+    photo_b64: fcePhotoB64,
+    mime: fcePhotoMime,
+    spot_name: currentSpot?.name || null,
+    is_public: true,
+    created_at: new Date().toISOString(),
+    likes: 0,
+    liked: false,
+  };
+  const posts = STORE.get('posts', []);
+  posts.unshift(post);
+  STORE.set('posts', posts.slice(0, 50));
+
+  // Try Supabase if logged in
+  if (sb && currentUser) {
+    try {
+      let photoUrl = null;
+      if (fcePhotoB64) {
+        const blob = b64Blob(fcePhotoB64, fcePhotoMime || 'image/jpeg');
+        const fname = `feed/${currentUser.id}/${Date.now()}.jpg`;
+        const { data: up } = await sb.storage.from('catch-photos').upload(fname, blob, { contentType: 'image/jpeg', upsert: true });
+        if (up?.path) {
+          const { data: pu } = sb.storage.from('catch-photos').getPublicUrl(up.path);
+          photoUrl = pu?.publicUrl || null;
+        }
+      }
+      await sb.from('catches').insert({
+        user_id: currentUser.id,
+        species: text?.slice(0, 60) || 'Post',
+        caption: text || '',
+        photo_url: photoUrl,
+        is_public: true,
+      });
+    } catch(e) { console.error('shareFeedPost Supabase:', e); }
+  }
+
+  injectPostIntoFeed(post);
+  showToast('Post shared! 🎣');
+  collapseFeedComposer();
+  if (btn) { btn.textContent = 'Share'; }
 }
 
 // ══════════════════════════════════════════
@@ -3264,31 +3761,112 @@ document.addEventListener('click', e => {
 //  MAP (Leaflet)
 // ══════════════════════════════════════════
 const SPOTS = [
-  { name:'Castaic Lake',              lat:34.5200, lng:-118.6064, sub:'Largemouth Bass · Striped Bass · Trout', type:'lake' },
-  { name:'Big Bear Lake',             lat:34.2439, lng:-116.9114, sub:'Rainbow Trout · Largemouth Bass · Catfish', type:'lake' },
-  { name:'Pyramid Lake',              lat:34.6442, lng:-118.7643, sub:'Largemouth Bass · Striped Bass', type:'lake' },
-  { name:'Lake Elsinore',             lat:33.6681, lng:-117.3273, sub:'Channel Catfish · Largemouth Bass · Crappie', type:'lake' },
-  { name:'Lake Perris',               lat:33.8492, lng:-117.1895, sub:'Crappie · Bluegill · Rainbow Trout', type:'lake' },
-  { name:'Diamond Valley Lake',       lat:33.6762, lng:-117.0338, sub:'Largemouth Bass · Striped Bass · Catfish', type:'lake' },
-  { name:'Lake Casitas',              lat:34.3924, lng:-119.3346, sub:'Largemouth Bass · Crappie · Bluegill', type:'lake' },
-  { name:'Lake Skinner',              lat:33.5880, lng:-117.0710, sub:'Striped Bass · Catfish · Crappie', type:'lake' },
-  { name:'Silverwood Lake',           lat:34.3023, lng:-117.3175, sub:'Crappie · Rainbow Trout · Largemouth Bass', type:'lake' },
-  { name:'Lake Cuyamaca',             lat:32.9865, lng:-116.5807, sub:'Rainbow Trout · Largemouth Bass', type:'lake' },
-  { name:'San Vicente Reservoir',     lat:32.9183, lng:-116.9177, sub:'Largemouth Bass · Striped Bass · Catfish', type:'lake' },
-  { name:'El Capitan Reservoir',      lat:32.9083, lng:-116.7818, sub:'Largemouth Bass · Catfish · Crappie', type:'lake' },
-  { name:'Lake Henshaw',              lat:33.2367, lng:-116.7454, sub:'Channel Catfish · Crappie · Largemouth Bass', type:'lake' },
-  { name:'Prado Lake',                lat:33.9440, lng:-117.6476, sub:'Rainbow Trout · Channel Catfish · Bass', type:'lake' },
+  // ── GREATER LOS ANGELES LAKES ──
+  { name:'Castaic Lake',              lat:34.5200, lng:-118.6064, sub:'Largemouth Bass · Striped Bass · Rainbow Trout', type:'lake' },
+  { name:'Pyramid Lake',              lat:34.6442, lng:-118.7643, sub:'Largemouth Bass · Striped Bass · Catfish', type:'lake' },
   { name:'Puddingstone Reservoir',    lat:34.0870, lng:-117.8044, sub:'Largemouth Bass · Rainbow Trout · Catfish', type:'lake' },
-  { name:'Dixon Lake',                lat:33.1734, lng:-117.0694, sub:'Largemouth Bass · Rainbow Trout · Catfish', type:'lake' },
-  { name:'Otay Lakes',                lat:32.6100, lng:-116.9700, sub:'Largemouth Bass · Carp · Catfish', type:'lake' },
-  { name:'Salton Sea',                lat:33.3330, lng:-115.8342, sub:'Tilapia · Corvina · Striped Bass', type:'lake' },
-  { name:'Santa Monica Pier',         lat:34.0100, lng:-118.4965, sub:'Halibut · Barred Sand Bass · Mackerel', type:'pier' },
-  { name:'Huntington Beach Pier',     lat:33.6547, lng:-118.0046, sub:'Barred Sand Bass · Halibut · Perch', type:'pier' },
+  { name:'Prado Basin',               lat:33.9440, lng:-117.6476, sub:'Rainbow Trout · Channel Catfish · Striped Bass', type:'lake' },
+  { name:'Silverwood Lake',           lat:34.3023, lng:-117.3175, sub:'Crappie · Rainbow Trout · Largemouth Bass', type:'lake' },
+  { name:'Lake Hughes',               lat:34.6887, lng:-118.4357, sub:'Largemouth Bass · Catfish · Bluegill', type:'lake' },
+  { name:'Elizabeth Lake',            lat:34.6680, lng:-118.3770, sub:'Largemouth Bass · Catfish · Crappie', type:'lake' },
+  { name:'Lake Balboa',               lat:34.1656, lng:-118.5008, sub:'Largemouth Bass · Catfish · Bluegill', type:'lake' },
+  { name:'Hansen Dam',                lat:34.2685, lng:-118.3477, sub:'Rainbow Trout · Catfish · Largemouth Bass', type:'lake' },
+  { name:'Legg Lake (Whittier Narrows)', lat:34.0258, lng:-118.0488, sub:'Largemouth Bass · Catfish · Bluegill', type:'lake' },
+  { name:'Bouquet Reservoir',         lat:34.5526, lng:-118.3395, sub:'Rainbow Trout · Bass · Catfish', type:'lake' },
+  { name:'San Gabriel Reservoir',     lat:34.2223, lng:-117.8295, sub:'Largemouth Bass · Catfish · Trout', type:'lake' },
+  { name:'Morris Reservoir',          lat:34.1988, lng:-117.8104, sub:'Largemouth Bass · Channel Catfish', type:'lake' },
+  { name:'Cogswell Reservoir',        lat:34.2290, lng:-117.8553, sub:'Largemouth Bass · Catfish · Trout', type:'lake' },
+  { name:'Santa Fe Dam',              lat:34.0975, lng:-117.9530, sub:'Largemouth Bass · Catfish · Bluegill', type:'lake' },
+  { name:'Rio Hondo Park Lakes',      lat:33.9610, lng:-118.0610, sub:'Catfish · Bass · Carp', type:'lake' },
+  // ── BIG BEAR & MOUNTAINS ──
+  { name:'Big Bear Lake',             lat:34.2439, lng:-116.9114, sub:'Rainbow Trout · Largemouth Bass · Channel Catfish', type:'lake' },
+  { name:'Lake Gregory',              lat:34.2437, lng:-117.3048, sub:'Rainbow Trout · Largemouth Bass · Bluegill', type:'lake' },
+  { name:'Lake Arrowhead',            lat:34.2534, lng:-117.1858, sub:'Rainbow Trout · Largemouth Bass · Catfish', type:'lake' },
+  { name:'Grass Valley Lake',         lat:34.2283, lng:-116.8810, sub:'Rainbow Trout · Largemouth Bass', type:'lake' },
+  // ── INLAND EMPIRE ──
+  { name:'Lake Perris',               lat:33.8492, lng:-117.1895, sub:'Crappie · Bluegill · Rainbow Trout · Bass', type:'lake' },
+  { name:'Lake Elsinore',             lat:33.6681, lng:-117.3273, sub:'Channel Catfish · Largemouth Bass · Crappie', type:'lake' },
+  { name:'Diamond Valley Lake',       lat:33.6762, lng:-117.0338, sub:'Largemouth Bass · Striped Bass · Catfish', type:'lake' },
+  { name:'Lake Skinner',              lat:33.5880, lng:-117.0710, sub:'Striped Bass · Catfish · Crappie · Trout', type:'lake' },
+  { name:'Lake Hemet',                lat:33.6564, lng:-116.7277, sub:'Rainbow Trout · Channel Catfish · Bass', type:'lake' },
+  { name:'Lake Matthews',             lat:33.8580, lng:-117.4252, sub:'Largemouth Bass · Catfish · Bluegill', type:'lake' },
+  { name:'Corona Lake',               lat:33.7786, lng:-117.5170, sub:'Largemouth Bass · Rainbow Trout · Catfish', type:'lake' },
+  { name:'Irvine Lake',               lat:33.7803, lng:-117.7218, sub:'Largemouth Bass · Catfish · Bluegill · Trout', type:'lake' },
+  { name:'Prado Lake Picnic Area',    lat:33.9360, lng:-117.6240, sub:'Channel Catfish · Carp · Bass', type:'lake' },
+  // ── ORANGE COUNTY COASTAL ──
+  { name:'Seal Beach Pier',           lat:33.7414, lng:-118.1061, sub:'Mackerel · Halibut · Perch · Croaker', type:'pier' },
+  { name:'Huntington Beach Pier',     lat:33.6547, lng:-118.0046, sub:'Barred Sand Bass · Halibut · Mackerel', type:'pier' },
   { name:'Newport Pier',              lat:33.6068, lng:-117.9300, sub:'Barred Sand Bass · Halibut · Corbina', type:'pier' },
-  { name:'Redondo Beach Pier',        lat:33.8399, lng:-118.3911, sub:'Halibut · Mackerel · Bonito', type:'pier' },
+  { name:'Balboa Pier',               lat:33.5998, lng:-117.9080, sub:'Halibut · Sand Bass · Yellowfin Croaker', type:'pier' },
+  { name:'San Clemente Pier',         lat:33.4208, lng:-117.6198, sub:'Yellowtail · Bonito · Halibut · Bass', type:'pier' },
+  { name:'Laguna Beach Reefs',        lat:33.5427, lng:-117.7854, sub:'Calico Bass · Garibaldi · White Seabass', type:'ocean' },
   { name:'Dana Point Harbor',         lat:33.4598, lng:-117.6956, sub:'Yellowtail · White Seabass · Halibut', type:'ocean' },
+  { name:'Doheny State Beach',        lat:33.4618, lng:-117.6722, sub:'Barred Sand Bass · Halibut · Corbina', type:'ocean' },
+  { name:'Crystal Cove',              lat:33.5713, lng:-117.8372, sub:'Calico Bass · Sheephead · Garibaldi', type:'ocean' },
+  { name:'Upper Newport Bay',         lat:33.6386, lng:-117.9037, sub:'Spotted Sand Bass · Halibut · Corbina', type:'ocean' },
+  { name:'Bolsa Chica Wetlands',      lat:33.7095, lng:-118.0582, sub:'Halibut · Yellowfin Croaker · Corbina', type:'ocean' },
+  { name:'Capistrano Bight',          lat:33.4321, lng:-117.6570, sub:'Yellowtail · White Seabass · Halibut', type:'ocean' },
+  // ── LOS ANGELES COASTAL ──
+  { name:'Santa Monica Pier',         lat:34.0100, lng:-118.4965, sub:'Halibut · Barred Sand Bass · Mackerel · Bonito', type:'pier' },
+  { name:'Redondo Beach Pier',        lat:33.8399, lng:-118.3911, sub:'Halibut · Mackerel · Bonito · Bass', type:'pier' },
+  { name:'Hermosa Beach Pier',        lat:33.8622, lng:-118.3998, sub:'Halibut · Barred Sand Bass · Mackerel', type:'pier' },
+  { name:'Manhattan Beach Pier',      lat:33.8843, lng:-118.4119, sub:'Halibut · Barred Sand Bass · Yellowfin Croaker', type:'pier' },
+  { name:'Venice Beach Pier',         lat:33.9861, lng:-118.4740, sub:'Mackerel · Barred Sand Bass · Halibut', type:'pier' },
+  { name:'Malibu Pier',               lat:34.0358, lng:-118.6786, sub:'Calico Bass · Halibut · Bonito', type:'pier' },
+  { name:'Point Dume',                lat:34.0002, lng:-118.8083, sub:'Calico Bass · White Seabass · Halibut', type:'ocean' },
+  { name:'Paradise Cove',             lat:34.0142, lng:-118.7978, sub:'Calico Bass · Sheephead · Yellowtail', type:'ocean' },
+  { name:'Palos Verdes Kelp Beds',    lat:33.7565, lng:-118.3879, sub:'Calico Bass · Sheephead · White Seabass', type:'ocean' },
+  { name:'Cabrillo Beach',            lat:33.7051, lng:-118.2706, sub:'Barred Sand Bass · Halibut · Bonito', type:'ocean' },
+  { name:'Los Angeles Harbor',        lat:33.7178, lng:-118.2736, sub:'Spotted Sand Bass · Halibut · White Seabass', type:'ocean' },
+  { name:'Malibu Creek',              lat:34.0994, lng:-118.7326, sub:'Steelhead Trout · Largemouth Bass', type:'ocean' },
+  // ── VENTURA COUNTY ──
+  { name:'Ventura Pier',              lat:34.2697, lng:-119.2879, sub:'Halibut · Perch · Mackerel · Bonito', type:'pier' },
+  { name:'Oxnard State Beach',        lat:34.2035, lng:-119.2170, sub:'Halibut · Barred Sand Bass · Corbina', type:'ocean' },
+  { name:'Channel Islands Harbor',    lat:34.1582, lng:-119.2139, sub:'Halibut · White Seabass · Yellowtail', type:'ocean' },
+  { name:'Port Hueneme Pier',         lat:34.1481, lng:-119.2069, sub:'Halibut · Perch · Mackerel', type:'pier' },
+  { name:'Lake Piru',                 lat:34.4580, lng:-118.9082, sub:'Largemouth Bass · Striped Bass · Catfish', type:'lake' },
+  { name:'Lake Casitas',              lat:34.3924, lng:-119.3346, sub:'Largemouth Bass · Crappie · Bluegill · Catfish', type:'lake' },
+  { name:'Rincon Point',              lat:34.3666, lng:-119.4753, sub:'Calico Bass · Bonito · Yellowtail', type:'ocean' },
+  // ── SANTA BARBARA ──
+  { name:'Stearns Wharf',             lat:34.4132, lng:-119.6921, sub:'Halibut · Mackerel · Bonito · Bass', type:'pier' },
+  { name:'Santa Barbara Harbor',      lat:34.4070, lng:-119.6920, sub:'Yellowtail · Halibut · White Seabass', type:'ocean' },
+  { name:'Gaviota State Beach',       lat:34.4730, lng:-120.2260, sub:'Calico Bass · Halibut · Surfperch', type:'ocean' },
+  { name:'Refugio State Beach',       lat:34.4636, lng:-120.0703, sub:'Calico Bass · Halibut · Corbina', type:'ocean' },
+  { name:'El Capitan State Beach',    lat:34.4578, lng:-120.0177, sub:'Surfperch · Calico Bass · Halibut', type:'ocean' },
+  { name:'Carpinteria State Beach',   lat:34.3941, lng:-119.5231, sub:'Halibut · Corbina · Surfperch', type:'ocean' },
+  { name:'Lake Cachuma',              lat:34.5841, lng:-119.9818, sub:'Largemouth Bass · Rainbow Trout · Catfish', type:'lake' },
+  // ── SAN DIEGO ──
   { name:'Mission Bay',               lat:32.7742, lng:-117.2338, sub:'Spotted Sand Bass · Halibut · Corvina', type:'ocean' },
   { name:'San Diego Bay',             lat:32.6481, lng:-117.1912, sub:'Spotted Sand Bass · Halibut · White Seabass', type:'ocean' },
+  { name:'Ocean Beach Pier',          lat:32.7473, lng:-117.2559, sub:'Mackerel · Halibut · Perch · Bonito', type:'pier' },
+  { name:'Shelter Island Pier',       lat:32.7154, lng:-117.2248, sub:'Halibut · Sand Bass · Mackerel · Bonito', type:'pier' },
+  { name:'La Jolla Kelp Beds',        lat:32.8520, lng:-117.2827, sub:'Calico Bass · Yellowtail · White Seabass', type:'ocean' },
+  { name:'La Jolla Shores',           lat:32.8596, lng:-117.2569, sub:'Halibut · Corbina · Yellowfin Croaker', type:'ocean' },
+  { name:'Point Loma',                lat:32.6688, lng:-117.2577, sub:'Yellowtail · White Seabass · Calico Bass', type:'ocean' },
+  { name:'Torrey Pines State Beach',  lat:32.9286, lng:-117.2583, sub:'Corbina · Halibut · Surfperch', type:'ocean' },
+  { name:'Pacific Beach',             lat:32.7963, lng:-117.2593, sub:'Halibut · Corbina · Barred Sand Bass', type:'ocean' },
+  { name:'Silver Strand State Beach', lat:32.6383, lng:-117.1390, sub:'Halibut · Corbina · Surfperch', type:'ocean' },
+  { name:'Coronado Ferry Landing',    lat:32.6992, lng:-117.1752, sub:'Spotted Sand Bass · Halibut · Corvina', type:'ocean' },
+  { name:'Imperial Beach Pier',       lat:32.5760, lng:-117.1330, sub:'Perch · Halibut · Mackerel', type:'pier' },
+  // ── SAN DIEGO LAKES ──
+  { name:'El Capitan Reservoir',      lat:32.9083, lng:-116.7818, sub:'Largemouth Bass · Catfish · Crappie', type:'lake' },
+  { name:'San Vicente Reservoir',     lat:32.9183, lng:-116.9177, sub:'Largemouth Bass · Striped Bass · Catfish', type:'lake' },
+  { name:'Lake Jennings',             lat:32.8553, lng:-116.8936, sub:'Largemouth Bass · Rainbow Trout · Catfish', type:'lake' },
+  { name:'Lake Murray',               lat:32.7858, lng:-117.0453, sub:'Largemouth Bass · Rainbow Trout · Catfish', type:'lake' },
+  { name:'Miramar Reservoir',         lat:32.8812, lng:-117.1086, sub:'Largemouth Bass · Rainbow Trout · Bluegill', type:'lake' },
+  { name:'Sutherland Reservoir',      lat:33.1200, lng:-116.7822, sub:'Largemouth Bass · Catfish · Bluegill', type:'lake' },
+  { name:'Lake Cuyamaca',             lat:32.9865, lng:-116.5807, sub:'Rainbow Trout · Largemouth Bass · Perch', type:'lake' },
+  { name:'Lake Henshaw',              lat:33.2367, lng:-116.7454, sub:'Channel Catfish · Crappie · Largemouth Bass', type:'lake' },
+  { name:'Santee Lakes',              lat:32.8400, lng:-116.9793, sub:'Largemouth Bass · Catfish · Trout · Carp', type:'lake' },
+  { name:'Dixon Lake',                lat:33.1734, lng:-117.0694, sub:'Largemouth Bass · Rainbow Trout · Catfish', type:'lake' },
+  { name:'Otay Lakes',                lat:32.6100, lng:-116.9700, sub:'Largemouth Bass · Catfish · Carp', type:'lake' },
+  { name:'Lower Otay Lake',           lat:32.6049, lng:-116.9590, sub:'Largemouth Bass · Striped Bass · Catfish', type:'lake' },
+  { name:'Lake Morena',               lat:32.6863, lng:-116.5239, sub:'Largemouth Bass · Rainbow Trout · Catfish', type:'lake' },
+  { name:'Barrett Lake',              lat:32.6756, lng:-116.6746, sub:'Largemouth Bass · Channel Catfish · Bass', type:'lake' },
+  // ── DESERT / SALTON SEA ──
+  { name:'Salton Sea North Shore',    lat:33.5207, lng:-115.9140, sub:'Tilapia · Corvina · Striped Mullet', type:'lake' },
+  { name:'Salton Sea South Shore',    lat:33.1500, lng:-115.8342, sub:'Tilapia · Corvina · Bonytail Chub', type:'lake' },
+  { name:'Lake Havasu (Border)',      lat:34.4839, lng:-114.3228, sub:'Striped Bass · Largemouth Bass · Crappie', type:'lake' },
 ];
 
 let leafletMap = null;
