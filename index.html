@@ -241,12 +241,12 @@ body {
 /* ── AUTH ── */
 .auth-wrap{background:linear-gradient(-45deg,#0c1e35,#1B2E4B,#0d3056,#0a1628);background-size:400% 400%;animation:ob-bg-shift 14s ease infinite;min-height:100%;display:flex;flex-direction:column;position:relative;overflow:hidden;}
 .auth-wrap::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 20%,rgba(14,165,233,0.2) 0%,transparent 50%),radial-gradient(ellipse at 75% 80%,rgba(102,126,234,0.16) 0%,transparent 50%);pointer-events:none;}
-.auth-top{flex:0 0 auto;padding:36px 20px 50px;text-align:center;position:relative;z-index:1;}
+.auth-top{flex:0 0 auto;padding:44px 20px 40px;text-align:center;position:relative;z-index:1;}
 .auth-logo{font-size:52px;display:block;filter:drop-shadow(0 0 28px rgba(14,165,233,0.5)) drop-shadow(0 8px 24px rgba(0,0,0,0.4));}
 .auth-h1{font-size:28px;font-weight:800;color:#fff;letter-spacing:-0.8px;margin-top:12px;text-shadow:0 2px 16px rgba(0,0,0,0.3);}
 .auth-sub{font-size:14px;color:rgba(255,255,255,0.55);letter-spacing:-0.2px;margin-top:5px;}
 .trial-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(52,199,89,0.18);border:1px solid rgba(52,199,89,0.4);color:#4cd964;font-size:11px;font-weight:600;padding:5px 14px;border-radius:20px;letter-spacing:-0.1px;margin-top:14px;backdrop-filter:blur(8px);}
-.auth-card{background:rgba(255,255,255,0.97);border-radius:28px 28px 0 0;flex:1;padding:26px 20px 36px;display:flex;flex-direction:column;gap:14px;margin-top:0;box-shadow:0 -8px 40px rgba(0,0,0,0.25);position:relative;z-index:1;}
+.auth-card{background:#fff;border-radius:28px 28px 0 0;flex:1;padding:26px 20px 40px;display:flex;flex-direction:column;gap:12px;margin-top:0;box-shadow:0 -8px 40px rgba(0,0,0,0.25);position:relative;z-index:1;}
 .inp-lbl{font-size:12px;font-weight:600;color:var(--gray);letter-spacing:-0.1px;margin-bottom:5px;}
 .auth-sep{display:flex;align-items:center;gap:10px;margin:4px 0;}
 .auth-sep::before,.auth-sep::after{content:'';flex:1;height:0.5px;background:var(--bg);}
@@ -424,32 +424,29 @@ body {
 
 /* ── FEED COMPOSER ── */
 .feed-composer-card{background:#fff;border-radius:var(--card-r);margin:8px 10px 4px;box-shadow:var(--card-shadow);overflow:hidden;}
-.feed-composer-top{display:flex;align-items:center;gap:12px;padding:13px 14px 0;}
-.feed-composer-input{flex:1;background:var(--bg);border-radius:22px;padding:10px 16px;font-size:14px;font-family:inherit;color:#000;cursor:pointer;letter-spacing:-0.2px;border:none;outline:none;text-align:left;-webkit-tap-highlight-color:transparent;}
-.feed-composer-input::placeholder{color:var(--gray);}
-.feed-composer-divider{height:0.5px;background:var(--sep);margin:10px 0 0;}
-.feed-composer-actions{display:flex;align-items:center;padding:8px 10px 10px;gap:4px;}
-.feed-composer-action{display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:12px;font-size:12px;font-weight:600;color:var(--gray);cursor:pointer;border:none;background:none;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:background 0.15s;}
-.feed-composer-action:active{background:var(--bg);}
+.feed-composer-top{display:flex;align-items:center;gap:10px;padding:10px 12px;}
+.feed-composer-input{flex:1;background:var(--bg);border-radius:22px;padding:9px 14px;font-size:13.5px;font-family:inherit;color:var(--gray);cursor:pointer;letter-spacing:-0.2px;border:none;outline:none;text-align:left;-webkit-tap-highlight-color:transparent;font-weight:400;}
+.feed-composer-input:active{background:#e8eaed;}
+.fce-photo-quick{width:34px;height:34px;border-radius:50%;background:var(--bg);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent;transition:background 0.15s;}
+.fce-photo-quick:active{background:#e0e2e8;}
 /* Expanded inline composer */
 .feed-composer-expanded{background:#fff;border-radius:var(--card-r);margin:0 10px 8px;box-shadow:0 4px 24px rgba(0,0,0,0.1),0 1px 4px rgba(0,0,0,0.06);overflow:hidden;}
-.fce-header{display:flex;align-items:center;justify-content:space-between;padding:13px 14px 10px;border-bottom:0.5px solid var(--sep);}
+.fce-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 10px;border-bottom:0.5px solid var(--sep);}
 .fce-title{font-size:15px;font-weight:700;color:#000;letter-spacing:-0.4px;}
-.fce-close{width:28px;height:28px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:var(--gray);}
-.fce-body{padding:12px 14px;}
-.fce-av-row{display:flex;gap:11px;align-items:flex-start;}
-.fce-textarea{flex:1;border:none;outline:none;font-size:15px;font-family:inherit;color:#000;resize:none;letter-spacing:-0.2px;line-height:1.55;min-height:80px;background:transparent;}
+.fce-close{width:26px;height:26px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;color:var(--gray);-webkit-tap-highlight-color:transparent;}
+.fce-body{padding:12px 14px 10px;}
+.fce-av-row{display:flex;gap:10px;align-items:flex-start;}
+.fce-textarea{flex:1;border:none;outline:none;font-size:15px;font-family:inherit;color:#000;resize:none;letter-spacing:-0.2px;line-height:1.55;min-height:72px;background:transparent;}
 .fce-textarea::placeholder{color:var(--gray);}
-.fce-photo-preview{margin:10px 0 0;border-radius:14px;overflow:hidden;position:relative;display:none;}
-.fce-photo-preview img{width:100%;max-height:180px;object-fit:cover;display:block;}
-.fce-photo-remove{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:#fff;}
-.fce-footer{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 14px;border-top:0.5px solid var(--sep);}
-.fce-footer-actions{display:flex;gap:4px;}
-.fce-icon-btn{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--bg);border:none;-webkit-tap-highlight-color:transparent;transition:background 0.15s;}
+.fce-photo-preview{margin:8px 0 0;border-radius:12px;overflow:hidden;position:relative;display:none;}
+.fce-photo-preview img{width:100%;max-height:160px;object-fit:cover;display:block;}
+.fce-photo-remove{position:absolute;top:7px;right:7px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;color:#fff;}
+.fce-footer{display:flex;align-items:center;justify-content:space-between;padding:8px 14px 12px;border-top:0.5px solid var(--sep);}
+.fce-icon-btn{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--bg);border:none;-webkit-tap-highlight-color:transparent;transition:background 0.15s;}
 .fce-icon-btn:active{background:rgba(0,0,0,0.09);}
-.fce-share-btn{background:linear-gradient(135deg,#1B2E4B,#0e4a80);color:#fff;border:none;border-radius:22px;padding:9px 22px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;letter-spacing:-0.3px;box-shadow:0 4px 16px rgba(14,74,128,0.3);-webkit-tap-highlight-color:transparent;transition:transform 0.15s var(--spring),opacity 0.15s;}
-.fce-share-btn:active{transform:scale(0.95);opacity:0.85;}
-.fce-share-btn:disabled{opacity:0.4;}
+.fce-share-btn{background:var(--navy);color:#fff;border:none;border-radius:20px;padding:8px 20px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;letter-spacing:-0.2px;-webkit-tap-highlight-color:transparent;transition:transform 0.15s var(--spring),opacity 0.15s;}
+.fce-share-btn:active{transform:scale(0.94);}
+.fce-share-btn:disabled{opacity:0.35;}
 
 /* ── POST EDITOR ── */
 .pe-wrap{height:100%;background:#fff;display:flex;flex-direction:column;overflow-y:auto;}
@@ -603,9 +600,10 @@ body {
 .badge-item.locked{opacity:0.32;filter:grayscale(0.8);}
 .badge-img{width:58px;height:58px;border-radius:50%;object-fit:cover;display:block;box-shadow:0 3px 10px rgba(0,0,0,0.12);}
 .badge-nm{font-size:9px;font-weight:700;color:var(--navy);text-align:center;line-height:1.25;letter-spacing:-0.1px;}
-.catch-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:0 12px;}
-.catch-thumb{background:linear-gradient(145deg,#c8ddf0,#8fb8d8);border-radius:16px;height:100px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 0.18s var(--spring),opacity 0.15s;background-size:cover;background-position:center;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,0.1);}
+.catch-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 12px;}
+.catch-thumb{background:#dde;border-radius:16px;height:120px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 0.18s var(--spring),opacity 0.15s;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.12),0 1px 4px rgba(0,0,0,0.06);}
 .catch-thumb:active{transform:scale(0.93);opacity:0.88;}
+.catch-label{position:absolute;bottom:7px;left:8px;background:rgba(0,0,0,0.52);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;font-size:9.5px;font-weight:700;padding:3px 9px;border-radius:10px;letter-spacing:-0.1px;}
 /* ── BADGE DETAIL POPUP ── */
 .badge-detail-overlay{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.22s ease;}
 .badge-detail-overlay.open{opacity:1;pointer-events:all;}
@@ -912,11 +910,6 @@ body {
 }
 .badge-item:active { transform: scale(0.86); }
 
-/* Catch grid: better depth */
-.catch-thumb {
-  box-shadow: 0 4px 16px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.06);
-}
-
 /* Profile stats: subtle separator upgrade */
 .prof-stats {
   background: rgba(255,255,255,0.09);
@@ -1011,31 +1004,26 @@ body {
     <div class="screen" id="screen-auth">
       <div class="auth-wrap">
         <div class="auth-top">
-          <span class="auth-logo">🐟</span>
+          <span class="auth-logo">🎣</span>
           <h1 class="auth-h1" id="auth-mode-title">Join Fishy AI</h1>
           <p class="auth-sub">The smartest fishing app ever made.</p>
-          <div class="trial-pill">✦ 3-day free trial · No credit card needed</div>
         </div>
         <div class="auth-card">
           <div id="auth-username-row">
             <div class="inp-lbl">Username</div>
-            <input class="inp" id="auth-username" type="text" placeholder="fisherman123" autocomplete="username">
+            <input class="inp" id="auth-username" type="text" placeholder="angler123" autocomplete="username" autocorrect="off" autocapitalize="none" onkeydown="if(event.key==='Enter')document.getElementById('auth-email').focus()">
           </div>
           <div>
-            <div class="inp-lbl">Email address</div>
-            <input class="inp" id="auth-email" type="email" placeholder="you@example.com" autocomplete="email">
+            <div class="inp-lbl">Email</div>
+            <input class="inp" id="auth-email" type="email" placeholder="you@example.com" autocomplete="email" inputmode="email" onkeydown="if(event.key==='Enter')document.getElementById('auth-password').focus()">
           </div>
-          <div>
+          <div style="position:relative;">
             <div class="inp-lbl">Password</div>
-            <input class="inp" id="auth-password" type="password" placeholder="Create a password" autocomplete="current-password">
+            <input class="inp" id="auth-password" type="password" placeholder="At least 6 characters" autocomplete="current-password" onkeydown="if(event.key==='Enter')handleAuth()">
+            <div id="auth-pw-toggle" onclick="toggleAuthPw()" style="position:absolute;right:14px;bottom:13px;cursor:pointer;color:var(--gray);font-size:11px;font-weight:600;">Show</div>
           </div>
-          <div id="auth-error" style="font-size:12px;color:#ff3b30;min-height:16px;letter-spacing:-0.2px;border-radius:8px;"></div>
+          <div id="auth-error" style="font-size:12px;min-height:18px;letter-spacing:-0.2px;padding:0 2px;"></div>
           <button class="btn" id="auth-submit-btn" style="width:100%;margin:4px 0 0;" onclick="handleAuth()">Create Account</button>
-          <div class="auth-sep"><span class="auth-sep-txt">or</span></div>
-          <button class="btn-google" onclick="showToast('Google sign-in coming soon')">
-            <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-            Continue with Google
-          </button>
           <div class="auth-link" id="auth-toggle-link">Already have an account? <span onclick="toggleAuthMode()">Log in</span></div>
         </div>
       </div>
@@ -1064,26 +1052,14 @@ body {
         <!-- FEED POST COMPOSER -->
         <div class="feed-composer-card" id="feed-composer-collapsed">
           <div class="feed-composer-top">
-            <div class="av" id="feed-composer-av" style="flex-shrink:0;">Me</div>
-            <button class="feed-composer-input" placeholder="What's happening on the water?" onclick="expandFeedComposer()" id="feed-composer-btn">What's happening on the water?</button>
-          </div>
-          <div class="feed-composer-divider"></div>
-          <div class="feed-composer-actions">
-            <button class="feed-composer-action" onclick="expandFeedComposerWithPhoto()">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-              Photo
-            </button>
-            <button class="feed-composer-action" onclick="expandFeedComposer()">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              Location
-            </button>
-            <button class="feed-composer-action" onclick="expandFeedComposer()" style="margin-left:auto;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-              Catch
+            <div class="av" id="feed-composer-av" style="flex-shrink:0;width:32px;height:32px;font-size:11px;">Me</div>
+            <button class="feed-composer-input" onclick="expandFeedComposer()">What's on your mind?</button>
+            <button class="fce-photo-quick" onclick="expandFeedComposerWithPhoto()" title="Add photo">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--gray)" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
             </button>
           </div>
         </div>
-        <!-- EXPANDED FEED COMPOSER (hidden by default) -->
+        <!-- EXPANDED FEED COMPOSER -->
         <div class="feed-composer-expanded" id="feed-composer-expanded" style="display:none;">
           <div class="fce-header">
             <span class="fce-title">New Post</span>
@@ -1091,7 +1067,7 @@ body {
           </div>
           <div class="fce-body">
             <div class="fce-av-row">
-              <div class="av" id="fce-av">Me</div>
+              <div class="av" id="fce-av" style="width:32px;height:32px;font-size:11px;flex-shrink:0;">Me</div>
               <textarea class="fce-textarea" id="fce-textarea" placeholder="Share a catch, tip, or question…" rows="3" oninput="updateFceShareBtn()"></textarea>
             </div>
             <div class="fce-photo-preview" id="fce-photo-preview">
@@ -1100,15 +1076,10 @@ body {
             </div>
           </div>
           <div class="fce-footer">
-            <div class="fce-footer-actions">
-              <button class="fce-icon-btn" onclick="triggerFcePhotoUpload()" title="Add photo">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-              </button>
-              <button class="fce-icon-btn" title="Location" onclick="showToast('Location tagging coming soon')">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              </button>
-            </div>
-            <button class="fce-share-btn" id="fce-share-btn" onclick="shareFeedPost()" disabled>Share</button>
+            <button class="fce-icon-btn" onclick="triggerFcePhotoUpload()" title="Add photo">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </button>
+            <button class="fce-share-btn" id="fce-share-btn" onclick="shareFeedPost()" disabled>Post</button>
           </div>
         </div>
         <!-- feed-content: demo data shows until real Supabase catches exist -->
@@ -1609,35 +1580,29 @@ body {
           </div>
           <div class="sec-hd">My Catches</div>
           <div class="catch-grid" id="catch-grid">
-            <!-- CA Halibut — sandy olive -->
-            <div class="catch-thumb" style="background:linear-gradient(145deg,#b8a878 0%,#7a6845 100%);position:relative;align-items:flex-end;justify-content:flex-start;">
-              <svg style="position:absolute;top:50%;left:50%;transform:translate(-50%,-58%) scaleY(0.45)" width="88" height="88" viewBox="0 0 100 100" fill="rgba(255,255,255,0.28)"><ellipse cx="50" cy="50" rx="48" ry="22"/><path d="M5 50 L18 35 L18 65 Z" fill="rgba(255,255,255,0.22)"/><circle cx="28" cy="42" r="5" fill="rgba(255,255,255,0.45)"/></svg>
-              <div style="position:absolute;bottom:7px;left:8px;background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;letter-spacing:-0.1px;">CA Halibut</div>
+            <div class="catch-thumb" style="position:relative;">
+              <img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260517_053234_f133cb6b-1588-42f3-9dd4-693512072854_min.webp" alt="CA Halibut" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">
+              <div class="catch-label">CA Halibut</div>
             </div>
-            <!-- Yellowtail — electric gold/blue -->
-            <div class="catch-thumb" style="background:linear-gradient(145deg,#1a6fa8 0%,#0d4a78 60%,#c8a832 100%);position:relative;align-items:flex-end;justify-content:flex-start;">
-              <svg style="position:absolute;top:50%;left:50%;transform:translate(-50%,-55%)" width="82" height="42" viewBox="0 0 100 50" fill="rgba(255,255,255,0.28)"><path d="M6 25Q28 8 70 18Q82 10 96 25Q82 40 70 32Q28 42 6 25Z"/><path d="M82 8L96 15V25L96 35L82 42Z" fill="rgba(255,255,255,0.18)"/><circle cx="30" cy="20" r="4" fill="rgba(255,255,255,0.5)"/></svg>
-              <div style="position:absolute;bottom:7px;left:8px;background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;letter-spacing:-0.1px;">Yellowtail</div>
+            <div class="catch-thumb" style="position:relative;">
+              <img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260517_053237_3d426ad6-2d1e-4959-9f8a-23006f5d91fe_min.webp" alt="Yellowtail" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">
+              <div class="catch-label">Yellowtail</div>
             </div>
-            <!-- White Seabass — silver-blue -->
-            <div class="catch-thumb" style="background:linear-gradient(145deg,#8ab8d8 0%,#3a6898 100%);position:relative;">
-              <svg style="position:absolute;top:50%;left:50%;transform:translate(-50%,-55%)" width="80" height="40" viewBox="0 0 100 50" fill="rgba(255,255,255,0.32)"><path d="M8 25Q30 10 68 20Q80 12 94 25Q80 38 68 30Q30 40 8 25Z"/><path d="M80 12L94 22V25V28L80 38Z" fill="rgba(255,255,255,0.2)"/><circle cx="32" cy="21" r="3.5" fill="rgba(255,255,255,0.55)"/></svg>
-              <div style="position:absolute;bottom:7px;left:8px;background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;letter-spacing:-0.1px;">White Seabass</div>
+            <div class="catch-thumb" style="position:relative;">
+              <img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260517_053239_cd0d9ae4-f1a7-4750-93d2-91a932ae87b9_min.webp" alt="White Seabass" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">
+              <div class="catch-label">White Seabass</div>
             </div>
-            <!-- Calico Bass — spotted olive-green -->
-            <div class="catch-thumb" style="background:linear-gradient(145deg,#6a8c5a 0%,#3d5c30 100%);position:relative;">
-              <svg style="position:absolute;top:50%;left:50%;transform:translate(-50%,-55%)" width="76" height="48" viewBox="0 0 100 62" fill="rgba(255,255,255,0.28)"><path d="M10 31Q30 10 64 22Q76 13 93 31Q76 49 64 40Q30 52 10 31Z"/><path d="M76 14L93 28V31V34L76 48Z" fill="rgba(255,255,255,0.2)"/><circle cx="32" cy="25" r="3" fill="rgba(255,255,255,0.5)"/><circle cx="44" cy="30" r="2.5" fill="rgba(255,255,255,0.38)"/><circle cx="54" cy="24" r="2" fill="rgba(255,255,255,0.38)"/></svg>
-              <div style="position:absolute;bottom:7px;left:8px;background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;letter-spacing:-0.1px;">Calico Bass</div>
+            <div class="catch-thumb" style="position:relative;">
+              <img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260517_053242_ca9ff908-cbe0-4eef-a1d4-21a3c4da1cef_min.webp" alt="Calico Bass" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">
+              <div class="catch-label">Calico Bass</div>
             </div>
-            <!-- Bonito — steel-blue with stripes -->
-            <div class="catch-thumb" style="background:linear-gradient(145deg,#2d5a8a 0%,#1a3a6a 50%,#4a7aaa 100%);position:relative;">
-              <svg style="position:absolute;top:50%;left:50%;transform:translate(-50%,-55%)" width="84" height="38" viewBox="0 0 110 48" fill="rgba(255,255,255,0.26)"><path d="M6 24Q35 8 78 18Q90 10 106 24Q90 38 78 30Q35 40 6 24Z"/><path d="M90 10L106 22V24V26L90 38Z" fill="rgba(255,255,255,0.18)"/><line x1="45" y1="15" x2="38" y2="33" stroke="rgba(255,255,255,0.22)" stroke-width="2"/><line x1="52" y1="14" x2="45" y2="32" stroke="rgba(255,255,255,0.22)" stroke-width="2"/><line x1="59" y1="13" x2="52" y2="31" stroke="rgba(255,255,255,0.22)" stroke-width="2"/><circle cx="28" cy="20" r="3.5" fill="rgba(255,255,255,0.5)"/></svg>
-              <div style="position:absolute;bottom:7px;left:8px;background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;letter-spacing:-0.1px;">Pacific Bonito</div>
+            <div class="catch-thumb" style="position:relative;">
+              <img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260517_053245_55135797-157e-44d9-bb29-ededea381ec1_min.webp" alt="Pacific Bonito" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">
+              <div class="catch-label">Pacific Bonito</div>
             </div>
-            <!-- Rockfish — vivid orange-red -->
-            <div class="catch-thumb" style="background:linear-gradient(145deg,#c85a20 0%,#8a2800 60%,#e87840 100%);position:relative;">
-              <svg style="position:absolute;top:50%;left:50%;transform:translate(-50%,-55%)" width="74" height="50" viewBox="0 0 96 64" fill="rgba(255,255,255,0.28)"><path d="M12 32Q32 12 62 24Q74 14 91 32Q74 50 62 40Q32 52 12 32Z"/><path d="M74 16L91 30V32V34L74 48Z" fill="rgba(255,255,255,0.2)"/><path d="M62 14L56 8L68 8Z" fill="rgba(255,255,255,0.25)"/><path d="M68 12L66 6L74 10Z" fill="rgba(255,255,255,0.2)"/><circle cx="34" cy="26" r="3.5" fill="rgba(255,255,255,0.55)"/></svg>
-              <div style="position:absolute;bottom:7px;left:8px;background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;letter-spacing:-0.1px;">Rockfish</div>
+            <div class="catch-thumb" style="position:relative;">
+              <img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260517_053247_d3bb1dad-ab9b-4d11-8f0a-c2508d152594_min.webp" alt="Rockfish" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">
+              <div class="catch-label">Rockfish</div>
             </div>
           </div>
           <div style="padding-bottom:12px;"></div>
@@ -1782,6 +1747,11 @@ body {
         <span class="settings-row-lbl danger">Clear All Data</span>
         <span class="settings-row-arrow" style="color:#ff3b30;">›</span>
       </div>
+      <div class="settings-row" id="sign-out-row" onclick="signOut()" style="display:none;">
+        <div class="set-ico set-ico-red"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
+        <span class="settings-row-lbl danger">Sign Out</span>
+        <span class="settings-row-arrow" style="color:#ff3b30;">›</span>
+      </div>
     </div>
     <div class="settings-ver">Fishy AI v1.0 · Powered by Claude</div>
   </div>
@@ -1877,9 +1847,27 @@ async function init() {
       loadStoriesRow();
       loadLeaderboard();
     }
-    sb.auth.onAuthStateChange(async (_e, session) => {
+    sb.auth.onAuthStateChange(async (event, session) => {
+      const prevUser = currentUser;
       currentUser = session?.user ?? null;
-      if (!currentUser) currentProfile = null;
+      if (!currentUser) {
+        currentProfile = null;
+        // Only redirect to auth if we were previously logged in (actual sign-out)
+        if (prevUser && current !== 'auth' && current !== 'onboard1' && current !== 'onboard2') {
+          showScreen('auth');
+        }
+        return;
+      }
+      // SIGNED_IN or TOKEN_REFRESHED — make sure profile + feed are ready
+      if (event === 'SIGNED_IN' && !prevUser) {
+        await loadProfile();
+        if (current === 'auth' || current === 'onboard1' || current === 'onboard2') {
+          showScreen('feed');
+          loadFeed();
+          loadStoriesRow();
+          loadLeaderboard();
+        }
+      }
     });
   } catch (e) {
     console.warn('Supabase init error:', e.message);
@@ -1951,8 +1939,9 @@ function updateTabBar(name) {
 // ══════════════════════════════════════════
 //  AUTH
 // ══════════════════════════════════════════
-function toggleAuthMode() {
-  isSignUp = !isSignUp;
+function toggleAuthMode(forceLogin = false) {
+  if (forceLogin) isSignUp = false;
+  else isSignUp = !isSignUp;
   const row  = document.getElementById('auth-username-row');
   const title = document.getElementById('auth-mode-title');
   const btn  = document.getElementById('auth-submit-btn');
@@ -1966,13 +1955,20 @@ function toggleAuthMode() {
   showAuthMsg('');
 }
 
+function toggleAuthPw() {
+  const inp = document.getElementById('auth-password');
+  const btn = document.getElementById('auth-pw-toggle');
+  if (!inp) return;
+  const show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  if (btn) btn.textContent = show ? 'Hide' : 'Show';
+}
+
 function showAuthMsg(msg, isError = true) {
   const el = document.getElementById('auth-error');
   if (!el) return;
   el.className = isError ? '' : 'auth-info';
-  el.style.cssText = isError
-    ? 'font-size:12px;color:#ff3b30;min-height:16px;letter-spacing:-0.2px;border-radius:8px;'
-    : '';
+  el.style.color = isError ? '#ff3b30' : '#2d7a2d';
   el.textContent = msg;
 }
 
@@ -1990,26 +1986,29 @@ async function handleAuth() {
 
   try {
     if (isSignUp) {
-      const { data: signUpData, error: signUpError } = await sb.auth.signUp({ email, password, options: { data: { username } } });
+      const { data: signUpData, error: signUpError } = await sb.auth.signUp({
+        email, password,
+        options: { data: { username } }
+      });
       if (signUpError) throw signUpError;
 
-      // Try to sign in immediately — works whether confirmation is on or off
+      // Sign in immediately — works when email confirmation is disabled
       const { data: signInData, error: signInError } = await sb.auth.signInWithPassword({ email, password });
       if (signInError) {
-        // Confirmation required — tell user clearly and switch to login mode
-        showAuthMsg('✅ Account created! Check your email for a confirmation link, then come back and log in.', false);
-        isSignUp = false;
-        const row   = document.getElementById('auth-username-row');
-        const title = document.getElementById('auth-mode-title');
-        const link  = document.getElementById('auth-toggle-link');
-        if (row)   row.style.display = 'none';
-        if (title) title.textContent = 'Welcome back';
-        if (btn)   btn.textContent   = 'Log In';
-        if (link)  link.innerHTML    = "Don't have an account? <span onclick=\"toggleAuthMode()\">Sign up</span>";
-        if (btn)   btn.disabled      = false;
+        // Email confirmation required
+        showAuthMsg('✅ Account created! Check your email for a confirmation link, then log in.', false);
+        toggleAuthMode(); // flip to login mode
+        if (btn) btn.disabled = false;
         return;
       }
       currentUser = signInData.user;
+      // Upsert profile row immediately
+      await sb.from('profiles').upsert({
+        id: currentUser.id,
+        username: username || email.split('@')[0],
+        current_rank: 'Beginner',
+        total_strikes: 0,
+      }, { onConflict: 'id' });
     } else {
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
       if (error) throw error;
@@ -2037,16 +2036,42 @@ async function handleAuth() {
 // ══════════════════════════════════════════
 async function loadProfile() {
   if (!sb || !currentUser) return;
-  const { data } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
-  currentProfile = data ?? {
-    id: currentUser.id,
-    username: currentUser.user_metadata?.username || currentUser.email?.split('@')[0] || 'Angler'
-  };
-  const name = currentProfile.username;
+  try {
+    const { data } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+    if (data) {
+      currentProfile = data;
+    } else {
+      // Profile doesn't exist yet — upsert it
+      const username = currentUser.user_metadata?.username
+        || currentUser.email?.split('@')[0]?.replace(/[^a-z0-9_]/gi, '_')
+        || 'angler';
+      const { data: upserted } = await sb.from('profiles').upsert({
+        id: currentUser.id,
+        username,
+        avatar_url: null,
+        current_rank: 'Beginner',
+        total_strikes: 0,
+      }, { onConflict: 'id' }).select().single();
+      currentProfile = upserted ?? { id: currentUser.id, username };
+    }
+  } catch (e) {
+    console.warn('loadProfile:', e.message);
+    currentProfile = {
+      id: currentUser.id,
+      username: currentUser.user_metadata?.username || currentUser.email?.split('@')[0] || 'Angler',
+    };
+  }
+  const name = currentProfile.username || 'Angler';
   setEl('prof-name', name);
   setEl('prof-handle', `@${name} · California 🌊`);
   setEl('prof-avatar-initials', name.slice(0, 2).toUpperCase());
+  // Sync composer avatars
+  const av2 = name.slice(0, 2).toUpperCase();
+  setEl('feed-composer-av', av2);
+  setEl('fce-av', av2);
   STATUS_TITLES.profile = name;
+  // Persist username locally too
+  STORE.set('username', name);
 }
 
 async function loadProfileScreen() {
@@ -3613,14 +3638,28 @@ function loadLocalPostsInFeed() {
 function openSettings() {
   const catches  = STORE.get('catches', []);
   const species  = new Set(catches.map(c => c.species)).size;
-  const username = STORE.get('username', 'Angler');
+  const username = currentProfile?.username || STORE.get('username', 'Angler');
   setEl('settings-name', username);
   setEl('settings-av',   username.slice(0, 2).toUpperCase());
-  setEl('settings-sub',  `${catches.length} catches · ${species} species`);
+  const email = currentUser?.email ? ` · ${currentUser.email}` : '';
+  setEl('settings-sub',  `${catches.length} catches · ${species} species${email}`);
   const inp = document.getElementById('settings-name-input');
   if (inp) inp.value = username !== 'Angler' ? username : '';
+  // Show sign-out only when logged in
+  const signOutRow = document.getElementById('sign-out-row');
+  if (signOutRow) signOutRow.style.display = currentUser ? 'flex' : 'none';
   document.getElementById('settings-sheet').classList.add('open');
   document.getElementById('settings-backdrop').classList.add('open');
+}
+
+async function signOut() {
+  if (!confirm('Sign out of Fishy AI?')) return;
+  closeSettings();
+  if (sb) await sb.auth.signOut();
+  currentUser = null;
+  currentProfile = null;
+  showToast('Signed out');
+  showScreen('auth');
 }
 
 function closeSettings() {
