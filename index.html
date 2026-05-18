@@ -915,6 +915,44 @@ body {
   background: rgba(255,255,255,0.09);
   border: 0.5px solid rgba(255,255,255,0.12);
 }
+
+/* ══ PROFILE V2 — Scandinavian Premium ══ */
+.lg-icon-btn{width:38px;height:38px;border-radius:50%;border:none;background:transparent;cursor:pointer;position:relative;display:flex;align-items:center;justify-content:center;color:#fff;transition:transform 0.28s ease-out;-webkit-tap-highlight-color:transparent;padding:0;font-family:inherit;isolation:isolate;}
+.lg-icon-btn-lens{position:absolute;inset:0;border-radius:50%;background:rgba(255,255,255,0.11);backdrop-filter:blur(10px) saturate(200%);-webkit-backdrop-filter:blur(10px) saturate(200%);box-shadow:inset 0 0 0 1px rgba(255,255,255,0.14),inset 1.8px 3px 0px -2px rgba(255,255,255,0.88),inset -2px -2px 0px -2px rgba(255,255,255,0.78),inset -3px -8px 1px -6px rgba(255,255,255,0.55),inset -0.3px -1px 4px 0px rgba(0,0,0,0.1),inset -1.5px 2.5px 0px -2px rgba(0,0,0,0.18),inset 0px 3px 4px -2px rgba(0,0,0,0.18),inset 2px -6.5px 1px -4px rgba(0,0,0,0.09),0px 1px 5px 0px rgba(0,0,0,0.16),0px 6px 18px 0px rgba(0,0,0,0.14);z-index:-1;pointer-events:none;transition:background 0.4s cubic-bezier(1,0,0.4,1),box-shadow 0.4s cubic-bezier(1,0,0.4,1);}
+.lg-icon-btn>svg{position:relative;z-index:1;display:block;filter:drop-shadow(0 1px 1.5px rgba(0,0,0,0.3));}
+.lg-icon-btn:active{transform:scale(0.91);}
+.prof-wrap-v2{min-height:100%;background:#f4f5f7;display:flex;flex-direction:column;}
+.prof-photo-hd{position:relative;height:196px;flex-shrink:0;background:linear-gradient(175deg,#0a1f3d 0%,#0f3060 15%,#1a4f80 30%,#226794 45%,#2e83aa 58%,#4a9cbd 70%,#6db5ce 82%,#90cedd 92%,#b8e0eb 100%);overflow:hidden;}
+.prof-photo-hd-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(1.5px) brightness(0.72) saturate(1.3);transform:scale(1.06);}
+.prof-photo-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.24) 0%,rgba(5,15,35,0.04) 55%,rgba(5,15,35,0.55) 100%);}
+.prof-topnav-v2{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:12px 14px 0;z-index:10;}
+.prof-card-v2{background:#fff;border-radius:28px 28px 0 0;margin-top:-32px;flex:1;box-shadow:0 -8px 32px rgba(0,0,0,0.1),0 -2px 8px rgba(0,0,0,0.05);padding-bottom:24px;}
+.prof-av-wrap-v2{display:flex;justify-content:center;margin-top:-42px;margin-bottom:10px;}
+.av-lg-v2{width:84px;height:84px;border-radius:50%;background:var(--grad-av);border:4px solid #fff;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:#fff;letter-spacing:-0.5px;box-shadow:0 4px 24px rgba(14,165,233,0.3),0 2px 8px rgba(0,0,0,0.12);overflow:hidden;flex-shrink:0;}
+.av-lg-v2 img{width:100%;height:100%;border-radius:50%;object-fit:cover;}
+.prof-name-v2{text-align:center;font-size:20px;font-weight:800;color:#111;letter-spacing:-0.6px;line-height:1;padding:0 20px;}
+.prof-handle-v2{text-align:center;font-size:12px;color:#8e8e93;letter-spacing:-0.2px;margin-top:4px;padding:0 20px;}
+.prof-hero-v2{text-align:center;padding:20px 16px 16px;}
+.prof-hero-num-v2{font-size:64px;font-weight:900;color:#111;letter-spacing:-4px;line-height:1;}
+.prof-hero-lbl-v2{font-size:11px;font-weight:700;color:#8e8e93;text-transform:uppercase;letter-spacing:1.2px;margin-top:6px;}
+.prof-divider{height:0.5px;background:rgba(0,0,0,0.07);margin:0 20px;}
+.prof-stat-row-v2{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;padding:14px 16px 0;}
+.prof-stat-v2{display:flex;flex-direction:column;align-items:center;gap:5px;padding:13px 6px;background:#f4f5f7;border-radius:18px;}
+.prof-stat-icon-v2{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.prof-stat-num-v2{font-size:17px;font-weight:800;color:#111;letter-spacing:-0.5px;line-height:1;}
+.prof-stat-lbl-v2{font-size:9px;font-weight:700;color:#8e8e93;text-transform:uppercase;letter-spacing:0.6px;}
+.prof-card-v2 #prof-rank-display{padding:12px 16px 0;}
+.prof-card-v2 .prof-rank-row{background:#f4f5f7;max-width:none;width:100%;border-radius:16px;}
+.prof-card-v2 .prof-rank-strikes-el{color:#8e8e93;}
+.prof-card-v2 .prof-rank-bar-outer{width:100%;background:rgba(0,0,0,0.07);}
+.prof-card-v2 .prof-rank-bar-lbl{color:#8e8e93;}
+.follow-btn-v2{display:block;width:calc(100% - 32px);margin:14px 16px 0;padding:13px;background:var(--navy);color:#fff;font-size:14px;font-weight:700;letter-spacing:-0.3px;border-radius:16px;border:none;cursor:pointer;font-family:inherit;text-align:center;transition:transform 0.15s var(--spring),opacity 0.2s;-webkit-tap-highlight-color:transparent;box-shadow:0 4px 16px rgba(27,46,75,0.28);}
+.follow-btn-v2:active{transform:scale(0.97);}
+.follow-btn-v2.following{background:#f4f5f7;color:#333;border:1.5px solid rgba(0,0,0,0.1);box-shadow:none;}
+.sec-hd-v2{font-size:15px;font-weight:800;color:#111;letter-spacing:-0.5px;margin:22px 16px 10px;}
+.prof-card-v2 .badge-grid{padding:0 16px;}
+.prof-card-v2 .catch-grid{padding:0 16px;}
+.prof-card-v2 .catch-thumb{height:116px;}
 </style>
 </head>
 <body>
@@ -1539,23 +1577,79 @@ body {
 
     <!-- ══════ PROFILE ══════ -->
     <div class="screen" id="screen-profile">
-      <div class="prof-wrap">
-        <div class="prof-hd">
-          <div class="av-lg" id="prof-avatar-initials">JF</div>
-          <div class="prof-name" id="prof-name">jake_fisher</div>
-          <div class="prof-handle" id="prof-handle">@jake_fisher · California 🌊</div>
-          <!-- Rank display — populated by renderRankOnProfile() -->
-          <div id="prof-rank-display" style="display:none;flex-direction:column;align-items:center;width:100%;"></div>
-          <div class="prof-stats">
-            <div class="ps"><div class="ps-num" id="prof-catches">47</div><div class="ps-lbl">Catches</div></div>
-            <div class="ps"><div class="ps-num" id="prof-species">12</div><div class="ps-lbl">Species</div></div>
-            <div class="ps"><div class="ps-num" id="prof-best">4.2 lb</div><div class="ps-lbl">Best Fish</div></div>
-            <div class="ps"><div class="ps-num" id="prof-followers">203</div><div class="ps-lbl">Followers</div></div>
+      <div class="prof-wrap-v2">
+
+        <!-- Scenic header -->
+        <div class="prof-photo-hd">
+          <img class="prof-photo-hd-img" src="https://images.unsplash.com/photo-1559827291-72ee739d0d9a?w=400&q=80" onerror="this.style.display='none'" loading="lazy" alt="">
+          <div class="prof-photo-overlay"></div>
+          <!-- Liquid glass top nav -->
+          <div class="prof-topnav-v2">
+            <button class="lg-icon-btn" id="prof-back-btn-v2" onclick="goBack()" style="display:none;">
+              <span class="lg-icon-btn-lens"></span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <div></div>
+            <button class="lg-icon-btn" id="prof-settings-btn-v2" onclick="openSettings()">
+              <span class="lg-icon-btn-lens"></span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+            </button>
           </div>
-          <button class="follow-btn" id="follow-btn" onclick="toggleFollow()">+ Follow</button>
         </div>
-        <div class="prof-content">
-          <div class="sec-hd">Badges</div>
+
+        <!-- White floating card -->
+        <div class="prof-card-v2">
+
+          <!-- Avatar overlapping photo -->
+          <div class="prof-av-wrap-v2">
+            <div class="av-lg-v2" id="prof-avatar-initials">JF</div>
+          </div>
+
+          <!-- Identity -->
+          <div class="prof-name-v2" id="prof-name">jake_fisher</div>
+          <div class="prof-handle-v2" id="prof-handle">@jake_fisher · California 🌊</div>
+
+          <!-- Rank (populated by renderRankOnProfile) -->
+          <div id="prof-rank-display" style="display:none;flex-direction:column;align-items:stretch;width:100%;"></div>
+
+          <!-- Hero metric -->
+          <div class="prof-hero-v2">
+            <div class="prof-hero-num-v2" id="prof-catches">47</div>
+            <div class="prof-hero-lbl-v2">Total Catches</div>
+          </div>
+
+          <div class="prof-divider"></div>
+
+          <!-- Secondary stats grid -->
+          <div class="prof-stat-row-v2">
+            <div class="prof-stat-v2">
+              <div class="prof-stat-icon-v2" style="background:rgba(14,165,233,0.12);">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 00-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>
+              </div>
+              <div class="prof-stat-num-v2" id="prof-species">12</div>
+              <div class="prof-stat-lbl-v2">Species</div>
+            </div>
+            <div class="prof-stat-v2">
+              <div class="prof-stat-icon-v2" style="background:rgba(99,102,241,0.12);">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+              </div>
+              <div class="prof-stat-num-v2" id="prof-best">4.2 lb</div>
+              <div class="prof-stat-lbl-v2">Best Fish</div>
+            </div>
+            <div class="prof-stat-v2">
+              <div class="prof-stat-icon-v2" style="background:rgba(52,199,89,0.12);">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#34c759" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+              </div>
+              <div class="prof-stat-num-v2" id="prof-followers">203</div>
+              <div class="prof-stat-lbl-v2">Followers</div>
+            </div>
+          </div>
+
+          <!-- Follow / own-profile action -->
+          <button class="follow-btn follow-btn-v2" id="follow-btn" onclick="toggleFollow()">+ Follow</button>
+
+          <!-- Badges -->
+          <div class="sec-hd-v2">Badges</div>
           <div class="badge-grid" id="badge-list">
             <div class="badge-item locked" id="badge-first-catch" onclick="showBadgeDetail('first_catch')">
               <img class="badge-img" src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260513_012942_037722db-7811-406c-9019-9dbd2921e546_min.webp" loading="lazy">
@@ -1574,11 +1668,15 @@ body {
               <div class="badge-nm">Lucky or Skill</div>
             </div>
           </div>
-          <div class="sec-hd">Rank Journey</div>
+
+          <!-- Rank Journey -->
+          <div class="sec-hd-v2">Rank Journey</div>
           <div id="rank-journey-wrap" class="rj-wrap">
             <div id="rank-journey-content"></div>
           </div>
-          <div class="sec-hd">My Catches</div>
+
+          <!-- My Catches -->
+          <div class="sec-hd-v2">My Catches</div>
           <div class="catch-grid" id="catch-grid">
             <div class="catch-thumb" style="position:relative;">
               <img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260517_053234_f133cb6b-1588-42f3-9dd4-693512072854_min.webp" alt="CA Halibut" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">
@@ -1605,9 +1703,10 @@ body {
               <div class="catch-label">Rockfish</div>
             </div>
           </div>
+
           <div style="padding-bottom:12px;"></div>
-        </div>
-      </div>
+        </div><!-- /prof-card-v2 -->
+      </div><!-- /prof-wrap-v2 -->
     </div>
 
     <!-- ══════ STORY VIEWER ══════ -->
@@ -2076,6 +2175,11 @@ async function loadProfile() {
 
 async function loadProfileScreen() {
   const uid = viewingUserId || currentUser?.id;
+  // Toggle v2 header buttons based on whose profile we're viewing
+  const _bk = document.getElementById('prof-back-btn-v2');
+  const _st = document.getElementById('prof-settings-btn-v2');
+  if (_bk) _bk.style.display = viewingUserId ? 'flex' : 'none';
+  if (_st) _st.style.display = viewingUserId ? 'none' : 'flex';
 
   if (!sb || !uid) {
     // Offline fallback
@@ -2149,7 +2253,7 @@ async function loadProfileScreen() {
       if (!currentUser || uid === currentUser.id) {
         followBtn.style.display = 'none';
       } else {
-        followBtn.style.display = 'inline-block';
+        followBtn.style.display = 'block';
         followBtn.dataset.uid = uid;
         const { data: existFol } = await sb.from('follows').select('id').eq('follower_id', currentUser.id).eq('following_id', uid).maybeSingle();
         followBtn.classList.toggle('following', !!existFol);
