@@ -953,6 +953,26 @@ body {
 .prof-card-v2 .badge-grid{padding:0 16px;}
 .prof-card-v2 .catch-grid{padding:0 16px;}
 .prof-card-v2 .catch-thumb{height:116px;}
+/* ── EDIT PROFILE SHEET ── */
+.ep-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:900;opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.ep-backdrop.open{opacity:1;pointer-events:all;}
+.ep-sheet{position:fixed;left:0;right:0;bottom:0;z-index:901;background:#fff;border-radius:24px 24px 0 0;padding-bottom:env(safe-area-inset-bottom,24px);transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.32,0.72,0,1);max-height:90vh;overflow-y:auto;}
+.ep-sheet.open{transform:translateY(0);}
+.ep-handle{width:36px;height:4px;background:rgba(0,0,0,0.12);border-radius:2px;margin:12px auto 0;}
+.ep-header{padding:14px 20px 0;display:flex;align-items:center;justify-content:space-between;}
+.ep-title{font-size:17px;font-weight:800;color:#111;letter-spacing:-0.5px;}
+.ep-close-btn{width:30px;height:30px;border-radius:50%;background:#f4f5f7;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ep-banner-wrap{position:relative;height:130px;margin-top:16px;overflow:hidden;background:#1B2E4B;}
+.ep-banner-img{width:100%;height:100%;object-fit:cover;filter:brightness(0.78) saturate(1.15);}
+.ep-banner-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.ep-banner-btn{background:rgba(0,0,0,0.42);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.22);color:#fff;font-size:13px;font-weight:600;padding:8px 18px;border-radius:20px;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:inherit;}
+.ep-form{padding:20px 20px 8px;}
+.ep-field{margin-bottom:16px;}
+.ep-label{display:block;font-size:11px;font-weight:700;color:#8e8e93;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;}
+.ep-input{width:100%;padding:13px 14px;font-size:15px;font-family:inherit;background:#f4f5f7;border:none;border-radius:14px;color:#111;outline:none;box-sizing:border-box;letter-spacing:-0.2px;-webkit-appearance:none;}
+.ep-input:focus{background:#ebebef;}
+.ep-save-btn{display:block;width:100%;margin-top:8px;padding:14px;background:var(--navy);color:#fff;font-size:15px;font-weight:700;border-radius:16px;border:none;cursor:pointer;font-family:inherit;letter-spacing:-0.3px;box-shadow:0 4px 16px rgba(27,46,75,0.28);transition:transform 0.15s;}
+.ep-save-btn:active{transform:scale(0.98);}
 </style>
 </head>
 <body>
@@ -1589,7 +1609,7 @@ body {
               <span class="lg-icon-btn-lens"></span>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
             </button>
-            <button class="lg-icon-btn" id="prof-settings-btn-v2" onclick="openSettings()">
+            <button class="lg-icon-btn" id="prof-settings-btn-v2" onclick="openEditProfile()">
               <span class="lg-icon-btn-lens"></span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
             </button>
@@ -1854,6 +1874,39 @@ body {
     <div class="settings-ver">Fishy AI v1.0 · Powered by Claude</div>
   </div>
 
+  <!-- ══ EDIT PROFILE SHEET ══ -->
+  <div class="ep-backdrop" id="ep-backdrop" onclick="closeEditProfile()"></div>
+  <div class="ep-sheet" id="ep-sheet">
+    <div class="ep-handle"></div>
+    <div class="ep-header">
+      <div class="ep-title">Edit Profile</div>
+      <button class="ep-close-btn" onclick="closeEditProfile()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="ep-banner-wrap">
+      <img class="ep-banner-img" id="ep-banner-img" src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=85" alt="">
+      <div class="ep-banner-overlay">
+        <button class="ep-banner-btn" onclick="document.getElementById('ep-banner-input').click()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          Change Banner
+        </button>
+      </div>
+      <input type="file" id="ep-banner-input" accept="image/*" style="display:none" onchange="handleBannerSelect(event)">
+    </div>
+    <div class="ep-form">
+      <div class="ep-field">
+        <label class="ep-label">Display Name</label>
+        <input class="ep-input" id="ep-name-input" type="text" placeholder="Your name" maxlength="40">
+      </div>
+      <div class="ep-field">
+        <label class="ep-label">Username</label>
+        <input class="ep-input" id="ep-username-input" type="text" placeholder="username" maxlength="30">
+      </div>
+      <button class="ep-save-btn" onclick="saveEditProfile()">Save Changes</button>
+    </div>
+  </div>
+
   <!-- ══ COMMENT SHEET ══ -->
   <div class="cs-backdrop" id="cs-backdrop" onclick="closeComments()"></div>
   <div class="cs-sheet" id="cs-sheet">
@@ -2010,7 +2063,7 @@ function updateStatusBar(name) {
   const bar = document.getElementById('status-bar');
   bar.className = DARK_SCREENS.includes(name) ? 'dark' : NAVY_SCREENS.includes(name) ? 'navy' : '';
   setEl('status-title', STATUS_TITLES[name] ?? 'Fishy AI');
-  const hasBack = name in BACK_MAP;
+  const hasBack = name in BACK_MAP && name !== 'profile';
   const backBtn = document.getElementById('back-btn');
   const timeEl  = document.getElementById('status-time');
   if (backBtn) backBtn.style.display = hasBack ? 'flex' : 'none';
@@ -2180,6 +2233,13 @@ async function loadProfileScreen() {
   if (_bk) _bk.style.display = viewingUserId ? 'flex' : 'none';
   if (_st) _st.style.display = viewingUserId ? 'none' : 'flex';
 
+  // Apply stored banner for own profile
+  if (!viewingUserId) {
+    const storedBanner = STORE.get('prof-banner');
+    const hdImg = document.getElementById('prof-photo-hd-img');
+    if (hdImg && storedBanner) hdImg.src = storedBanner;
+  }
+
   if (!sb || !uid) {
     // Offline fallback
     const catches  = STORE.get('catches', []);
@@ -2206,7 +2266,8 @@ async function loadProfileScreen() {
     const { data: profile } = await sb.from('profiles').select('*').eq('id', uid).single();
     if (profile) {
       const uname = profile.username;
-      setEl('prof-name', uname);
+      const displayName = profile.display_name || uname;
+      setEl('prof-name', displayName);
       setEl('prof-handle', `@${uname}${profile.state ? ' · ' + profile.state : ' · California 🌊'}`);
       const avEl = document.getElementById('prof-avatar-initials');
       if (avEl) {
@@ -2217,14 +2278,14 @@ async function loadProfileScreen() {
           avEl.textContent = '';
         } else {
           avEl.style.backgroundImage = '';
-          avEl.textContent = uname.slice(0, 2).toUpperCase();
+          avEl.textContent = displayName.slice(0, 2).toUpperCase();
         }
       }
       // Rank display + journey
       renderRankOnProfile(profile.total_strikes || 0);
       loadRankJourney(profile.total_strikes || 0);
-      STATUS_TITLES.profile = uname;
-      setEl('status-title', uname);
+      STATUS_TITLES.profile = displayName;
+      setEl('status-title', displayName);
     }
 
     // Stats + grid in parallel
@@ -3768,6 +3829,73 @@ async function signOut() {
 function closeSettings() {
   document.getElementById('settings-sheet').classList.remove('open');
   document.getElementById('settings-backdrop').classList.remove('open');
+}
+
+const EP_DEFAULT_BANNER = 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=85';
+
+function openEditProfile() {
+  const banner = STORE.get('prof-banner') || EP_DEFAULT_BANNER;
+  const dispName = currentProfile?.display_name || currentProfile?.username || '';
+  const uname    = currentProfile?.username || '';
+  document.getElementById('ep-banner-img').src = banner;
+  document.getElementById('ep-name-input').value = dispName;
+  document.getElementById('ep-username-input').value = uname;
+  document.getElementById('ep-sheet').classList.add('open');
+  document.getElementById('ep-backdrop').classList.add('open');
+}
+
+function closeEditProfile() {
+  document.getElementById('ep-sheet').classList.remove('open');
+  document.getElementById('ep-backdrop').classList.remove('open');
+}
+
+function handleBannerSelect(evt) {
+  const file = evt.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const url = e.target.result;
+    document.getElementById('ep-banner-img').src = url;
+    const hd = document.getElementById('prof-photo-hd-img');
+    if (hd) hd.src = url;
+    STORE.set('prof-banner', url);
+  };
+  reader.readAsDataURL(file);
+  evt.target.value = '';
+}
+
+async function saveEditProfile() {
+  const dispName = document.getElementById('ep-name-input').value.trim();
+  const uname    = document.getElementById('ep-username-input').value.trim().toLowerCase().replace(/[^a-z0-9_]/g, '_');
+  if (!uname) { showToast('Username is required'); return; }
+  const displayName = dispName || uname;
+
+  if (currentProfile) {
+    currentProfile.display_name = displayName;
+    currentProfile.username = uname;
+  }
+  STORE.set('username', uname);
+
+  setEl('prof-name', displayName);
+  setEl('prof-handle', `@${uname} · California 🌊`);
+  const av2 = displayName.slice(0, 2).toUpperCase();
+  setEl('prof-avatar-initials', av2);
+  setEl('feed-composer-av', av2);
+  setEl('fce-av', av2);
+  STATUS_TITLES.profile = displayName;
+
+  if (sb && currentUser) {
+    try {
+      await sb.from('profiles').upsert({
+        id: currentUser.id,
+        username: uname,
+        display_name: displayName,
+      }, { onConflict: 'id' });
+    } catch(e) { console.warn('saveEditProfile:', e); }
+  }
+
+  showToast('Profile updated!');
+  closeEditProfile();
 }
 
 function saveDisplayName(val) {
