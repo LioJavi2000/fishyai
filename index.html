@@ -2850,53 +2850,46 @@ function updateFceShareBtn() {
 async function shareFeedPost() {
   const text = document.getElementById('fce-textarea')?.value.trim();
   if (!text && !fcePhotoB64) return;
+  if (!currentUser) { showToast('Sign in to post'); return; }
   const btn = document.getElementById('fce-share-btn');
   if (btn) { btn.disabled = true; btn.textContent = 'Sharing…'; }
-  const username = STORE.get('username', 'You');
-  const post = {
-    id: Date.now().toString(),
-    username,
-    caption: text || '',
-    photo_b64: fcePhotoB64,
-    mime: fcePhotoMime,
-    spot_name: currentSpot?.name || null,
-    is_public: true,
-    created_at: new Date().toISOString(),
-    likes: 0,
-    liked: false,
-  };
-  const posts = STORE.get('posts', []);
-  posts.unshift(post);
-  STORE.set('posts', posts.slice(0, 50));
 
-  // Try Supabase if logged in
-  if (sb && currentUser) {
-    try {
-      let photoUrl = null;
-      if (fcePhotoB64) {
-        const blob = b64Blob(fcePhotoB64, fcePhotoMime || 'image/jpeg');
-        const fname = `feed/${currentUser.id}/${Date.now()}.jpg`;
-        const { data: up } = await sb.storage.from('catch-photos').upload(fname, blob, { contentType: 'image/jpeg', upsert: true });
-        if (up?.path) {
-          const { data: pu } = sb.storage.from('catch-photos').getPublicUrl(up.path);
-          photoUrl = pu?.publicUrl || null;
-        }
+  try {
+    let photoUrl = null;
+    if (fcePhotoB64) {
+      const blob = b64Blob(fcePhotoB64, fcePhotoMime || 'image/jpeg');
+      const fname = `feed/${currentUser.id}/${Date.now()}.jpg`;
+      const { data: up } = await sb.storage.from('catches').upload(fname, blob, { contentType: fcePhotoMime || 'image/jpeg', upsert: true });
+      if (up?.path) {
+        const { data: pu } = sb.storage.from('catches').getPublicUrl(up.path);
+        photoUrl = pu?.publicUrl || null;
       }
-      const { error: insertErr } = await sb.from('catches').insert({
-        user_id: currentUser.id,
-        species: text?.slice(0, 80) || 'Post',
-        caption: text || '',
-        photo_url: photoUrl,
-        is_public: true,
-      });
-      if (insertErr) throw insertErr;
-    } catch(e) { console.error('shareFeedPost Supabase:', e); showToast('Failed to save post — try again'); }
-  }
+    }
 
-  injectPostIntoFeed(post);
-  showToast('Post shared! 🎣');
-  collapseFeedComposer();
-  if (btn) { btn.textContent = 'Share'; }
+    const { data: newRow, error } = await sb.from('catches').insert({
+      user_id:   currentUser.id,
+      species:   text?.slice(0, 80) || 'Post',
+      caption:   text || '',
+      photo_url: photoUrl,
+      spot_name: currentSpot?.name || null,
+      is_public: true,
+    }).select('*, profiles!catches_user_id_fkey(username, avatar_url, current_rank)').single();
+    if (error) throw error;
+
+    collapseFeedComposer();
+    showToast('Post shared! 🎣');
+    // Inject the real DB row so it has the correct id and profile data
+    const fc = document.getElementById('feed-content');
+    if (fc) {
+      const html = catchCard(newRow, 0, false, 0);
+      fc.insertAdjacentHTML('afterbegin', html);
+    }
+  } catch(e) {
+    console.error('shareFeedPost:', e);
+    showToast('Failed to post — ' + (e.message || 'try again'));
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Share'; }
+  }
 }
 
 // ══════════════════════════════════════════
