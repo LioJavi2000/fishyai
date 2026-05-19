@@ -1075,6 +1075,12 @@ body {
           <p class="auth-sub">The smartest fishing app ever made.</p>
         </div>
         <div class="auth-card">
+          <!-- Google Sign In -->
+          <button class="btn-google" onclick="signInWithGoogle()">
+            <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
+            Continue with Google
+          </button>
+          <div class="auth-sep"><span class="auth-sep-txt">or</span></div>
           <div id="auth-username-row">
             <div class="inp-lbl">Username</div>
             <input class="inp" id="auth-username" type="text" placeholder="angler123" autocomplete="username" autocorrect="off" autocapitalize="none" onkeydown="if(event.key==='Enter')document.getElementById('auth-email').focus()">
@@ -1084,7 +1090,10 @@ body {
             <input class="inp" id="auth-email" type="email" placeholder="you@example.com" autocomplete="email" inputmode="email" onkeydown="if(event.key==='Enter')document.getElementById('auth-password').focus()">
           </div>
           <div style="position:relative;">
-            <div class="inp-lbl">Password</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+              <div class="inp-lbl" style="margin-bottom:0;">Password</div>
+              <span id="auth-forgot-link" onclick="handleForgotPassword()" style="display:none;font-size:11px;font-weight:600;color:var(--navy);cursor:pointer;">Forgot password?</span>
+            </div>
             <input class="inp" id="auth-password" type="password" placeholder="At least 6 characters" autocomplete="current-password" onkeydown="if(event.key==='Enter')handleAuth()">
             <div id="auth-pw-toggle" onclick="toggleAuthPw()" style="position:absolute;right:14px;bottom:13px;cursor:pointer;color:var(--gray);font-size:11px;font-weight:600;">Show</div>
           </div>
@@ -2026,7 +2035,7 @@ async function init() {
         }
         return;
       }
-      // SIGNED_IN or TOKEN_REFRESHED — make sure profile + feed are ready
+      // Signed in (email/password OR Google OAuth return)
       if (event === 'SIGNED_IN' && !prevUser) {
         await loadProfile();
         if (current === 'auth' || current === 'onboard1' || current === 'onboard2') {
@@ -2035,6 +2044,12 @@ async function init() {
           loadStoriesRow();
           loadLeaderboard();
         }
+      }
+      // Password reset redirect — user is logged in but needs to set a new password
+      if (event === 'PASSWORD_RECOVERY') {
+        showScreen('auth');
+        toggleAuthMode(true); // switch to login mode
+        showAuthMsg('✅ Signed in via password reset. You can now set a new password by logging in normally.', false);
       }
     });
   } catch (e) {
@@ -2110,14 +2125,16 @@ function updateTabBar(name) {
 function toggleAuthMode(forceLogin = false) {
   if (forceLogin) isSignUp = false;
   else isSignUp = !isSignUp;
-  const row  = document.getElementById('auth-username-row');
-  const title = document.getElementById('auth-mode-title');
-  const btn  = document.getElementById('auth-submit-btn');
-  const link = document.getElementById('auth-toggle-link');
-  if (row)   row.style.display  = isSignUp ? 'block' : 'none';
-  if (title) title.textContent  = isSignUp ? 'Join Fishy AI' : 'Welcome back';
-  if (btn)   btn.textContent    = isSignUp ? 'Create Account' : 'Log In';
-  if (link)  link.innerHTML     = isSignUp
+  const row    = document.getElementById('auth-username-row');
+  const title  = document.getElementById('auth-mode-title');
+  const btn    = document.getElementById('auth-submit-btn');
+  const link   = document.getElementById('auth-toggle-link');
+  const forgot = document.getElementById('auth-forgot-link');
+  if (row)    row.style.display    = isSignUp ? 'block' : 'none';
+  if (title)  title.textContent    = isSignUp ? 'Join Fishy AI' : 'Welcome back';
+  if (btn)    btn.textContent      = isSignUp ? 'Create Account' : 'Log In';
+  if (forgot) forgot.style.display = isSignUp ? 'none' : 'inline';
+  if (link)   link.innerHTML       = isSignUp
     ? 'Already have an account? <span onclick="toggleAuthMode()">Log in</span>'
     : "Don't have an account? <span onclick=\"toggleAuthMode()\">Sign up</span>";
   showAuthMsg('');
@@ -2199,6 +2216,29 @@ async function handleAuth() {
   }
 }
 
+async function signInWithGoogle() {
+  if (!sb) { showToast('Service starting up, try again.'); return; }
+  showAuthMsg('');
+  const { error } = await sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: window.location.href.split('#')[0].split('?')[0]
+    }
+  });
+  if (error) showAuthMsg(error.message);
+}
+
+async function handleForgotPassword() {
+  const email = (document.getElementById('auth-email')?.value || '').trim();
+  if (!email) { showAuthMsg('Enter your email address first.'); return; }
+  if (!sb) return;
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.href.split('#')[0].split('?')[0]
+  });
+  if (error) { showAuthMsg(error.message); return; }
+  showAuthMsg('✅ Password reset email sent! Check your inbox.', false);
+}
+
 // ══════════════════════════════════════════
 //  PROFILE
 // ══════════════════════════════════════════
@@ -2209,18 +2249,22 @@ async function loadProfile() {
     if (data) {
       currentProfile = data;
     } else {
-      // Profile doesn't exist yet — upsert it
-      const username = currentUser.user_metadata?.username
+      // Profile doesn't exist yet — upsert it (handles new Google OAuth users too)
+      const meta = currentUser.user_metadata || {};
+      const username = (meta.username || meta.preferred_username
         || currentUser.email?.split('@')[0]?.replace(/[^a-z0-9_]/gi, '_')
-        || 'angler';
+        || 'angler').toLowerCase().replace(/[^a-z0-9_]/g, '_');
+      const displayName = meta.full_name || meta.name || null;
+      const avatarUrl   = meta.avatar_url || meta.picture || null;
       const { data: upserted } = await sb.from('profiles').upsert({
         id: currentUser.id,
         username,
-        avatar_url: null,
+        display_name: displayName,
+        avatar_url: avatarUrl,
         current_rank: 'Beginner',
         total_strikes: 0,
       }, { onConflict: 'id' }).select().single();
-      currentProfile = upserted ?? { id: currentUser.id, username };
+      currentProfile = upserted ?? { id: currentUser.id, username, display_name: displayName };
     }
   } catch (e) {
     console.warn('loadProfile:', e.message);
@@ -2229,17 +2273,16 @@ async function loadProfile() {
       username: currentUser.user_metadata?.username || currentUser.email?.split('@')[0] || 'Angler',
     };
   }
-  const name = currentProfile.username || 'Angler';
-  setEl('prof-name', name);
-  setEl('prof-handle', `@${name} · California 🌊`);
-  setEl('prof-avatar-initials', name.slice(0, 2).toUpperCase());
-  // Sync composer avatars
-  const av2 = name.slice(0, 2).toUpperCase();
+  const displayName = currentProfile.display_name || currentProfile.username || 'Angler';
+  const handle = currentProfile.username || 'angler';
+  setEl('prof-name', displayName);
+  setEl('prof-handle', `@${handle} · California 🌊`);
+  const av2 = displayName.slice(0, 2).toUpperCase();
+  setEl('prof-avatar-initials', av2);
   setEl('feed-composer-av', av2);
   setEl('fce-av', av2);
-  STATUS_TITLES.profile = name;
-  // Persist username locally too
-  STORE.set('username', name);
+  STATUS_TITLES.profile = displayName;
+  STORE.set('username', handle);
 }
 
 async function loadProfileScreen() {
