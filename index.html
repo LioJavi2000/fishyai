@@ -2882,14 +2882,15 @@ async function shareFeedPost() {
           photoUrl = pu?.publicUrl || null;
         }
       }
-      await sb.from('catches').insert({
+      const { error: insertErr } = await sb.from('catches').insert({
         user_id: currentUser.id,
-        species: text?.slice(0, 60) || 'Post',
+        species: text?.slice(0, 80) || 'Post',
         caption: text || '',
         photo_url: photoUrl,
         is_public: true,
       });
-    } catch(e) { console.error('shareFeedPost Supabase:', e); }
+      if (insertErr) throw insertErr;
+    } catch(e) { console.error('shareFeedPost Supabase:', e); showToast('Failed to save post — try again'); }
   }
 
   injectPostIntoFeed(post);
@@ -3614,12 +3615,17 @@ function catchCard(c, likes, liked, cmtCount = 0) {
     ? `<div class="post-photo" ondblclick="doubleTapLike('${c.id}')"  ontouchend="handlePhotoTouch(event,'${c.id}')"><img src="${esc(c.photo_url)}" alt="${esc(c.species)}" loading="lazy">${dtHeart}<div class="post-fish-over"><span class="fish-tag">${esc(c.species)}</span></div></div>`
     : `<div class="post-photo ph-ocean" ondblclick="doubleTapLike('${c.id}')" ontouchend="handlePhotoTouch(event,'${c.id}')">${PH_SVG}${dtHeart}<div class="post-fish-over"><span class="fish-tag">${esc(c.species)}</span></div></div>`;
 
+  const captionHtml = c.caption
+    ? `<div style="padding:10px 14px 4px;font-size:14px;color:#111;letter-spacing:-0.2px;line-height:1.5;">${esc(c.caption)}</div>`
+    : '';
+
   return `<div class="card" style="margin-top:8px;animation:card-rise 0.4s var(--ease) both;">
     <div class="post-hd" style="cursor:pointer;" onclick="openUserProfile('${c.user_id}')">
       <div class="av">${av}</div>
       <div style="flex:1"><div class="post-name">${nameHtml}</div>${spotHtml}</div>
       <span class="post-time">${timeAgo(c.created_at)}</span>
     </div>
+    ${captionHtml}
     ${photo}
     <div class="post-actions">
       <button class="act-btn${liked?' liked':''}" id="like-db-${c.id}" onclick="event.stopPropagation();toggleLikeDb('${c.id}')">${HEART_SVG}<span class="like-count">${likes}</span></button>
