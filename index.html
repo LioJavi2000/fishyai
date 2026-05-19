@@ -918,7 +918,7 @@ body {
 
 /* ══ PROFILE V2 — Scandinavian Premium ══ */
 .lg-icon-btn{width:38px;height:38px;border-radius:50%;border:none;background:transparent;cursor:pointer;position:relative;display:flex;align-items:center;justify-content:center;color:#fff;transition:transform 0.28s ease-out;-webkit-tap-highlight-color:transparent;padding:0;font-family:inherit;isolation:isolate;}
-.lg-icon-btn-lens{position:absolute;inset:0;display:block;border-radius:50%;background:rgba(255,255,255,0.08);backdrop-filter:blur(10px) saturate(180%);-webkit-backdrop-filter:blur(10px) saturate(180%);box-shadow:inset 0 0 0 1px rgba(255,255,255,0.18),inset -0.3px -1px 4px 0px rgba(0,0,0,0.08),inset 0px 2px 4px -2px rgba(0,0,0,0.12),0px 1px 4px 0px rgba(0,0,0,0.14),0px 4px 14px 0px rgba(0,0,0,0.12);z-index:-1;pointer-events:none;transition:background 0.4s cubic-bezier(1,0,0.4,1),box-shadow 0.4s cubic-bezier(1,0,0.4,1);}
+.lg-icon-btn-lens{position:absolute;inset:0;display:block;border-radius:50%;background:rgba(0,0,0,0.30);backdrop-filter:blur(10px) saturate(180%);-webkit-backdrop-filter:blur(10px) saturate(180%);box-shadow:inset 0 0 0 1px rgba(255,255,255,0.20),0px 1px 4px 0px rgba(0,0,0,0.18),0px 4px 14px 0px rgba(0,0,0,0.14);z-index:-1;pointer-events:none;transition:background 0.4s cubic-bezier(1,0,0.4,1);}
 .lg-icon-btn>svg{position:relative;z-index:1;display:block;filter:drop-shadow(0 1px 1.5px rgba(0,0,0,0.3));}
 .lg-icon-btn:active{transform:scale(0.91);}
 .prof-wrap-v2{min-height:100%;background:#f4f5f7;display:flex;flex-direction:column;}
@@ -962,10 +962,18 @@ body {
 .ep-header{padding:14px 20px 0;display:flex;align-items:center;justify-content:space-between;}
 .ep-title{font-size:17px;font-weight:800;color:#111;letter-spacing:-0.5px;}
 .ep-close-btn{width:30px;height:30px;border-radius:50%;background:#f4f5f7;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.ep-banner-wrap{position:relative;height:130px;margin-top:16px;overflow:hidden;background:#1B2E4B;}
-.ep-banner-img{width:100%;height:100%;object-fit:cover;filter:brightness(0.78) saturate(1.15);}
-.ep-banner-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
-.ep-banner-btn{background:rgba(0,0,0,0.42);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.22);color:#fff;font-size:13px;font-weight:600;padding:8px 18px;border-radius:20px;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:inherit;}
+.ep-preview-wrap{margin-top:16px;border-radius:18px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,0.10);}
+.ep-preview-hd{position:relative;height:110px;background:#1B2E4B;overflow:hidden;}
+.ep-preview-hd-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(0.78) saturate(1.15);}
+.ep-preview-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.18) 0%,rgba(5,15,35,0.5) 100%);}
+.ep-preview-change{position:absolute;top:8px;right:8px;z-index:2;}
+.ep-preview-change-btn{background:rgba(0,0,0,0.38);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.22);color:#fff;font-size:11px;font-weight:600;padding:5px 12px;border-radius:16px;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:inherit;}
+.ep-preview-card{background:#fff;margin-top:-20px;padding-bottom:14px;}
+.ep-preview-av-wrap{display:flex;justify-content:center;margin-top:-28px;margin-bottom:6px;}
+.ep-preview-av{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#0ea5e9,#0369a1);border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;box-shadow:0 2px 10px rgba(14,165,233,0.28);overflow:hidden;flex-shrink:0;}
+.ep-preview-av img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.ep-preview-name{text-align:center;font-size:14px;font-weight:800;color:#111;letter-spacing:-0.4px;}
+.ep-preview-handle{text-align:center;font-size:10px;color:#8e8e93;margin-top:2px;}
 .ep-form{padding:20px 20px 8px;}
 .ep-field{margin-bottom:16px;}
 .ep-label{display:block;font-size:11px;font-weight:700;color:#8e8e93;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;}
@@ -1609,7 +1617,7 @@ body {
               <span class="lg-icon-btn-lens"></span>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
             </button>
-            <button class="lg-icon-btn" id="prof-settings-btn-v2" onclick="openEditProfile()">
+            <button class="lg-icon-btn" id="prof-settings-btn-v2" onclick="openSettings()">
               <span class="lg-icon-btn-lens"></span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
             </button>
@@ -1831,6 +1839,13 @@ body {
         <div class="settings-prof-sub" id="settings-sub">0 catches · 0 species</div>
       </div>
     </div>
+    <div class="settings-group">
+      <div class="settings-row" onclick="closeSettings();setTimeout(openEditProfile,180)">
+        <div class="set-ico" style="background:linear-gradient(135deg,#0ea5e9,#0369a1);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <span class="settings-row-lbl">Edit Profile</span>
+        <span class="settings-row-arrow">›</span>
+      </div>
+    </div>
     <div class="settings-group" style="padding:12px 16px;">
       <div style="font-size:11px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Display Name</div>
       <input class="settings-name-input" id="settings-name-input" placeholder="Your name or handle" oninput="saveDisplayName(this.value)">
@@ -1884,15 +1899,26 @@ body {
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
-    <div class="ep-banner-wrap">
-      <img class="ep-banner-img" id="ep-banner-img" src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=85" alt="">
-      <div class="ep-banner-overlay">
-        <button class="ep-banner-btn" onclick="document.getElementById('ep-banner-input').click()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
-          Change Banner
-        </button>
+    <!-- Live profile preview -->
+    <div class="ep-preview-wrap" style="margin:16px 20px 0;">
+      <div class="ep-preview-hd">
+        <img class="ep-preview-hd-img" id="ep-banner-img" src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=85" alt="">
+        <div class="ep-preview-overlay"></div>
+        <div class="ep-preview-change">
+          <button class="ep-preview-change-btn" onclick="document.getElementById('ep-banner-input').click()">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            Change
+          </button>
+        </div>
+        <input type="file" id="ep-banner-input" accept="image/*" style="display:none" onchange="handleBannerSelect(event)">
       </div>
-      <input type="file" id="ep-banner-input" accept="image/*" style="display:none" onchange="handleBannerSelect(event)">
+      <div class="ep-preview-card">
+        <div class="ep-preview-av-wrap">
+          <div class="ep-preview-av" id="ep-preview-av">JF</div>
+        </div>
+        <div class="ep-preview-name" id="ep-preview-name">Jake Fisher</div>
+        <div class="ep-preview-handle" id="ep-preview-handle">@jake_fisher · California 🌊</div>
+      </div>
     </div>
     <div class="ep-form">
       <div class="ep-field">
@@ -3832,14 +3858,31 @@ function closeSettings() {
 }
 
 const EP_DEFAULT_BANNER = 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=85';
+const EP_14_DAYS = 14 * 24 * 60 * 60 * 1000;
+const EP_7_DAYS  =  7 * 24 * 60 * 60 * 1000;
+
+function epUpdatePreview() {
+  const name   = document.getElementById('ep-name-input')?.value.trim();
+  const uname  = document.getElementById('ep-username-input')?.value.trim();
+  const dispName = name || uname || 'Your Name';
+  setEl('ep-preview-name', dispName);
+  setEl('ep-preview-handle', `@${uname || 'username'} · California 🌊`);
+  setEl('ep-preview-av', dispName.slice(0, 2).toUpperCase());
+}
 
 function openEditProfile() {
-  const banner = STORE.get('prof-banner') || EP_DEFAULT_BANNER;
+  const banner   = STORE.get('prof-banner') || EP_DEFAULT_BANNER;
   const dispName = currentProfile?.display_name || currentProfile?.username || '';
   const uname    = currentProfile?.username || '';
   document.getElementById('ep-banner-img').src = banner;
   document.getElementById('ep-name-input').value = dispName;
   document.getElementById('ep-username-input').value = uname;
+  epUpdatePreview();
+  // Wire live preview
+  ['ep-name-input','ep-username-input'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.oninput = epUpdatePreview; }
+  });
   document.getElementById('ep-sheet').classList.add('open');
   document.getElementById('ep-backdrop').classList.add('open');
 }
@@ -3870,11 +3913,35 @@ async function saveEditProfile() {
   if (!uname) { showToast('Username is required'); return; }
   const displayName = dispName || uname;
 
+  const prevName  = currentProfile?.display_name || currentProfile?.username || '';
+  const prevUname = currentProfile?.username || '';
+  const nameChanged  = displayName !== prevName;
+  const unameChanged = uname !== prevUname;
+
+  // Rate limiting: name max 2× per 14 days
+  if (nameChanged) {
+    const nChanges = (STORE.get('ep-name-changes', [])).filter(t => Date.now() - t < EP_14_DAYS);
+    if (nChanges.length >= 2) {
+      showToast('Name can only be changed twice every 14 days');
+      return;
+    }
+  }
+  // Rate limiting: username max 1× per 7 days
+  if (unameChanged) {
+    const uChanges = (STORE.get('ep-uname-changes', [])).filter(t => Date.now() - t < EP_7_DAYS);
+    if (uChanges.length >= 1) {
+      showToast('Username can only be changed once every 7 days');
+      return;
+    }
+  }
+
   if (currentProfile) {
     currentProfile.display_name = displayName;
     currentProfile.username = uname;
   }
   STORE.set('username', uname);
+  if (nameChanged)  STORE.set('ep-name-changes',  [...(STORE.get('ep-name-changes',[])).filter(t => Date.now()-t < EP_14_DAYS), Date.now()]);
+  if (unameChanged) STORE.set('ep-uname-changes', [...(STORE.get('ep-uname-changes',[])).filter(t => Date.now()-t < EP_7_DAYS),  Date.now()]);
 
   setEl('prof-name', displayName);
   setEl('prof-handle', `@${uname} · California 🌊`);
@@ -3887,9 +3954,7 @@ async function saveEditProfile() {
   if (sb && currentUser) {
     try {
       await sb.from('profiles').upsert({
-        id: currentUser.id,
-        username: uname,
-        display_name: displayName,
+        id: currentUser.id, username: uname, display_name: displayName,
       }, { onConflict: 'id' });
     } catch(e) { console.warn('saveEditProfile:', e); }
   }
