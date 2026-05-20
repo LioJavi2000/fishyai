@@ -2202,7 +2202,18 @@ async function loadProfile() {
   setEl('prof-name', displayName);
   setEl('prof-handle', `@${handle} · California 🌊`);
   const av2 = displayName.slice(0, 2).toUpperCase();
-  setEl('prof-avatar-initials', av2);
+  const avEl2 = document.getElementById('prof-avatar-initials');
+  if (avEl2) {
+    if (currentProfile.avatar_url) {
+      avEl2.style.backgroundImage = `url(${esc(currentProfile.avatar_url)})`;
+      avEl2.style.backgroundSize = 'cover';
+      avEl2.style.backgroundPosition = 'center';
+      avEl2.textContent = '';
+    } else {
+      avEl2.style.backgroundImage = '';
+      avEl2.textContent = av2;
+    }
+  }
   setEl('feed-composer-av', av2);
   setEl('fce-av', av2);
   STATUS_TITLES.profile = displayName;
@@ -2252,18 +2263,22 @@ async function loadProfileScreen() {
       setEl('prof-handle', `@${uname}${profile.state ? ' · ' + profile.state : ' · California 🌊'}`);
       const avEl = document.getElementById('prof-avatar-initials');
       if (avEl) {
-        if (profile.avatar_url) {
-          avEl.style.backgroundImage = `url(${esc(profile.avatar_url)})`;
+        const avatarUrl = profile.avatar_url || (!viewingUserId ? currentProfile?.avatar_url : null);
+        if (avatarUrl) {
+          avEl.style.backgroundImage = `url(${esc(avatarUrl)})`;
           avEl.style.backgroundSize = 'cover';
           avEl.style.backgroundPosition = 'center';
           avEl.textContent = '';
+          if (!profile.avatar_url && currentProfile) currentProfile.avatar_url = avatarUrl;
         } else {
           avEl.style.backgroundImage = '';
           avEl.textContent = displayName.slice(0, 2).toUpperCase();
         }
       }
-      // Banner
-      if (hdImg && profile.banner_url) hdImg.src = profile.banner_url;
+      // Banner — prefer DB, fall back to in-memory then localStorage
+      const bannerUrl = profile.banner_url || (!viewingUserId ? (currentProfile?.banner_url || STORE.get('prof-banner')) : null);
+      if (hdImg && bannerUrl) hdImg.src = bannerUrl;
+      if (profile.banner_url && currentProfile) currentProfile.banner_url = profile.banner_url;
       // Bio
       const bioEl = document.getElementById('prof-bio');
       if (bioEl) { if (profile.bio) { bioEl.textContent = profile.bio; bioEl.style.display = 'block'; } else { bioEl.style.display = 'none'; } }
@@ -3402,6 +3417,7 @@ async function loadFeed(append = false) {
       .from('catches')
       .select('*, profiles!catches_user_id_fkey(username, avatar_url, current_rank)')
       .eq('is_public', true)
+      .neq('post_type', 'story')
       .order('created_at', { ascending: false })
       .range(from, from + FEED_PAGE_SIZE - 1);
 
