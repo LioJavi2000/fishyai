@@ -950,6 +950,12 @@ body {
 .follow-btn-v2:active{transform:scale(0.97);}
 .follow-btn-v2.following{background:#f4f5f7;color:#333;border:1.5px solid rgba(0,0,0,0.1);box-shadow:none;}
 .sec-hd-v2{font-size:15px;font-weight:800;color:#111;letter-spacing:-0.5px;margin:22px 16px 10px;}
+.prof-tabs{display:flex;gap:0;margin:18px 16px 10px;border-radius:12px;background:#f0f0f5;padding:3px;}
+.prof-tab{flex:1;padding:7px 0;border:none;background:none;border-radius:10px;font-size:13px;font-weight:700;color:#888;cursor:pointer;transition:all 0.18s;letter-spacing:-0.2px;}
+.prof-tab.active{background:#fff;color:#111;box-shadow:0 1px 4px rgba(0,0,0,0.13);}
+.prof-post-card{background:#f8f8f8;border-radius:14px;margin:0 16px 10px;overflow:hidden;}
+.prof-post-card img{width:100%;max-height:220px;object-fit:cover;display:block;}
+.prof-post-card-text{padding:10px 12px;font-size:13px;color:#222;line-height:1.5;letter-spacing:-0.1px;}
 .prof-card-v2 .badge-grid{padding:0 16px;}
 .prof-card-v2 .catch-grid{padding:0 16px;}
 .prof-card-v2 .catch-thumb{height:116px;}
@@ -1624,11 +1630,23 @@ body {
             </div>
           </div>
 
-          <!-- My Catches -->
-          <div class="sec-hd-v2">My Catches</div>
+          <!-- Profile Tabs -->
+          <div class="prof-tabs">
+            <button class="prof-tab active" id="tab-catches" onclick="switchProfileTab('catches')">My Catches</button>
+            <button class="prof-tab" id="tab-posts" onclick="switchProfileTab('posts')">Posts</button>
+          </div>
+
+          <!-- Catches grid -->
           <div class="catch-grid" id="catch-grid">
             <div id="catch-grid-empty" style="grid-column:1/-1;text-align:center;padding:32px 16px;color:var(--gray);font-size:13px;line-height:1.6;letter-spacing:-0.2px;">
               No catches yet.<br>Use the 🎣 tab to log your first one!
+            </div>
+          </div>
+
+          <!-- Posts list -->
+          <div id="posts-grid" style="display:none;">
+            <div id="posts-grid-empty" style="text-align:center;padding:32px 16px;color:var(--gray);font-size:13px;line-height:1.6;letter-spacing:-0.2px;">
+              No posts yet.
             </div>
           </div>
 
@@ -2254,12 +2272,14 @@ async function loadProfileScreen() {
     }
 
     // Stats + grid in parallel
-    const [catchesRes, follRes] = await Promise.all([
-      sb.from('catches').select('id, species, weight_lbs, photo_url').eq('user_id', uid).eq('is_public', true).order('created_at', { ascending: false }),
+    const [fishRes, postsRes, follRes] = await Promise.all([
+      sb.from('catches').select('id, species, weight_lbs, photo_url, caption').eq('user_id', uid).eq('is_public', true).eq('post_type', 'catch').order('created_at', { ascending: false }),
+      sb.from('catches').select('id, caption, photo_url, created_at').eq('user_id', uid).eq('is_public', true).eq('post_type', 'post').order('created_at', { ascending: false }),
       sb.from('follows').select('*', { count: 'exact', head: true }).eq('following_id', uid),
     ]);
 
-    const catchList = catchesRes.data || [];
+    const catchList = fishRes.data || [];
+    const postList  = postsRes.data || [];
     const species   = new Set(catchList.map(c => c.species)).size;
     const best      = Math.max(0, ...catchList.map(c => parseFloat(c.weight_lbs) || 0));
 
@@ -2294,23 +2314,52 @@ async function loadProfileScreen() {
     document.getElementById('badge-explorer')?.classList.toggle('locked',       !earned.has('explorer'));
     document.getElementById('badge-lucky-or-skill')?.classList.toggle('locked', !earned.has('lucky_or_skill'));
 
-    // Catch grid
+    // Reset tabs to catches view
+    switchProfileTab('catches');
+
+    // Catch grid (fish only)
     const grid = document.getElementById('catch-grid');
     const emptyEl = document.getElementById('catch-grid-empty');
     if (grid) {
       if (catchList.length > 0) {
-        const isOwn = !viewingUserId || viewingUserId === currentUser?.id;
         const fishSvg = `<svg width="36" height="20" viewBox="0 0 100 55" fill="rgba(255,255,255,0.5)"><path d="M8 28Q28 6 64 19Q77 10 96 28Q77 46 64 37Q28 50 8 28Z"/><circle cx="76" cy="22" r="3.5" fill="rgba(255,255,255,0.8)"/></svg>`;
         const thumbs = catchList.slice(0, 9).map(c => {
           const bg = c.photo_url ? `background:url(${esc(c.photo_url)}) center/cover no-repeat;` : 'background:#d4e6f5;';
           return `<div class="catch-thumb" style="${bg}" onclick="openStoryViewer('${c.id}')">${c.photo_url ? '' : fishSvg}<div class="catch-label">${esc(c.species)}</div></div>`;
         }).join('');
         grid.innerHTML = thumbs;
-      } else if (emptyEl) {
-        emptyEl.style.display = 'block';
+        if (emptyEl) emptyEl.style.display = 'none';
+      } else {
+        grid.innerHTML = '';
+        if (emptyEl) { grid.appendChild(emptyEl); emptyEl.style.display = 'block'; }
+      }
+    }
+
+    // Posts list
+    const postsGrid = document.getElementById('posts-grid');
+    const postsEmpty = document.getElementById('posts-grid-empty');
+    if (postsGrid) {
+      if (postList.length > 0) {
+        const postsHtml = postList.map(p => `
+          <div class="prof-post-card">
+            ${p.photo_url ? `<img src="${esc(p.photo_url)}" alt="" loading="lazy">` : ''}
+            ${p.caption ? `<div class="prof-post-card-text">${esc(p.caption)}</div>` : ''}
+          </div>`).join('');
+        postsGrid.innerHTML = postsHtml;
+        if (postsEmpty) postsEmpty.style.display = 'none';
+      } else {
+        postsGrid.innerHTML = '';
+        if (postsEmpty) { postsGrid.appendChild(postsEmpty); postsEmpty.style.display = 'block'; }
       }
     }
   } catch(e) { console.error('loadProfileScreen:', e); }
+}
+
+function switchProfileTab(tab) {
+  document.getElementById('tab-catches').classList.toggle('active', tab === 'catches');
+  document.getElementById('tab-posts').classList.toggle('active', tab === 'posts');
+  document.getElementById('catch-grid').style.display = tab === 'catches' ? '' : 'none';
+  document.getElementById('posts-grid').style.display = tab === 'posts' ? '' : 'none';
 }
 
 function openUserProfile(userId) {
@@ -2674,6 +2723,7 @@ async function postStory() {
       caption:   caption || '',
       photo_url: photoUrl,
       is_public: true,
+      post_type: 'story',
     });
     // Also keep local copy for updateStoriesRow preview
     const story = { id: Date.now().toString(), photo_b64: capturedB64, mime: capturedMime, caption, created_at: new Date().toISOString() };
@@ -2805,6 +2855,7 @@ async function shareFeedPost() {
       photo_url: photoUrl,
       spot_name: currentSpot?.name || null,
       is_public: true,
+      post_type: 'post',
     }).select('*, profiles!catches_user_id_fkey(username, avatar_url, current_rank)').single();
     if (error) throw error;
 
@@ -3520,14 +3571,9 @@ function catchCard(c, likes, liked, cmtCount = 0) {
   const u   = c.profiles?.username || 'angler';
   const av  = u.slice(0, 2).toUpperCase();
   const isMe = currentUser && c.user_id === currentUser.id;
-  // Rank icon next to username
-  const rankNum  = c.profiles?.current_rank || 1;
-  const rankData = RANKS[rankNum - 1] || RANKS[0];
-  const tc       = TIER_COLORS[rankData.tier];
-  const rankBadge = `<span class="rank-icon-sm" title="${rankData.name}" style="background-color:${tc};box-shadow:0 2px 8px ${tc}55;">${rankSvg(rankNum, 11, '#fff')}</span>`;
   const nameHtml = isMe
-    ? `${esc(u)}${rankBadge} <span style="font-size:10px;color:var(--navy);background:rgba(27,46,75,0.1);padding:2px 6px;border-radius:8px;font-weight:600;">You</span>`
-    : `${esc(u)}${rankBadge}`;
+    ? `${esc(u)} <span style="font-size:10px;color:var(--navy);background:rgba(27,46,75,0.1);padding:2px 6px;border-radius:8px;font-weight:600;">You</span>`
+    : esc(u);
 
   const stats = [
     (c.show_weight !== false && c.weight_lbs) ? `<b>${c.weight_lbs} lbs</b>` : '',
@@ -3647,15 +3693,11 @@ async function loadLeaderboard() {
       const u      = c.profiles?.username || 'angler';
       const isMe   = currentUser && c.user_id === currentUser.id;
       const pos    = i + 1;
-      const rNum   = c.profiles?.current_rank || 1;
-      const rData  = RANKS[rNum - 1] || RANKS[0];
-      const rtc    = TIER_COLORS[rData.tier];
-      const rBadge = `<span class="rank-icon-sm" title="${rData.name}" style="background-color:${rtc};box-shadow:0 2px 8px ${rtc}55;">${rankSvg(rNum, 11, '#fff')}</span>`;
       return `<div class="lb-item${isMe ? ' lb-you' : ''}" style="cursor:pointer;" onclick="openUserProfile('${c.user_id}')">
         <div class="lb-rank ${rankCls(i)}">${pos}</div>
         <div class="av">${u.slice(0,2).toUpperCase()}</div>
         <div class="lb-info">
-          <div class="lb-name">${esc(u)}${rBadge}${isMe ? ' <span style="font-size:10px;color:var(--navy);font-weight:600;background:rgba(27,46,75,0.1);padding:1px 6px;border-radius:8px;">You</span>' : ''}</div>
+          <div class="lb-name">${esc(u)}${isMe ? ' <span style="font-size:10px;color:var(--navy);font-weight:600;background:rgba(27,46,75,0.1);padding:1px 6px;border-radius:8px;">You</span>' : ''}</div>
           <div class="lb-fish">${esc(c.species)}${c.spot_name ? ' · ' + esc(c.spot_name) : ''}</div>
         </div>
         <div class="lb-weight">${c.weight_lbs} lbs</div>
@@ -3890,30 +3932,27 @@ async function handleBannerSelect(evt) {
   const reader = new FileReader();
   reader.onload = async e => {
     const dataUrl = e.target.result;
-    // Show immediately in UI
     document.getElementById('ep-banner-img').src = dataUrl;
     const hd = document.getElementById('prof-photo-hd-img');
     if (hd) hd.src = dataUrl;
-    STORE.set('prof-banner', dataUrl);
 
-    // Upload to Supabase in background
     if (sb && currentUser) {
       try {
         const b64 = dataUrl.split(',')[1];
         const blob = b64Blob(b64, file.type || 'image/jpeg');
         const fname = `banners/${currentUser.id}/${Date.now()}.jpg`;
-        const { data: up } = await sb.storage.from('catches').upload(fname, blob, { contentType: file.type || 'image/jpeg', upsert: true });
-        if (up?.path) {
-          const { data: pu } = sb.storage.from('catches').getPublicUrl(up.path);
-          const bannerUrl = pu?.publicUrl;
-          if (bannerUrl) {
-            await sb.from('profiles').upsert({ id: currentUser.id, banner_url: bannerUrl }, { onConflict: 'id' });
-            if (hd) hd.src = bannerUrl;
-            if (currentProfile) currentProfile.banner_url = bannerUrl;
-            STORE.set('prof-banner', bannerUrl);
-          }
+        const { data: up, error: upErr } = await sb.storage.from('catches').upload(fname, blob, { contentType: file.type || 'image/jpeg', upsert: true });
+        if (upErr) throw upErr;
+        const { data: pu } = sb.storage.from('catches').getPublicUrl(up.path);
+        const bannerUrl = pu?.publicUrl;
+        if (bannerUrl) {
+          const { error: dbErr } = await sb.from('profiles').update({ banner_url: bannerUrl }).eq('id', currentUser.id);
+          if (dbErr) throw dbErr;
+          if (hd) hd.src = bannerUrl;
+          if (currentProfile) currentProfile.banner_url = bannerUrl;
+          STORE.set('prof-banner', bannerUrl);
         }
-      } catch(e) { console.warn('banner upload:', e); }
+      } catch(e) { console.warn('banner upload:', e); showToast('Banner save failed: ' + (e.message || e)); }
     }
   };
   reader.readAsDataURL(file);
@@ -3935,18 +3974,18 @@ async function handleAvatarSelect(evt) {
         const b64  = dataUrl.split(',')[1];
         const blob = b64Blob(b64, file.type || 'image/jpeg');
         const fname = `avatars/${currentUser.id}/${Date.now()}.jpg`;
-        const { data: up } = await sb.storage.from('catches').upload(fname, blob, { contentType: file.type || 'image/jpeg', upsert: true });
-        if (up?.path) {
-          const { data: pu } = sb.storage.from('catches').getPublicUrl(up.path);
-          const avatarUrl = pu?.publicUrl;
-          if (avatarUrl) {
-            await sb.from('profiles').upsert({ id: currentUser.id, avatar_url: avatarUrl }, { onConflict: 'id' });
-            if (currentProfile) currentProfile.avatar_url = avatarUrl;
-            if (avCircle) { avCircle.style.backgroundImage = `url(${avatarUrl})`; }
-            if (profAv)   { profAv.style.backgroundImage   = `url(${avatarUrl})`; }
-          }
+        const { data: up, error: upErr } = await sb.storage.from('catches').upload(fname, blob, { contentType: file.type || 'image/jpeg', upsert: true });
+        if (upErr) throw upErr;
+        const { data: pu } = sb.storage.from('catches').getPublicUrl(up.path);
+        const avatarUrl = pu?.publicUrl;
+        if (avatarUrl) {
+          const { error: dbErr } = await sb.from('profiles').update({ avatar_url: avatarUrl }).eq('id', currentUser.id);
+          if (dbErr) throw dbErr;
+          if (currentProfile) currentProfile.avatar_url = avatarUrl;
+          if (avCircle) { avCircle.style.backgroundImage = `url(${avatarUrl})`; }
+          if (profAv)   { profAv.style.backgroundImage   = `url(${avatarUrl})`; }
         }
-      } catch(e) { console.warn('avatar upload:', e); }
+      } catch(e) { console.warn('avatar upload:', e); showToast('Avatar save failed: ' + (e.message || e)); }
     }
   };
   reader.readAsDataURL(file);
