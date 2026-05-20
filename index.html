@@ -3852,7 +3852,7 @@ function epUpdatePreview() {
 }
 
 function openEditProfile() {
-  const banner   = STORE.get('prof-banner') || EP_DEFAULT_BANNER;
+  const banner   = currentProfile?.banner_url || STORE.get('prof-banner') || EP_DEFAULT_BANNER;
   const dispName = currentProfile?.display_name || currentProfile?.username || STORE.get('username','');
   const uname    = currentProfile?.username || STORE.get('username','');
   const bio      = currentProfile?.bio || '';
@@ -3995,7 +3995,18 @@ async function saveEditProfile() {
   const profBioEl = document.getElementById('prof-bio');
   if (profBioEl) { profBioEl.textContent = bio; profBioEl.style.display = bio ? '' : 'none'; }
   const av2 = displayName.slice(0, 2).toUpperCase();
-  setEl('prof-avatar-initials', av2);
+  const profAvEl = document.getElementById('prof-avatar-initials');
+  if (profAvEl) {
+    if (currentProfile?.avatar_url) {
+      profAvEl.textContent = '';
+      profAvEl.style.backgroundImage = `url(${esc(currentProfile.avatar_url)})`;
+      profAvEl.style.backgroundSize = 'cover';
+      profAvEl.style.backgroundPosition = 'center';
+    } else {
+      profAvEl.textContent = av2;
+      profAvEl.style.backgroundImage = '';
+    }
+  }
   setEl('feed-composer-av', av2);
   setEl('fce-av', av2);
   STATUS_TITLES.profile = displayName;
@@ -4010,6 +4021,7 @@ async function saveEditProfile() {
 
   showToast('Profile updated!');
   closeEditProfile();
+  loadProfileScreen();
 }
 
 function saveDisplayName(val) {
