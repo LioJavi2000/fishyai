@@ -1563,15 +1563,13 @@ body {
           </div>
 
           <!-- Identity -->
-          <div class="prof-name-v2" id="prof-name">jake_fisher</div>
-          <div class="prof-handle-v2" id="prof-handle">@jake_fisher · California 🌊</div>
-
-          <!-- Rank (populated by renderRankOnProfile) -->
-          <div id="prof-rank-display" style="display:none;flex-direction:column;align-items:stretch;width:100%;"></div>
+          <div class="prof-name-v2" id="prof-name">—</div>
+          <div class="prof-handle-v2" id="prof-handle">@— · California 🌊</div>
+          <div id="prof-bio" style="display:none;font-size:13px;color:#555;text-align:center;padding:4px 20px 0;line-height:1.5;letter-spacing:-0.1px;"></div>
 
           <!-- Hero metric -->
           <div class="prof-hero-v2">
-            <div class="prof-hero-num-v2" id="prof-catches">47</div>
+            <div class="prof-hero-num-v2" id="prof-catches">0</div>
             <div class="prof-hero-lbl-v2">Total Catches</div>
           </div>
 
@@ -1583,21 +1581,21 @@ body {
               <div class="prof-stat-icon-v2" style="background:rgba(14,165,233,0.12);">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 00-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>
               </div>
-              <div class="prof-stat-num-v2" id="prof-species">12</div>
+              <div class="prof-stat-num-v2" id="prof-species">0</div>
               <div class="prof-stat-lbl-v2">Species</div>
             </div>
             <div class="prof-stat-v2">
               <div class="prof-stat-icon-v2" style="background:rgba(99,102,241,0.12);">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
               </div>
-              <div class="prof-stat-num-v2" id="prof-best">4.2 lb</div>
+              <div class="prof-stat-num-v2" id="prof-best">—</div>
               <div class="prof-stat-lbl-v2">Best Fish</div>
             </div>
             <div class="prof-stat-v2">
               <div class="prof-stat-icon-v2" style="background:rgba(52,199,89,0.12);">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#34c759" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
               </div>
-              <div class="prof-stat-num-v2" id="prof-followers">203</div>
+              <div class="prof-stat-num-v2" id="prof-followers">0</div>
               <div class="prof-stat-lbl-v2">Followers</div>
             </div>
           </div>
@@ -1626,38 +1624,11 @@ body {
             </div>
           </div>
 
-          <!-- Rank Journey -->
-          <div class="sec-hd-v2">Rank Journey</div>
-          <div id="rank-journey-wrap" class="rj-wrap">
-            <div id="rank-journey-content"></div>
-          </div>
-
           <!-- My Catches -->
           <div class="sec-hd-v2">My Catches</div>
           <div class="catch-grid" id="catch-grid">
-            <div class="catch-thumb" style="position:relative;">
-              <img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260517_053234_f133cb6b-1588-42f3-9dd4-693512072854_min.webp" alt="CA Halibut" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">
-              <div class="catch-label">CA Halibut</div>
-            </div>
-            <div class="catch-thumb" style="position:relative;">
-              <img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260517_053237_3d426ad6-2d1e-4959-9f8a-23006f5d91fe_min.webp" alt="Yellowtail" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">
-              <div class="catch-label">Yellowtail</div>
-            </div>
-            <div class="catch-thumb" style="position:relative;">
-              <img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260517_053239_cd0d9ae4-f1a7-4750-93d2-91a932ae87b9_min.webp" alt="White Seabass" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">
-              <div class="catch-label">White Seabass</div>
-            </div>
-            <div class="catch-thumb" style="position:relative;">
-              <img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260517_053242_ca9ff908-cbe0-4eef-a1d4-21a3c4da1cef_min.webp" alt="Calico Bass" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">
-              <div class="catch-label">Calico Bass</div>
-            </div>
-            <div class="catch-thumb" style="position:relative;">
-              <img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260517_053245_55135797-157e-44d9-bb29-ededea381ec1_min.webp" alt="Pacific Bonito" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">
-              <div class="catch-label">Pacific Bonito</div>
-            </div>
-            <div class="catch-thumb" style="position:relative;">
-              <img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260517_053247_d3bb1dad-ab9b-4d11-8f0a-c2508d152594_min.webp" alt="Rockfish" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">
-              <div class="catch-label">Rockfish</div>
+            <div id="catch-grid-empty" style="grid-column:1/-1;text-align:center;padding:32px 16px;color:var(--gray);font-size:13px;line-height:1.6;letter-spacing:-0.2px;">
+              No catches yet.<br>Use the 🎣 tab to log your first one!
             </div>
           </div>
 
@@ -1841,6 +1812,16 @@ body {
       </div>
       <input type="file" id="ep-banner-input" accept="image/*" style="display:none" onchange="handleBannerSelect(event)">
     </div>
+    <!-- Avatar picker -->
+    <div style="display:flex;justify-content:center;margin-top:-28px;margin-bottom:4px;position:relative;z-index:2;">
+      <div style="position:relative;width:72px;height:72px;" onclick="document.getElementById('ep-avatar-input').click()" title="Change profile photo">
+        <div id="ep-av-circle" class="av" style="width:72px;height:72px;font-size:22px;font-weight:700;border:3px solid #fff;cursor:pointer;flex-shrink:0;"></div>
+        <div style="position:absolute;bottom:0;right:0;width:22px;height:22px;border-radius:50%;background:var(--navy);border:2px solid #fff;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </div>
+        <input type="file" id="ep-avatar-input" accept="image/*" style="display:none" onchange="handleAvatarSelect(event)">
+      </div>
+    </div>
     <div class="ep-form">
       <div class="ep-field">
         <label class="ep-label">Display Name</label>
@@ -1849,6 +1830,10 @@ body {
       <div class="ep-field">
         <label class="ep-label">Username</label>
         <input class="ep-input" id="ep-username-input" type="text" placeholder="username" maxlength="30">
+      </div>
+      <div class="ep-field">
+        <label class="ep-label">Bio</label>
+        <textarea class="ep-input" id="ep-bio-input" placeholder="Tell people about yourself…" maxlength="150" rows="3" style="resize:none;line-height:1.5;"></textarea>
       </div>
       <button class="ep-save-btn" onclick="saveEditProfile()">Save Changes</button>
     </div>
@@ -2236,9 +2221,6 @@ async function loadProfileScreen() {
       setEl('prof-best', best > 0 ? `${best} lb` : '—');
     }
     document.getElementById('follow-btn').style.display = 'none';
-    const offlineStrikes = currentProfile?.total_strikes || 0;
-    renderRankOnProfile(offlineStrikes);
-    loadRankJourney(offlineStrikes);
     return;
   }
 
@@ -2264,9 +2246,9 @@ async function loadProfileScreen() {
       }
       // Banner
       if (hdImg && profile.banner_url) hdImg.src = profile.banner_url;
-      // Rank display + journey
-      renderRankOnProfile(profile.total_strikes || 0);
-      loadRankJourney(profile.total_strikes || 0);
+      // Bio
+      const bioEl = document.getElementById('prof-bio');
+      if (bioEl) { if (profile.bio) { bioEl.textContent = profile.bio; bioEl.style.display = 'block'; } else { bioEl.style.display = 'none'; } }
       STATUS_TITLES.profile = displayName;
       setEl('status-title', displayName);
     }
@@ -2314,12 +2296,19 @@ async function loadProfileScreen() {
 
     // Catch grid
     const grid = document.getElementById('catch-grid');
-    if (grid && catchList.length > 0) {
-      grid.innerHTML = catchList.slice(0, 6).map(c => {
-        const bg = c.photo_url ? `background:url(${esc(c.photo_url)}) center/cover no-repeat;` : '';
+    const emptyEl = document.getElementById('catch-grid-empty');
+    if (grid) {
+      if (catchList.length > 0) {
+        const isOwn = !viewingUserId || viewingUserId === currentUser?.id;
         const fishSvg = `<svg width="36" height="20" viewBox="0 0 100 55" fill="rgba(255,255,255,0.5)"><path d="M8 28Q28 6 64 19Q77 10 96 28Q77 46 64 37Q28 50 8 28Z"/><circle cx="76" cy="22" r="3.5" fill="rgba(255,255,255,0.8)"/></svg>`;
-        return `<div class="catch-thumb" style="${bg}" onclick="openStoryViewer('${c.id}')">${c.photo_url ? '' : fishSvg}</div>`;
-      }).join('');
+        const thumbs = catchList.slice(0, 9).map(c => {
+          const bg = c.photo_url ? `background:url(${esc(c.photo_url)}) center/cover no-repeat;` : 'background:#d4e6f5;';
+          return `<div class="catch-thumb" style="${bg}" onclick="openStoryViewer('${c.id}')">${c.photo_url ? '' : fishSvg}<div class="catch-label">${esc(c.species)}</div></div>`;
+        }).join('');
+        grid.innerHTML = thumbs;
+      } else if (emptyEl) {
+        emptyEl.style.display = 'block';
+      }
     }
   } catch(e) { console.error('loadProfileScreen:', e); }
 }
@@ -3207,8 +3196,7 @@ async function postCatch(isPublic = true) {
     }).select().single();
     if (error) throw error;
 
-    const newlyEarnedBadges = await checkAndAwardBadges();
-    await awardStrikes(weight, identifiedFish?.species, newCatch?.id, newlyEarnedBadges?.length || 0);
+    await checkAndAwardBadges();
 
     capturedB64 = null;
     fishMeasurement = null;
@@ -3867,15 +3855,24 @@ function openEditProfile() {
   const banner   = STORE.get('prof-banner') || EP_DEFAULT_BANNER;
   const dispName = currentProfile?.display_name || currentProfile?.username || STORE.get('username','');
   const uname    = currentProfile?.username || STORE.get('username','');
+  const bio      = currentProfile?.bio || '';
   document.getElementById('ep-banner-img').src = banner;
   document.getElementById('ep-name-input').value = dispName;
   document.getElementById('ep-username-input').value = uname;
-  epUpdatePreview();
-  // Wire live preview
-  ['ep-name-input','ep-username-input'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) { el.oninput = epUpdatePreview; }
-  });
+  document.getElementById('ep-bio-input').value = bio;
+  // Avatar circle
+  const avCircle = document.getElementById('ep-av-circle');
+  if (avCircle) {
+    if (currentProfile?.avatar_url) {
+      avCircle.style.backgroundImage = `url(${esc(currentProfile.avatar_url)})`;
+      avCircle.style.backgroundSize = 'cover';
+      avCircle.style.backgroundPosition = 'center';
+      avCircle.textContent = '';
+    } else {
+      avCircle.style.backgroundImage = '';
+      avCircle.textContent = dispName.slice(0,2).toUpperCase();
+    }
+  }
   document.getElementById('ep-sheet').classList.add('open');
   document.getElementById('ep-backdrop').classList.add('open');
 }
@@ -3922,11 +3919,45 @@ async function handleBannerSelect(evt) {
   reader.readAsDataURL(file);
 }
 
+async function handleAvatarSelect(evt) {
+  const file = evt.target.files[0];
+  if (!file) return;
+  evt.target.value = '';
+  const reader = new FileReader();
+  reader.onload = async e => {
+    const dataUrl = e.target.result;
+    const avCircle = document.getElementById('ep-av-circle');
+    const profAv   = document.getElementById('prof-avatar-initials');
+    if (avCircle) { avCircle.style.backgroundImage = `url(${dataUrl})`; avCircle.style.backgroundSize = 'cover'; avCircle.style.backgroundPosition = 'center'; avCircle.textContent = ''; }
+    if (profAv)   { profAv.style.backgroundImage = `url(${dataUrl})`; profAv.style.backgroundSize = 'cover'; profAv.style.backgroundPosition = 'center'; profAv.textContent = ''; }
+    if (sb && currentUser) {
+      try {
+        const b64  = dataUrl.split(',')[1];
+        const blob = b64Blob(b64, file.type || 'image/jpeg');
+        const fname = `avatars/${currentUser.id}/${Date.now()}.jpg`;
+        const { data: up } = await sb.storage.from('catches').upload(fname, blob, { contentType: file.type || 'image/jpeg', upsert: true });
+        if (up?.path) {
+          const { data: pu } = sb.storage.from('catches').getPublicUrl(up.path);
+          const avatarUrl = pu?.publicUrl;
+          if (avatarUrl) {
+            await sb.from('profiles').upsert({ id: currentUser.id, avatar_url: avatarUrl }, { onConflict: 'id' });
+            if (currentProfile) currentProfile.avatar_url = avatarUrl;
+            if (avCircle) { avCircle.style.backgroundImage = `url(${avatarUrl})`; }
+            if (profAv)   { profAv.style.backgroundImage   = `url(${avatarUrl})`; }
+          }
+        }
+      } catch(e) { console.warn('avatar upload:', e); }
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
 async function saveEditProfile() {
   const dispName = document.getElementById('ep-name-input').value.trim();
   const uname    = document.getElementById('ep-username-input').value.trim().toLowerCase().replace(/[^a-z0-9_]/g, '_');
   if (!uname) { showToast('Username is required'); return; }
   const displayName = dispName || uname;
+  const bio = (document.getElementById('ep-bio-input')?.value || '').trim();
 
   const prevName  = currentProfile?.display_name || currentProfile?.username || '';
   const prevUname = currentProfile?.username || '';
@@ -3953,6 +3984,7 @@ async function saveEditProfile() {
   if (currentProfile) {
     currentProfile.display_name = displayName;
     currentProfile.username = uname;
+    currentProfile.bio = bio;
   }
   STORE.set('username', uname);
   if (nameChanged)  STORE.set('ep-name-changes',  [...(STORE.get('ep-name-changes',[])).filter(t => Date.now()-t < EP_14_DAYS), Date.now()]);
@@ -3960,6 +3992,8 @@ async function saveEditProfile() {
 
   setEl('prof-name', displayName);
   setEl('prof-handle', `@${uname} · California 🌊`);
+  const profBioEl = document.getElementById('prof-bio');
+  if (profBioEl) { profBioEl.textContent = bio; profBioEl.style.display = bio ? '' : 'none'; }
   const av2 = displayName.slice(0, 2).toUpperCase();
   setEl('prof-avatar-initials', av2);
   setEl('feed-composer-av', av2);
@@ -3969,7 +4003,7 @@ async function saveEditProfile() {
   if (sb && currentUser) {
     try {
       await sb.from('profiles').upsert({
-        id: currentUser.id, username: uname, display_name: displayName,
+        id: currentUser.id, username: uname, display_name: displayName, bio: bio,
       }, { onConflict: 'id' });
     } catch(e) { console.warn('saveEditProfile:', e); }
   }
