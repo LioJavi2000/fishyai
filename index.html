@@ -1118,11 +1118,6 @@ body {
             <div class="s-add-ring" id="my-story-ring"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
             <span>Your story</span>
           </div>
-          <div class="story"><div class="s-ring"><div class="s-gap"><div class="s-av"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260516_041916_bc956048-5daf-45e3-aa38-bf595050beb9_min.webp" alt="JF" loading="lazy"></div></div></div><span>jake_f</span></div>
-          <div class="story"><div class="s-ring"><div class="s-gap"><div class="s-av"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260516_041919_5ef67412-3b08-44ec-a1fe-ef5c99bf825c_min.webp" alt="MR" loading="lazy"></div></div></div><span>maria_r</span></div>
-          <div class="story"><div class="s-ring"><div class="s-gap"><div class="s-av"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260516_042039_4bb16f25-7c2a-4f2e-a5c7-2a3dba2af0d1_min.webp" alt="BB" loading="lazy"></div></div></div><span>big_bass</span></div>
-          <div class="story"><div class="s-ring"><div class="s-gap"><div class="s-av">CK</div></div></div><span>coastkid</span></div>
-          <div class="story"><div class="s-ring"><div class="s-gap"><div class="s-av"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260516_042042_dda38cec-6628-4b01-aba6-f384f55f8103_min.webp" alt="PC" loading="lazy"></div></div></div><span>pro_cast</span></div>
         </div>
         <!-- FEED POST COMPOSER -->
         <div class="feed-composer-card" id="feed-composer-collapsed">
@@ -1157,81 +1152,7 @@ body {
             <button class="fce-share-btn" id="fce-share-btn" onclick="shareFeedPost()" disabled>Post</button>
           </div>
         </div>
-        <!-- feed-content: demo data shows until real Supabase catches exist -->
-        <div id="feed-content">
-          <div class="card" style="margin-top:8px;animation:card-rise 0.4s 0.05s var(--ease) both;">
-            <div class="post-hd">
-              <div class="av"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260516_041916_bc956048-5daf-45e3-aa38-bf595050beb9_min.webp" alt="JF" loading="lazy"></div>
-              <div style="flex:1"><div class="post-name">jake_fisher<span class="rank-icon-sm" title="Pro" style="background-color:#C0C0C0;box-shadow:0 2px 8px #C0C0C066;"><svg width="11" height="11" viewBox="0 0 24 24"><path d="M10.5 2L9.5 7.5L12 6L14.5 7.5L13.5 2Z" fill="#fff"/><circle cx="12" cy="15.5" r="6.5" fill="#fff"/><circle cx="12" cy="15.5" r="4.5" fill="none" stroke="rgba(0,0,0,0.2)" stroke-width="1.5"/></svg></span></div><div class="post-spot"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Lake Elsinore South Cove</div></div>
-              <span class="post-time">2m ago</span>
-            </div>
-            <div class="post-photo">
-              <img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260516_041916_bc956048-5daf-45e3-aa38-bf595050beb9_min.webp" alt="Largemouth Bass catch" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">
-              <div class="post-fish-over"><span class="fish-tag">Largemouth Bass</span></div>
-            </div>
-            <div class="post-actions">
-              <button class="act-btn" id="like-1" onclick="toggleLike('like-1')"><svg class="heart-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="like-count">24</span></button>
-              <button class="act-btn" onclick="openComments('1')"><svg class="cmt-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>3</span></button>
-              <button class="act-btn" style="margin-left:auto;" onclick="this.classList.toggle('bookmarked')"><svg class="bm-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></button>
-            </div>
-            <div class="post-likes">24 likes</div>
-            <div class="post-stats"><b>4.2 lbs</b> · 18 in · Zoom Trick Worm</div>
-          </div>
-          <div class="card" style="animation:card-rise 0.4s 0.12s var(--ease) both;">
-            <div class="post-hd">
-              <div class="av"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260516_041919_5ef67412-3b08-44ec-a1fe-ef5c99bf825c_min.webp" alt="MR" loading="lazy"></div>
-              <div style="flex:1"><div class="post-name">maria_reels<span class="rank-icon-sm" title="Skilled" style="background-color:#CD7F32;box-shadow:0 2px 8px #CD7F3266;"><svg width="11" height="11" viewBox="0 0 24 24"><ellipse cx="12" cy="10" rx="4.5" ry="7.5" fill="#fff"/><path d="M12 17.5L12 18.5Q12 21 14.5 21Q17 21 17 18.5Q17 16.5 14.5 16.5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="2.5" r="1.2" fill="none" stroke="#fff" stroke-width="1.5"/></svg></span></div><div class="post-spot"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Santa Monica Pier</div></div>
-              <span class="post-time">1h ago</span>
-            </div>
-            <div class="post-photo">
-              <img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260516_041919_5ef67412-3b08-44ec-a1fe-ef5c99bf825c_min.webp" alt="Yellowfin Croaker catch" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">
-              <div class="post-fish-over"><span class="fish-tag">Yellowfin Croaker</span></div>
-            </div>
-            <div class="post-actions">
-              <button class="act-btn" id="like-2" onclick="toggleLike('like-2')"><svg class="heart-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="like-count">11</span></button>
-              <button class="act-btn" onclick="openComments('2')"><svg class="cmt-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>1</span></button>
-              <button class="act-btn" style="margin-left:auto;" onclick="this.classList.toggle('bookmarked')"><svg class="bm-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></button>
-            </div>
-            <div class="post-likes">11 likes</div>
-            <div class="post-stats">Released · 1.8 lbs</div>
-          </div>
-          <div class="card" style="animation:card-rise 0.4s 0.19s var(--ease) both;">
-            <div class="post-hd">
-              <div class="av"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260516_042039_4bb16f25-7c2a-4f2e-a5c7-2a3dba2af0d1_min.webp" alt="BB" loading="lazy"></div>
-              <div style="flex:1"><div class="post-name">big_bass_co<span class="rank-icon-sm" title="Master" style="background-color:#FFD700;box-shadow:0 2px 8px #FFD70066;"><svg width="11" height="11" viewBox="0 0 24 24"><path d="M2.5 19L6 8L10 14.5L12 6L14 14.5L18 8L21.5 19Z" fill="#fff"/><rect x="2.5" y="19" width="19" height="2.8" rx="1.3" fill="#fff"/><circle cx="12" cy="7" r="1.5" fill="rgba(0,0,0,0.2)"/></svg></span></div><div class="post-spot"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Prado Basin East Shore</div></div>
-              <span class="post-time">3h ago</span>
-            </div>
-            <div class="post-photo">
-              <img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260516_042039_4bb16f25-7c2a-4f2e-a5c7-2a3dba2af0d1_min.webp" alt="Striped Bass catch" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">
-              <div class="post-fish-over"><span class="fish-tag">Striped Bass</span></div>
-            </div>
-            <div class="post-actions">
-              <button class="act-btn" id="like-3" onclick="toggleLike('like-3')"><svg class="heart-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="like-count">38</span></button>
-              <button class="act-btn" onclick="openComments('3')"><svg class="cmt-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>7</span></button>
-              <button class="act-btn" style="margin-left:auto;" onclick="this.classList.toggle('bookmarked')"><svg class="bm-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></button>
-            </div>
-            <div class="post-likes">38 likes</div>
-            <div class="post-stats"><b>7.8 lbs</b> · 24 in</div>
-          </div>
-          <div class="card" style="animation:card-rise 0.4s 0.26s var(--ease) both;">
-            <div class="post-hd">
-              <div class="av"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260516_042042_dda38cec-6628-4b01-aba6-f384f55f8103_min.webp" alt="PC" loading="lazy"></div>
-              <div style="flex:1"><div class="post-name">pro_cast<span class="rank-icon-sm" title="Champion" style="background-color:#B9F2FF;box-shadow:0 2px 8px #B9F2FF66;"><svg width="11" height="11" viewBox="0 0 24 24"><path d="M12 13.5Q9 10 6.5 7.5Q5 10.5 6 13.5Q5 16.5 6.5 19Q9 16.5 12 13.5Z" fill="#fff"/><path d="M12 13.5Q15 10 17.5 7.5Q19 10.5 18 13.5Q19 16.5 17.5 19Q15 16.5 12 13.5Z" fill="#fff"/><path d="M9.5 20.5L12 23L14.5 20.5L13.5 22.5H10.5Z" fill="#fff"/></svg></span></div><div class="post-spot"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Big Bear Lake Marina</div></div>
-              <span class="post-time">5h ago</span>
-            </div>
-            <div class="post-photo">
-              <img src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260516_042042_dda38cec-6628-4b01-aba6-f384f55f8103_min.webp" alt="Rainbow Trout catch" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">
-              <div class="post-fish-over"><span class="fish-tag">Rainbow Trout</span></div>
-            </div>
-            <div class="post-actions">
-              <button class="act-btn" id="like-4" onclick="toggleLike('like-4')"><svg class="heart-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="like-count">52</span></button>
-              <button class="act-btn" onclick="openComments('4')"><svg class="cmt-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>5</span></button>
-              <button class="act-btn" style="margin-left:auto;" onclick="this.classList.toggle('bookmarked')"><svg class="bm-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></button>
-            </div>
-            <div class="post-likes">52 likes</div>
-            <div class="post-stats"><b>3.1 lbs</b> · 22 in · Rapala Original Floating</div>
-          </div>
-        </div>
+        <div id="feed-content"></div>
       </div>
     </div>
 
@@ -2293,11 +2214,11 @@ async function loadProfileScreen() {
   if (_bk) _bk.style.display = viewingUserId ? 'flex' : 'none';
   if (_st) _st.style.display = viewingUserId ? 'none' : 'flex';
 
-  // Apply stored banner for own profile
-  if (!viewingUserId) {
-    const storedBanner = STORE.get('prof-banner');
-    const hdImg = document.getElementById('prof-photo-hd-img');
-    if (hdImg && storedBanner) hdImg.src = storedBanner;
+  // Apply banner — DB wins over localStorage fallback
+  const hdImg = document.getElementById('prof-photo-hd-img');
+  if (hdImg) {
+    const dbBanner = viewingUserId ? null : (currentProfile?.banner_url || STORE.get('prof-banner'));
+    if (dbBanner) hdImg.src = dbBanner;
   }
 
   if (!sb || !uid) {
@@ -2341,6 +2262,8 @@ async function loadProfileScreen() {
           avEl.textContent = displayName.slice(0, 2).toUpperCase();
         }
       }
+      // Banner
+      if (hdImg && profile.banner_url) hdImg.src = profile.banner_url;
       // Rank display + journey
       renderRankOnProfile(profile.total_strikes || 0);
       loadRankJourney(profile.total_strikes || 0);
@@ -2738,26 +2661,46 @@ function cycleStoryBg() {
   bgSolid.style.display = 'block';
 }
 
-function postStory() {
+async function postStory() {
   const caption = document.getElementById('se-caption').value.trim();
-  const overlays = [...document.getElementById('se-overlays').children].map(el => ({
-    text: el.textContent, color: el.style.color, top: el.style.top, left: el.style.left, fontSize: el.style.fontSize,
-  }));
-  const story = {
-    id: Date.now().toString(),
-    photo_b64: capturedB64,
-    mime: capturedMime,
-    caption,
-    overlays,
-    created_at: new Date().toISOString(),
-  };
-  const stories = STORE.get('stories', []);
-  stories.unshift(story);
-  STORE.set('stories', stories.slice(0, 20));
-  // Update the stories row with user's story
-  updateStoriesRow();
-  showToast('Story shared!');
-  showScreen('feed');
+  if (!currentUser) { showToast('Sign in to share a story'); return; }
+
+  const btn = document.querySelector('#screen-story-editor .btn');
+  if (btn) { btn.textContent = 'Sharing…'; btn.disabled = true; }
+
+  try {
+    let photoUrl = null;
+    if (capturedB64) {
+      const blob = b64Blob(capturedB64, capturedMime || 'image/jpeg');
+      const fname = `stories/${currentUser.id}/${Date.now()}.jpg`;
+      const { data: up } = await sb.storage.from('catches').upload(fname, blob, { contentType: capturedMime || 'image/jpeg', upsert: true });
+      if (up?.path) {
+        const { data: pu } = sb.storage.from('catches').getPublicUrl(up.path);
+        photoUrl = pu?.publicUrl || null;
+      }
+    }
+    await sb.from('catches').insert({
+      user_id:   currentUser.id,
+      species:   caption?.slice(0, 80) || 'Story',
+      caption:   caption || '',
+      photo_url: photoUrl,
+      is_public: true,
+    });
+    // Also keep local copy for updateStoriesRow preview
+    const story = { id: Date.now().toString(), photo_b64: capturedB64, mime: capturedMime, caption, created_at: new Date().toISOString() };
+    const stories = STORE.get('stories', []);
+    stories.unshift(story);
+    STORE.set('stories', stories.slice(0, 20));
+    updateStoriesRow();
+    loadStoriesRow();
+    showToast('Story shared!');
+    showScreen('feed');
+  } catch(e) {
+    console.error('postStory:', e);
+    showToast('Failed to share story');
+  } finally {
+    if (btn) { btn.textContent = 'Share Story'; btn.disabled = false; }
+  }
 }
 
 function updateStoriesRow() {
@@ -3443,10 +3386,14 @@ async function loadFeed(append = false) {
     (likesRes.data || []).forEach(l => { likeMap[l.catch_id] = (likeMap[l.catch_id] || 0) + 1; });
     (cmtRes.data  || []).forEach(c => { cmtMap[c.catch_id]  = (cmtMap[c.catch_id]  || 0) + 1; });
 
-    const myLikes = new Set();
+    const myLikes = new Set(), myBookmarks = new Set();
     if (currentUser) {
-      const { data: ml } = await sb.from('likes').select('catch_id').eq('user_id', currentUser.id).in('catch_id', ids);
-      (ml || []).forEach(l => myLikes.add(l.catch_id));
+      const [mlRes, mbRes] = await Promise.all([
+        sb.from('likes').select('catch_id').eq('user_id', currentUser.id).in('catch_id', ids),
+        sb.from('bookmarks').select('catch_id').eq('user_id', currentUser.id).in('catch_id', ids),
+      ]);
+      (mlRes.data || []).forEach(l => myLikes.add(l.catch_id));
+      (mbRes.data || []).forEach(b => myBookmarks.add(b.catch_id));
     }
 
     const html = catches.map(c => catchCard(c, likeMap[c.id] || 0, myLikes.has(c.id), cmtMap[c.id] || 0)).join('');
@@ -3457,6 +3404,7 @@ async function loadFeed(append = false) {
       document.getElementById('feed-load-more')?.remove();
       fc.insertAdjacentHTML('beforeend', html);
     }
+    myBookmarks.forEach(id => document.getElementById(`bm-${id}`)?.classList.add('bookmarked'));
 
     if (!feedAllLoaded) {
       fc.insertAdjacentHTML('beforeend',
@@ -3476,19 +3424,20 @@ async function loadStoriesRow() {
   try {
     const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 
-    let userIds = null;
+    let followIds = [];
     if (currentUser) {
       const { data: fws } = await sb.from('follows').select('following_id').eq('follower_id', currentUser.id);
-      if (fws?.length) userIds = fws.map(f => f.following_id);
+      followIds = (fws || []).map(f => f.following_id);
     }
 
+    // Prefer followed users; fall back to all recent public catches
     let q = sb.from('catches')
       .select('id, user_id, species, photo_url, created_at, profiles!catches_user_id_fkey(username)')
       .eq('is_public', true)
       .gte('created_at', since)
       .order('created_at', { ascending: false })
       .limit(30);
-    if (userIds?.length) q = q.in('user_id', userIds);
+    if (followIds.length) q = q.in('user_id', followIds);
 
     const { data: recent } = await q;
     if (!recent?.length) return;
@@ -3623,7 +3572,7 @@ function catchCard(c, likes, liked, cmtCount = 0) {
     <div class="post-actions">
       <button class="act-btn${liked?' liked':''}" id="like-db-${c.id}" onclick="event.stopPropagation();toggleLikeDb('${c.id}')">${HEART_SVG}<span class="like-count">${likes}</span></button>
       <button class="act-btn" onclick="event.stopPropagation();openComments('${c.id}')">${CMT_SVG}<span>${cmtCount}</span></button>
-      <button class="act-btn" style="margin-left:auto;" onclick="event.stopPropagation();this.classList.toggle('bookmarked')">${BM_SVG}</button>
+      <button class="act-btn" id="bm-${c.id}" style="margin-left:auto;" onclick="event.stopPropagation();toggleBookmarkDb('${c.id}',this)">${BM_SVG}</button>
     </div>
     <div class="post-likes">${likes} like${likes !== 1 ? 's' : ''}</div>
     ${stats ? `<div class="post-stats">${stats}</div>` : ''}
@@ -3644,6 +3593,17 @@ async function toggleLikeDb(catchId) {
     btn.classList.toggle('liked');
     if (countEl) countEl.textContent = parseInt(countEl.textContent) + (liked ? -1 : 1);
   }
+}
+
+async function toggleBookmarkDb(catchId, btn) {
+  if (!btn) btn = document.getElementById(`bm-${catchId}`);
+  if (!currentUser) { showToast('Sign in to bookmark'); return; }
+  const bookmarked = btn.classList.toggle('bookmarked');
+  if (!sb) return;
+  try {
+    if (bookmarked) await sb.from('bookmarks').insert({ user_id: currentUser.id, catch_id: catchId });
+    else            await sb.from('bookmarks').delete().eq('user_id', currentUser.id).eq('catch_id', catchId);
+  } catch { btn.classList.toggle('bookmarked'); }
 }
 
 // ══════════════════════════════════════════
@@ -3925,19 +3885,41 @@ function closeEditProfile() {
   document.getElementById('ep-backdrop').classList.remove('open');
 }
 
-function handleBannerSelect(evt) {
+async function handleBannerSelect(evt) {
   const file = evt.target.files[0];
   if (!file) return;
+  evt.target.value = '';
+
   const reader = new FileReader();
-  reader.onload = e => {
-    const url = e.target.result;
-    document.getElementById('ep-banner-img').src = url;
+  reader.onload = async e => {
+    const dataUrl = e.target.result;
+    // Show immediately in UI
+    document.getElementById('ep-banner-img').src = dataUrl;
     const hd = document.getElementById('prof-photo-hd-img');
-    if (hd) hd.src = url;
-    STORE.set('prof-banner', url);
+    if (hd) hd.src = dataUrl;
+    STORE.set('prof-banner', dataUrl);
+
+    // Upload to Supabase in background
+    if (sb && currentUser) {
+      try {
+        const b64 = dataUrl.split(',')[1];
+        const blob = b64Blob(b64, file.type || 'image/jpeg');
+        const fname = `banners/${currentUser.id}/${Date.now()}.jpg`;
+        const { data: up } = await sb.storage.from('catches').upload(fname, blob, { contentType: file.type || 'image/jpeg', upsert: true });
+        if (up?.path) {
+          const { data: pu } = sb.storage.from('catches').getPublicUrl(up.path);
+          const bannerUrl = pu?.publicUrl;
+          if (bannerUrl) {
+            await sb.from('profiles').upsert({ id: currentUser.id, banner_url: bannerUrl }, { onConflict: 'id' });
+            if (hd) hd.src = bannerUrl;
+            if (currentProfile) currentProfile.banner_url = bannerUrl;
+            STORE.set('prof-banner', bannerUrl);
+          }
+        }
+      } catch(e) { console.warn('banner upload:', e); }
+    }
   };
   reader.readAsDataURL(file);
-  evt.target.value = '';
 }
 
 async function saveEditProfile() {
