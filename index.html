@@ -956,6 +956,26 @@ body {
 .prof-post-card{background:#f8f8f8;border-radius:14px;margin:0 16px 10px;overflow:hidden;}
 .prof-post-card img{width:100%;max-height:220px;object-fit:cover;display:block;}
 .prof-post-card-text{padding:10px 12px;font-size:13px;color:#222;line-height:1.5;letter-spacing:-0.1px;}
+/* Notification bell */
+.notif-bell-wrap{position:relative;cursor:pointer;display:flex;align-items:center;justify-content:center;width:36px;height:36px;}
+.notif-badge{position:absolute;top:2px;right:2px;min-width:16px;height:16px;background:#ff375f;border-radius:8px;font-size:10px;font-weight:800;color:#fff;display:flex;align-items:center;justify-content:center;padding:0 4px;border:1.5px solid #fff;pointer-events:none;}
+/* Notification screen items */
+.notif-item{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #f5f5f5;cursor:pointer;transition:background 0.15s;}
+.notif-item:active{background:#f8f8f8;}
+.notif-item.unread{background:#f0f6ff;}
+.notif-av{width:42px;height:42px;border-radius:50%;background:var(--grad-av);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0;overflow:hidden;}
+.notif-av img{width:100%;height:100%;object-fit:cover;}
+.notif-content{flex:1;min-width:0;}
+.notif-text{font-size:13px;color:#111;letter-spacing:-0.2px;line-height:1.4;}
+.notif-text b{font-weight:700;}
+.notif-time{font-size:11px;color:#aaa;margin-top:2px;}
+.notif-thumb{width:44px;height:44px;border-radius:8px;object-fit:cover;flex-shrink:0;}
+.notif-unread-dot{width:8px;height:8px;border-radius:50%;background:var(--navy);flex-shrink:0;}
+/* Bookmarks grid */
+.bm-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:16px;}
+.bm-thumb{border-radius:12px;overflow:hidden;position:relative;aspect-ratio:1;background:#d4e6f5;cursor:pointer;}
+.bm-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.bm-label{position:absolute;bottom:0;left:0;right:0;padding:8px;background:linear-gradient(transparent,rgba(0,0,0,0.55));color:#fff;font-size:12px;font-weight:700;letter-spacing:-0.2px;}
 .prof-card-v2 .badge-grid{padding:0 16px;}
 .prof-card-v2 .catch-grid{padding:0 16px;}
 .prof-card-v2 .catch-thumb{height:116px;}
@@ -1115,8 +1135,14 @@ body {
       <div class="feed-wrap">
         <div class="feed-hd">
           <span class="feed-title">Feed</span>
-          <div class="feed-hd-ico" onclick="openSettings()" style="cursor:pointer;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="#111"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+          <div style="display:flex;align-items:center;gap:4px;">
+            <div class="notif-bell-wrap" id="notif-bell-btn" onclick="showScreen('notifications')">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              <div class="notif-badge" id="notif-badge" style="display:none;">0</div>
+            </div>
+            <div class="feed-hd-ico" onclick="openSettings()" style="cursor:pointer;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#111"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+            </div>
           </div>
         </div>
         <div class="story-row">
@@ -1632,8 +1658,9 @@ body {
 
           <!-- Profile Tabs -->
           <div class="prof-tabs">
-            <button class="prof-tab active" id="tab-catches" onclick="switchProfileTab('catches')">My Catches</button>
+            <button class="prof-tab active" id="tab-catches" onclick="switchProfileTab('catches')">Catches</button>
             <button class="prof-tab" id="tab-posts" onclick="switchProfileTab('posts')">Posts</button>
+            <button class="prof-tab" id="tab-saved" onclick="switchProfileTab('saved')">Saved</button>
           </div>
 
           <!-- Catches grid -->
@@ -1647,6 +1674,13 @@ body {
           <div id="posts-grid" style="display:none;">
             <div id="posts-grid-empty" style="text-align:center;padding:32px 16px;color:var(--gray);font-size:13px;line-height:1.6;letter-spacing:-0.2px;">
               No posts yet.
+            </div>
+          </div>
+
+          <!-- Saved/Bookmarks grid -->
+          <div class="bm-grid" id="saved-grid" style="display:none;">
+            <div id="saved-grid-empty" style="grid-column:1/-1;text-align:center;padding:32px 16px;color:var(--gray);font-size:13px;line-height:1.6;letter-spacing:-0.2px;">
+              No saved posts yet.<br>Tap the bookmark icon on any post.
             </div>
           </div>
 
@@ -1709,6 +1743,15 @@ body {
         <div class="pw-footer">
           <span class="pw-restore">Restore purchase</span>
           <div class="pw-legal">Billed through Stripe. Cancel anytime from your account settings. By subscribing you agree to our Terms of Service and Privacy Policy.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ NOTIFICATIONS ══════ -->
+    <div class="screen" id="screen-notifications">
+      <div class="feed-wrap" style="padding-bottom:80px;">
+        <div id="notif-list">
+          <div style="text-align:center;padding:60px 20px;color:var(--gray);font-size:13px;">Loading…</div>
         </div>
       </div>
     </div>
@@ -1908,13 +1951,13 @@ const BACK_MAP = {
   log:'result', map:'feed', leaderboard:'feed',
   profile:'feed', paywall:'feed',
   'story-editor':'scan', 'post-editor':'scan',
-  'story-viewer':'feed',
+  'story-viewer':'feed', notifications:'feed',
 };
 const STATUS_TITLES = {
   onboard1:'',onboard2:'',auth:'',feed:'Fishy AI',scan:'',processing:'',
   result:'AI Result',log:'Log Catch',map:'Fishy AI',leaderboard:'Fishy AI',
   profile:'Profile',paywall:'Fishy AI','story-editor':'','post-editor':'New Post',
-  'story-viewer':'',
+  'story-viewer':'', notifications:'Notifications',
 };
 
 // ══════════════════════════════════════════
@@ -2012,6 +2055,7 @@ function showScreen(name, back = false) {
   if (name === 'leaderboard') loadLeaderboard();
   if (name === 'profile') loadProfileScreen();
   if (name === 'map') setTimeout(initMap, 80);
+  if (name === 'notifications') loadNotifications();
   if (name !== 'profile' && name !== 'story-viewer') viewingUserId = null;
 }
 
@@ -2218,6 +2262,7 @@ async function loadProfile() {
   setEl('fce-av', av2);
   STATUS_TITLES.profile = displayName;
   STORE.set('username', handle);
+  loadNotifCount();
 }
 
 async function loadProfileScreen() {
@@ -2373,8 +2418,11 @@ async function loadProfileScreen() {
 function switchProfileTab(tab) {
   document.getElementById('tab-catches').classList.toggle('active', tab === 'catches');
   document.getElementById('tab-posts').classList.toggle('active', tab === 'posts');
+  document.getElementById('tab-saved').classList.toggle('active', tab === 'saved');
   document.getElementById('catch-grid').style.display = tab === 'catches' ? '' : 'none';
   document.getElementById('posts-grid').style.display = tab === 'posts' ? '' : 'none';
+  document.getElementById('saved-grid').style.display = tab === 'saved' ? '' : 'none';
+  if (tab === 'saved') loadSavedTab();
 }
 
 function openUserProfile(userId) {
@@ -3489,6 +3537,7 @@ async function loadStoriesRow() {
     let q = sb.from('catches')
       .select('id, user_id, species, photo_url, created_at, profiles!catches_user_id_fkey(username)')
       .eq('is_public', true)
+      .eq('post_type', 'story')
       .gte('created_at', since)
       .order('created_at', { ascending: false })
       .limit(30);
@@ -3611,7 +3660,7 @@ function catchCard(c, likes, liked, cmtCount = 0) {
     ? `<div style="padding:10px 14px 4px;font-size:14px;color:#111;letter-spacing:-0.2px;line-height:1.5;">${esc(c.caption)}</div>`
     : '';
 
-  return `<div class="card" style="margin-top:8px;animation:card-rise 0.4s var(--ease) both;">
+  return `<div class="card" data-owner="${c.user_id}" data-species="${esc(c.species||'')}" style="margin-top:8px;animation:card-rise 0.4s var(--ease) both;">
     <div class="post-hd" style="cursor:pointer;" onclick="openUserProfile('${c.user_id}')">
       <div class="av">${av}</div>
       <div style="flex:1"><div class="post-name">${nameHtml}</div>${spotHtml}</div>
@@ -3637,8 +3686,17 @@ async function toggleLikeDb(catchId) {
   if (countEl) countEl.textContent = parseInt(countEl.textContent) + (liked ? 1 : -1);
   if (!sb || !currentUser) return;
   try {
-    if (liked) await sb.from('likes').insert({ user_id: currentUser.id, catch_id: catchId });
-    else       await sb.from('likes').delete().eq('user_id', currentUser.id).eq('catch_id', catchId);
+    if (liked) {
+      await sb.from('likes').insert({ user_id: currentUser.id, catch_id: catchId });
+      // Notify post owner (skip if it's your own post)
+      const card = btn.closest('[data-owner]');
+      const ownerId = card?.dataset.owner;
+      if (ownerId && ownerId !== currentUser.id) {
+        createNotification(ownerId, 'like', catchId, card?.dataset.species || '');
+      }
+    } else {
+      await sb.from('likes').delete().eq('user_id', currentUser.id).eq('catch_id', catchId);
+    }
   } catch {
     btn.classList.toggle('liked');
     if (countEl) countEl.textContent = parseInt(countEl.textContent) + (liked ? -1 : 1);
@@ -3753,20 +3811,7 @@ function toggleLike(id) {
 }
 
 // ── COMMENTS ──
-const COMMENTS = {
-  '1': [
-    { av:'MK', name:'mike_angler',  text:'Monster catch! What depth were you fishing?', time:'1m ago' },
-    { av:'SC', name:'sarah_cast',   text:'That is a keeper for sure',                   time:'3m ago' },
-  ],
-  '2': [
-    { av:'BB', name:'big_bass_co',  text:'Nice release! Solid angling',                 time:'58m ago' },
-  ],
-  '3': [
-    { av:'JF', name:'jake_fisher',  text:'What rod you using for that?',                time:'2h ago' },
-    { av:'PC', name:'pro_cast',     text:'Beast. Absolute beast.',                      time:'2h ago' },
-    { av:'MR', name:'maria_reels',  text:'Goals right there',                           time:'3h ago' },
-  ],
-};
+const COMMENTS = {};
 let activePostId = null;
 
 // ══════════════════════════════════════════
@@ -4116,13 +4161,14 @@ async function openComments(postId) {
 
   if (UUID_RE.test(postId) && sb) {
     try {
-      const { data: cmts } = await sb.from('comments')
+      const { data: cmts, error } = await sb.from('comments')
         .select('*, profiles!comments_user_id_fkey(username)')
         .eq('catch_id', postId)
         .order('created_at', { ascending: true });
+      if (error) throw error;
       renderDbComments(cmts || []);
       return;
-    } catch {}
+    } catch(e) { console.warn('openComments:', e); }
   }
   // Fallback to static
   const list = COMMENTS[postId] || [];
@@ -4168,6 +4214,14 @@ async function sendComment() {
       if (likeBtn) {
         const cmtSpan = likeBtn.closest('.card')?.querySelectorAll('.act-btn')[1]?.querySelector('span');
         if (cmtSpan) cmtSpan.textContent = parseInt(cmtSpan.textContent || 0) + 1;
+      }
+      // Notify post owner
+      const card = document.querySelector(`[data-owner]#card-${activePostId}`) ||
+                   document.querySelector(`.card[data-owner]`);
+      const cardEl = document.getElementById(`like-db-${activePostId}`)?.closest('[data-owner]');
+      const ownerId = cardEl?.dataset.owner;
+      if (ownerId && ownerId !== currentUser.id) {
+        createNotification(ownerId, 'comment', activePostId, cardEl?.dataset.species || '');
       }
     } catch { showToast('Could not post comment'); input.value = text; }
     finally { if (sendBtn) sendBtn.disabled = false; }
@@ -4471,12 +4525,140 @@ async function toggleFollow() {
       await sb.from('follows').delete().eq('follower_id', currentUser.id).eq('following_id', uid);
     } else {
       await sb.from('follows').insert({ follower_id: currentUser.id, following_id: uid });
+      createNotification(uid, 'follow', null, '');
     }
   } catch {
     btn.classList.toggle('following', wasFollowing);
     btn.textContent = wasFollowing ? '✓ Following' : '+ Follow';
     if (follEl) follEl.textContent = Math.max(0, parseInt(follEl.textContent) + (wasFollowing ? 1 : -1));
     showToast('Could not update follow');
+  }
+}
+
+// ══════════════════════════════════════════
+//  NOTIFICATIONS
+// ══════════════════════════════════════════
+async function createNotification(userId, type, catchId, catchSpecies) {
+  if (!sb || !currentUser || !userId) return;
+  try {
+    const actor = currentProfile?.username || currentUser.email?.split('@')[0] || 'Someone';
+    await sb.from('notifications').insert({
+      user_id: userId,
+      actor_id: currentUser.id,
+      type,
+      catch_id: catchId || null,
+      actor_username: actor,
+      catch_species: catchSpecies || null,
+    });
+  } catch (e) {
+    console.warn('createNotification:', e.message);
+  }
+}
+
+async function loadNotifCount() {
+  if (!sb || !currentUser) return;
+  try {
+    const { count } = await sb.from('notifications')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', currentUser.id)
+      .eq('read', false);
+    const badge = document.getElementById('notif-badge');
+    if (badge) {
+      if (count && count > 0) {
+        badge.textContent = count > 9 ? '9+' : count;
+        badge.style.display = 'flex';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+  } catch (e) {
+    console.warn('loadNotifCount:', e.message);
+  }
+}
+
+async function loadNotifications() {
+  if (!sb || !currentUser) {
+    document.getElementById('notif-list').innerHTML = '<p style="padding:20px;color:var(--gray);text-align:center;">Sign in to see notifications</p>';
+    return;
+  }
+  const list = document.getElementById('notif-list');
+  if (!list) return;
+  list.innerHTML = '<p style="padding:20px;color:var(--gray);text-align:center;">Loading…</p>';
+  try {
+    const { data, error } = await sb.from('notifications')
+      .select('*')
+      .eq('user_id', currentUser.id)
+      .order('created_at', { ascending: false })
+      .limit(50);
+    if (error) throw error;
+    if (!data || data.length === 0) {
+      list.innerHTML = '<p style="padding:32px 20px;color:var(--gray);text-align:center;">No notifications yet</p>';
+      return;
+    }
+    const icons = { like: '❤️', comment: '💬', follow: '👤' };
+    const msgs = {
+      like: (n) => `<b>@${esc(n.actor_username || 'Someone')}</b> liked your ${n.catch_species ? esc(n.catch_species) + ' catch' : 'post'}`,
+      comment: (n) => `<b>@${esc(n.actor_username || 'Someone')}</b> commented on your ${n.catch_species ? esc(n.catch_species) + ' catch' : 'post'}`,
+      follow: (n) => `<b>@${esc(n.actor_username || 'Someone')}</b> started following you`,
+    };
+    list.innerHTML = data.map(n => `
+      <div class="notif-item${n.read ? '' : ' unread'}" onclick="markNotifRead('${n.id}', this, '${n.catch_id || ''}')">
+        <div class="notif-av">${icons[n.type] || '🔔'}</div>
+        <div class="notif-content">
+          <div class="notif-text">${msgs[n.type]?.(n) || 'New notification'}</div>
+          <div class="notif-time">${timeAgo(n.created_at)}</div>
+        </div>
+        ${!n.read ? '<div class="notif-unread-dot"></div>' : ''}
+      </div>`).join('');
+    // Mark all as read in DB
+    await sb.from('notifications').update({ read: true }).eq('user_id', currentUser.id).eq('read', false);
+    const badge = document.getElementById('notif-badge');
+    if (badge) badge.style.display = 'none';
+  } catch (e) {
+    console.warn('loadNotifications:', e.message);
+    list.innerHTML = '<p style="padding:20px;color:var(--gray);text-align:center;">Could not load notifications</p>';
+  }
+}
+
+function markNotifRead(id, el, catchId) {
+  el.classList.remove('unread');
+  el.querySelector('.notif-unread-dot')?.remove();
+  if (catchId && UUID_RE.test(catchId)) openComments(catchId);
+}
+
+// ══════════════════════════════════════════
+//  SAVED TAB
+// ══════════════════════════════════════════
+async function loadSavedTab() {
+  const grid = document.getElementById('saved-grid');
+  if (!grid) return;
+  if (!sb || !currentUser) {
+    grid.innerHTML = '<p style="padding:20px;color:var(--gray);text-align:center;">Sign in to see saved posts</p>';
+    return;
+  }
+  grid.innerHTML = '<p style="padding:20px;color:var(--gray);text-align:center;">Loading…</p>';
+  try {
+    const { data, error } = await sb.from('bookmarks')
+      .select('catch_id, catches(id, species, photo_url, caption, post_type)')
+      .eq('user_id', currentUser.id)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    if (!data || data.length === 0) {
+      grid.innerHTML = '<p style="padding:32px 20px;color:var(--gray);text-align:center;">No saved posts yet</p>';
+      return;
+    }
+    grid.innerHTML = data.map(bm => {
+      const c = bm.catches;
+      if (!c) return '';
+      const thumb = c.photo_url
+        ? `<img class="bm-thumb" src="${esc(c.photo_url)}" alt="${esc(c.species||'')}" onclick="openComments('${c.id}')">`
+        : `<div class="bm-thumb" style="background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:28px;" onclick="openComments('${c.id}')">🐟</div>`;
+      const label = c.species || c.caption?.slice(0, 20) || 'Post';
+      return `<div class="bm-item">${thumb}<div class="bm-label">${esc(label)}</div></div>`;
+    }).join('');
+  } catch (e) {
+    console.warn('loadSavedTab:', e.message);
+    grid.innerHTML = '<p style="padding:20px;color:var(--gray);text-align:center;">Could not load saved posts</p>';
   }
 }
 
