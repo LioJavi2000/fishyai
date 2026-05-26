@@ -1583,6 +1583,10 @@ body {
           <div class="log-row"><div class="log-row-l"><span class="log-row-ico"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#1B2E4B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="7"/><path d="M5 8l2 2 4-4"/></svg></span> Keep / release</div><div class="tog" id="tog-kept" onclick="this.classList.toggle('on')"></div></div>
           <div class="log-row"><div class="log-row-l"><span class="log-row-ico"><svg width="16" height="13" viewBox="0 0 18 14" fill="none" stroke="#1B2E4B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 5C1 3.9 1.9 3 3 3h1.4l1-2h5.2l1 2H15c1.1 0 2 .9 2 2v6c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V5z"/><circle cx="9" cy="8" r="2.3"/></svg></span> Fish Picture</div><div class="tog" id="tog-selfie" onclick="this.classList.toggle('on')"></div></div>
         </div>
+        <!-- Caption field -->
+        <div style="margin:0 0 8px;padding:12px;background:#fff;border-radius:16px;border:1.5px solid rgba(0,0,0,0.08);">
+          <textarea id="catch-caption-input" placeholder="Add a caption… (e.g. 'Hit it on a topwater at sunrise 🌅')" style="width:100%;border:none;resize:none;font-family:inherit;font-size:13px;color:#111;outline:none;line-height:1.5;letter-spacing:-0.1px;min-height:56px;background:transparent;" rows="2"></textarea>
+        </div>
         <div style="display:flex;gap:10px;">
           <button class="btn" id="log-only-btn" onclick="postCatch(false)" style="flex:1;background:#f2f2f7;color:#1B2E4B;border:1.5px solid rgba(27,46,75,0.18);">Log Only</button>
           <button class="btn" id="post-catch-btn" onclick="postCatch(true)" style="flex:1;">Post &amp; Log 🎣</button>
@@ -1744,6 +1748,12 @@ body {
               <img class="badge-img" src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260513_012952_06ca5861-5016-4d67-a478-f749b6398ae6_min.webp" loading="lazy">
               <div class="badge-nm">Lucky or Skill</div>
             </div>
+          </div>
+
+          <!-- My Stats mini-analytics (own profile only) -->
+          <div id="prof-stats-panel" style="display:none;margin:16px 16px 0;padding:14px;background:var(--surface);border-radius:16px;">
+            <div style="font-size:13px;font-weight:800;color:#111;letter-spacing:-0.3px;margin-bottom:10px;">📊 My Stats</div>
+            <div id="prof-stats-content"></div>
           </div>
 
           <!-- Profile Tabs -->
@@ -2523,7 +2533,7 @@ async function loadProfileScreen() {
 
     // Stats + grid in parallel
     const [fishRes, postsRes, follRes, followingRes] = await Promise.all([
-      sb.from('catches').select('id, species, weight_lbs, photo_url, caption').eq('user_id', uid).eq('is_public', true).eq('post_type', 'catch').order('created_at', { ascending: false }),
+      sb.from('catches').select('id, species, weight_lbs, photo_url, caption, lure_used, created_at').eq('user_id', uid).eq('is_public', true).eq('post_type', 'catch').order('created_at', { ascending: false }),
       sb.from('catches').select('id, caption, photo_url, created_at').eq('user_id', uid).eq('is_public', true).eq('post_type', 'post').order('created_at', { ascending: false }),
       sb.from('follows').select('*', { count: 'exact', head: true }).eq('following_id', uid),
       sb.from('follows').select('*', { count: 'exact', head: true }).eq('follower_id', uid),
@@ -2570,6 +2580,16 @@ async function loadProfileScreen() {
 
     // Reset tabs to catches view
     switchProfileTab('catches');
+
+    // Stats panel (own profile only)
+    const statsPanel = document.getElementById('prof-stats-panel');
+    const statsContent = document.getElementById('prof-stats-content');
+    if (statsPanel && statsContent && !viewingUserId) {
+      statsPanel.style.display = 'block';
+      renderProfileStats(catchList, statsContent);
+    } else if (statsPanel) {
+      statsPanel.style.display = 'none';
+    }
 
     // Catch grid (fish only) — show all, with PB badge for best catch
     const grid = document.getElementById('catch-grid');
@@ -2621,6 +2641,57 @@ async function loadProfileScreen() {
       }
     }
   } catch(e) { console.error('loadProfileScreen:', e); }
+}
+
+function renderProfileStats(catchList, el) {
+  if (!catchList.length) { el.innerHTML = '<div style="color:var(--gray);font-size:12px;">Log catches to see your stats!</div>'; return; }
+
+  // Top species
+  const speciesCount = {};
+  catchList.forEach(c => { if (c.species) speciesCount[c.species] = (speciesCount[c.species]||0)+1; });
+  const topSpecies = Object.entries(speciesCount).sort((a,b)=>b[1]-a[1]).slice(0,3);
+
+  // Top lure
+  const lureCount = {};
+  catchList.forEach(c => { if (c.lure_used) lureCount[c.lure_used] = (lureCount[c.lure_used]||0)+1; });
+  const topLure = Object.entries(lureCount).sort((a,b)=>b[1]-a[1])[0];
+
+  // Monthly catch count (last 6 months)
+  const months = {};
+  for (let i=5; i>=0; i--) {
+    const d = new Date(); d.setMonth(d.getMonth()-i);
+    months[`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`] = 0;
+  }
+  catchList.forEach(c => {
+    if (!c.created_at) return;
+    const d = new Date(c.created_at);
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    if (key in months) months[key]++;
+  });
+  const monthVals = Object.values(months);
+  const maxM = Math.max(...monthVals, 1);
+  const monthLabels = Object.keys(months).map(k => { const [y,m] = k.split('-'); return new Date(y,m-1).toLocaleString('en',{month:'short'}); });
+
+  const chartBars = monthVals.map((v,i) => `
+    <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;">
+      <div style="font-size:9px;color:var(--gray);">${v||''}</div>
+      <div style="width:100%;background:${v?'#0ea5e9':'rgba(0,0,0,0.08)'};border-radius:4px 4px 0 0;height:${Math.max(4,Math.round(v/maxM*40))}px;transition:height 0.3s;"></div>
+      <div style="font-size:9px;color:var(--gray);white-space:nowrap;">${monthLabels[i]}</div>
+    </div>`).join('');
+
+  el.innerHTML = `
+    <div style="display:flex;align-items:flex-end;gap:4px;height:60px;margin-bottom:10px;">${chartBars}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div style="background:#fff;border-radius:10px;padding:10px;">
+        <div style="font-size:10px;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px;">Top Species</div>
+        ${topSpecies.map(([s,n]) => `<div style="font-size:12px;color:#111;font-weight:600;margin-bottom:2px;">${esc(s)} <span style="color:var(--gray);font-weight:500;">${n}×</span></div>`).join('')}
+      </div>
+      <div style="background:#fff;border-radius:10px;padding:10px;">
+        <div style="font-size:10px;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px;">Fav Lure</div>
+        <div style="font-size:12px;color:#111;font-weight:600;line-height:1.4;">${topLure ? esc(topLure[0]) + '<span style="color:var(--gray);font-weight:500;"> (' + topLure[1] + '×)</span>' : '—'}</div>
+        <div style="font-size:10px;color:var(--gray);margin-top:4px;">Best weight: ${catchList.reduce((b,c)=>Math.max(b,parseFloat(c.weight_lbs)||0),0) > 0 ? catchList.reduce((b,c)=>Math.max(b,parseFloat(c.weight_lbs)||0),0) + ' lbs' : '—'}</div>
+      </div>
+    </div>`;
 }
 
 function switchProfileTab(tab) {
@@ -3463,6 +3534,7 @@ async function postCatch(isPublic = true) {
   const weight   = parseFloat(document.getElementById('weight-input')?.value) || null;
   const length   = parseFloat(document.getElementById('length-input')?.value) || null;
   const lure     = document.getElementById('lure-input')?.value || null;
+  const caption  = document.getElementById('catch-caption-input')?.value.trim() || null;
   const spotName = currentSpot?.name || document.getElementById('log-spot-name')?.textContent || 'Unknown Spot';
   const btn      = document.getElementById(isPublic ? 'post-catch-btn' : 'log-only-btn');
   const otherBtn = document.getElementById(isPublic ? 'log-only-btn' : 'post-catch-btn');
@@ -3509,7 +3581,11 @@ async function postCatch(isPublic = true) {
       spot_id:     spotId,
       spot_name:   spotName,
       photo_url:   photoUrl,
+      caption:     caption,
       is_public:   isPublic,
+      post_type:   'catch',
+      lat:         currentSpot?.lat ?? null,
+      lng:         currentSpot?.lng ?? null,
       show_spot:   showSpot,
       show_weight: showWeight,
       show_length: showLength,
@@ -3523,6 +3599,8 @@ async function postCatch(isPublic = true) {
     capturedB64 = null;
     fishMeasurement = null;
     aiLength = null; aiWeight = null;
+    const captEl = document.getElementById('catch-caption-input');
+    if (captEl) captEl.value = '';
     showToast(isPublic ? 'Catch posted! 🎣' : 'Catch logged! 📋');
     showScreen(isPublic ? 'feed' : 'profile');
   } catch (err) {
