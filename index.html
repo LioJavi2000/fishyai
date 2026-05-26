@@ -1822,7 +1822,10 @@ body {
     <div class="screen" id="screen-map">
       <div class="map-wrap">
         <div id="leaflet-map"></div>
-        <div class="map-locate-btn" onclick="mapLocateMe()" title="My location">📍</div>
+        <div class="map-locate-btn" onclick="mapLocateMe()" title="My location" style="bottom:72px;">📍</div>
+        <button onclick="quickLogAtLocation()" title="Quick log catch here" style="position:absolute;bottom:18px;right:14px;width:auto;padding:0 16px;height:44px;border-radius:22px;background:var(--navy);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 16px rgba(27,46,75,0.35);z-index:999;display:flex;align-items:center;gap:6px;-webkit-tap-highlight-color:transparent;">
+          🎣 Log Here
+        </button>
         <div style="position:absolute;top:8px;left:50%;transform:translateX(-50%);z-index:500;display:flex;gap:6px;">
           <button onclick="setMapLayer('all')" id="map-tab-all" style="background:var(--navy);color:#fff;border:none;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 12px rgba(0,0,0,0.18);">All Catches</button>
           <button onclick="setMapLayer('mine')" id="map-tab-mine" style="background:rgba(255,255,255,0.9);color:#111;border:none;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 12px rgba(0,0,0,0.12);backdrop-filter:blur(8px);">My Catches</button>
@@ -2148,6 +2151,8 @@ body {
           </div>
           <div class="explore-sec-hd">Top Species</div>
           <div id="explore-species" class="explore-species-row"></div>
+          <div class="explore-sec-hd" id="explore-buddies-hd" style="display:none;">Fishing Buddies 🤝</div>
+          <div id="explore-buddies" style="display:none;"></div>
           <div class="explore-sec-hd">Who to Follow 🎣</div>
           <div id="explore-who-to-follow"></div>
           <div class="explore-sec-hd">Fish Encyclopedia 📖</div>
@@ -2187,6 +2192,11 @@ body {
           <div class="settings-toggle" id="settings-dark-toggle"><div class="settings-toggle-thumb"></div></div>
         </div>
         <div class="settings-section-label">Notifications</div>
+        <div class="settings-row" onclick="requestNotificationPermission()">
+          <div class="settings-row-icon">🔔</div>
+          <div class="settings-row-body"><div class="settings-row-title">Enable Push Notifications</div><div class="settings-row-sub" id="settings-notif-status">Allow browser alerts for new activity</div></div>
+          <div class="settings-row-arrow">›</div>
+        </div>
         <div class="settings-row" id="settings-notif-likes-row" onclick="toggleSettingBool('notif_likes', this)">
           <div class="settings-row-icon">❤️</div>
           <div class="settings-row-body"><div class="settings-row-title">Like Notifications</div><div class="settings-row-sub">When someone likes your catch</div></div>
@@ -2526,6 +2536,24 @@ async function init() {
       initPullToRefresh();
       applyDarkMode(STORE.get('dark_mode', false));
       setTimeout(resumeSessionTimer, 500);
+      setTimeout(requestNotificationPermission, 3000);
+      // Realtime notification listener
+      if (sb && currentUser) {
+        sb.channel(`notifs:${currentUser.id}`)
+          .on('postgres_changes', {
+            event: 'INSERT', schema: 'public', table: 'notifications',
+            filter: `user_id=eq.${currentUser.id}`
+          }, (payload) => {
+            const n = payload.new;
+            if (!n) return;
+            loadNotifCount();
+            const msgs = { like: `❤️ liked your catch`, comment: `💬 commented on your catch`, follow: `👤 started following you` };
+            const actor = n.actor_username || 'Someone';
+            const msg = msgs[n.type] || 'New activity';
+            showBrowserNotif('Fishy AI', `${actor} ${msg}!`);
+          })
+          .subscribe();
+      }
       // Deep link: ?catch=uuid opens that catch's comments
       const urlCatch = new URLSearchParams(location.search).get('catch');
       if (urlCatch && UUID_RE.test(urlCatch)) setTimeout(() => openComments(urlCatch), 600);
@@ -5019,6 +5047,12 @@ function loadSettingsScreen() {
   if (privSub) privSub.textContent = isPrivate ? 'Private · Only followers see your catches' : 'Public · Anyone can see your catches';
   // Dark mode toggle
   applyDarkMode(STORE.get('dark_mode', false));
+  // Push notification status
+  const notifStatus = document.getElementById('settings-notif-status');
+  if (notifStatus && 'Notification' in window) {
+    const p = Notification.permission;
+    notifStatus.textContent = p === 'granted' ? '✓ Enabled · You\'ll get activity alerts' : p === 'denied' ? '⚠️ Blocked in browser settings' : 'Tap to enable browser alerts';
+  }
   // Notif toggles
   ['notif_likes','notif_comments','notif_follows'].forEach(key => {
     const val = STORE.get(key, true);
@@ -5771,6 +5805,12 @@ function closeMapCard() {
   document.getElementById('map-card')?.classList.remove('visible');
 }
 
+function quickLogAtLocation() {
+  closeMapCard();
+  showToast('📍 Location set · Scan your catch!');
+  showScreen('scan');
+}
+
 function haversine(lat1, lon1, lat2, lon2) {
   const R = 3958.8, r = Math.PI / 180;
   const dLat = (lat2 - lat1) * r, dLon = (lon2 - lon1) * r;
@@ -5927,6 +5967,7 @@ async function loadExplore() {
   loadExploreLb();
   loadExploreEncyclopedia();
   loadWeeklyChallenge();
+  loadExploreBuddies();
 }
 
 function loadExploreEncyclopedia() {
@@ -6038,6 +6079,43 @@ async function loadExploreWhoToFollow() {
       </div>`;
     }).join('');
   } catch(e) { console.warn('loadExploreWhoToFollow:', e.message); }
+}
+
+async function loadExploreBuddies() {
+  const el = document.getElementById('explore-buddies');
+  const hd = document.getElementById('explore-buddies-hd');
+  if (!el || !hd || !sb || !currentUser) return;
+  try {
+    // Find mutual follows = buddies
+    const [myFollowsRes, followsBackRes] = await Promise.all([
+      sb.from('follows').select('following_id').eq('follower_id', currentUser.id),
+      sb.from('follows').select('follower_id').eq('following_id', currentUser.id),
+    ]);
+    const myFollowIds = new Set((myFollowsRes.data || []).map(f => f.following_id));
+    const followsBackIds = new Set((followsBackRes.data || []).map(f => f.follower_id));
+    const buddyIds = [...myFollowIds].filter(id => followsBackIds.has(id));
+    if (!buddyIds.length) { el.style.display = 'none'; hd.style.display = 'none'; return; }
+
+    const { data: buddies } = await sb.from('profiles')
+      .select('id, username, display_name, avatar_url')
+      .in('id', buddyIds.slice(0, 6));
+    if (!buddies?.length) return;
+
+    hd.style.display = '';
+    el.style.display = '';
+    el.innerHTML = `<div style="display:flex;gap:12px;padding:0 16px 4px;overflow-x:auto;scrollbar-width:none;">
+      ${buddies.map(u => {
+        const name = u.display_name || u.username || 'Angler';
+        const avHtml = u.avatar_url
+          ? `<div class="av" style="width:52px;height:52px;background:url(${esc(u.avatar_url)}) center/cover no-repeat;font-size:0;border:2.5px solid var(--navy);"></div>`
+          : `<div class="av" style="width:52px;height:52px;border:2.5px solid var(--navy);font-size:14px;">${name.slice(0,2).toUpperCase()}</div>`;
+        return `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;cursor:pointer;min-width:60px;" onclick="openUserProfile('${u.id}')">
+          <div style="position:relative;">${avHtml}<div style="position:absolute;bottom:0;right:0;width:14px;height:14px;border-radius:50%;background:#34c759;border:2px solid #fff;"></div></div>
+          <div style="font-size:10px;font-weight:700;color:#111;text-align:center;max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(name.split(' ')[0])}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  } catch {}
 }
 
 async function exploreFollow(uid, btn) {
@@ -6169,6 +6247,29 @@ async function doExploreSearch(query) {
 
 // ── NOTIFICATION + DM AUTO-POLL ──
 setInterval(() => { if (currentUser && sb) { loadNotifCount(); loadDMUnreadCount(); } }, 90000);
+
+// ══════════════════════════════════════════
+//  BROWSER PUSH NOTIFICATIONS
+// ══════════════════════════════════════════
+async function requestNotificationPermission() {
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'default') {
+    const perm = await Notification.requestPermission();
+    if (perm === 'granted') showToast('Notifications enabled! 🔔');
+  }
+}
+
+function showBrowserNotif(title, body, icon) {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  try {
+    new Notification(title, {
+      body,
+      icon: icon || 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🎣</text></svg>',
+      badge: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🎣</text></svg>',
+      tag: 'fishyai',
+    });
+  } catch {}
+}
 
 async function createNotification(userId, type, catchId, catchSpecies) {
   if (!sb || !currentUser || !userId) return;
@@ -6895,7 +6996,45 @@ async function sendDM() {
 }
 
 function openDMCompose() {
-  showToast('Search for an angler in Explore to start a conversation');
+  // Show an inline search in the DM list body
+  const body = document.getElementById('dm-list-body');
+  if (!body) return;
+  body.innerHTML = `
+    <div style="padding:12px 16px 8px;">
+      <div style="font-size:13px;font-weight:700;color:#111;margin-bottom:8px;">New Message</div>
+      <input id="dm-compose-search" type="text" placeholder="Search anglers…"
+        style="width:100%;padding:10px 14px;border-radius:12px;border:1.5px solid rgba(0,0,0,0.1);background:#f4f5f7;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;"
+        oninput="dmSearchAnglers(this.value)" autocomplete="off" autofocus>
+    </div>
+    <div id="dm-compose-results" style="overflow-y:auto;"></div>
+  `;
+  setTimeout(() => document.getElementById('dm-compose-search')?.focus(), 100);
+}
+
+async function dmSearchAnglers(q) {
+  const el = document.getElementById('dm-compose-results');
+  if (!el || !sb || !currentUser) return;
+  if (!q.trim()) { el.innerHTML = ''; return; }
+  try {
+    const { data } = await sb.from('profiles')
+      .select('id, username, display_name, avatar_url')
+      .ilike('username', `%${q}%`)
+      .neq('id', currentUser.id)
+      .limit(8);
+    if (!data?.length) { el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--gray);font-size:13px;">No anglers found</div>'; return; }
+    el.innerHTML = data.map(u => {
+      const avHtml = u.avatar_url
+        ? `<div class="av" style="width:42px;height:42px;background:url(${esc(u.avatar_url)}) center/cover no-repeat;font-size:0;flex-shrink:0;"></div>`
+        : `<div class="av" style="width:42px;height:42px;flex-shrink:0;">${(u.display_name || u.username || '?').slice(0,2).toUpperCase()}</div>`;
+      return `<div class="dm-list-item" onclick="startDMWith('${u.id}','${esc(u.username)}','${esc(u.display_name || u.username)}','${esc(u.avatar_url || '')}')">
+        ${avHtml}
+        <div>
+          <div class="dm-list-name">${esc(u.display_name || u.username)}</div>
+          <div class="dm-list-preview">@${esc(u.username)}</div>
+        </div>
+      </div>`;
+    }).join('');
+  } catch { el.innerHTML = ''; }
 }
 
 async function loadDMUnreadCount() {
@@ -7582,7 +7721,40 @@ init();
     <input type="hidden" id="edit-catch-id">
     <div class="ep-field">
       <label class="ep-label">Species</label>
-      <input class="ep-input" id="edit-catch-species" placeholder="e.g. Largemouth Bass">
+      <input class="ep-input" id="edit-catch-species" placeholder="e.g. Largemouth Bass" list="species-datalist">
+      <datalist id="species-datalist">
+        <option value="Largemouth Bass">
+        <option value="Smallmouth Bass">
+        <option value="Spotted Bass">
+        <option value="Striped Bass">
+        <option value="Rainbow Trout">
+        <option value="Brown Trout">
+        <option value="Brook Trout">
+        <option value="Lake Trout">
+        <option value="Channel Catfish">
+        <option value="Blue Catfish">
+        <option value="Flathead Catfish">
+        <option value="Walleye">
+        <option value="Northern Pike">
+        <option value="Muskellunge">
+        <option value="Bluegill">
+        <option value="Crappie">
+        <option value="Yellow Perch">
+        <option value="Carp">
+        <option value="Salmon">
+        <option value="Chinook Salmon">
+        <option value="Coho Salmon">
+        <option value="Sockeye Salmon">
+        <option value="Halibut">
+        <option value="Flounder">
+        <option value="Red Snapper">
+        <option value="Tuna">
+        <option value="Mahi-Mahi">
+        <option value="Grouper">
+        <option value="Tarpon">
+        <option value="Redfish">
+        <option value="Snook">
+      </datalist>
     </div>
     <div class="ep-field">
       <label class="ep-label">Weight (lbs)</label>
