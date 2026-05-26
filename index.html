@@ -1145,6 +1145,13 @@ body {
 /* ── DM NAV ICON ── */
 .feed-dm-btn{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;-webkit-tap-highlight-color:transparent;}
 .feed-dm-unread{position:absolute;top:1px;right:1px;background:#ff375f;border-radius:50%;width:9px;height:9px;border:1.5px solid #fff;display:none;}
+/* ── FEED QUICK STATS ── */
+.feed-qs-bar{display:flex;gap:8px;padding:4px 16px 8px;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none;}
+.feed-qs-bar::-webkit-scrollbar{display:none;}
+.feed-qs-chip{flex-shrink:0;background:#fff;border-radius:14px;padding:8px 12px;display:flex;align-items:center;gap:6px;box-shadow:0 1px 8px rgba(0,0,0,0.07);cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.feed-qs-chip:active{background:#f7f8fa;}
+.feed-qs-val{font-size:15px;font-weight:800;color:var(--navy);letter-spacing:-0.3px;}
+.feed-qs-lbl{font-size:10px;color:var(--gray);font-weight:600;}
 /* ── SPECIES DETAIL PANEL ── */
 .species-detail-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:3000;opacity:0;pointer-events:none;transition:opacity 0.25s;}
 .species-detail-backdrop.open{opacity:1;pointer-events:all;}
@@ -1337,6 +1344,8 @@ body {
             <button class="fce-share-btn" id="fce-share-btn" onclick="shareFeedPost()" disabled>Post</button>
           </div>
         </div>
+        <!-- My Quick Stats Bar -->
+        <div id="feed-quick-stats" style="display:none;"></div>
         <!-- Catch of the Day -->
         <div id="cotd-banner" style="display:none;"></div>
         <!-- Feed filter tabs -->
@@ -2406,7 +2415,7 @@ function showScreen(name, back = false) {
   updateTabBar(name);
 
   if (name === 'scan') startCamera();
-  if (name === 'feed') { loadFeed(); loadStoriesRow(); }
+  if (name === 'feed') { loadFeed(); loadStoriesRow(); loadFeedQuickStats(); }
   if (name === 'leaderboard') loadLeaderboard();
   if (name === 'explore') loadExplore();
   if (name === 'profile') loadProfileScreen();
@@ -3037,6 +3046,14 @@ function goToLog() {
   setTimeout(() => {
     if (aiLength !== null) { const i = document.getElementById('length-input'); if (i) i.value = aiLength; }
     if (aiWeight !== null) { const i = document.getElementById('weight-input');  if (i) i.value = aiWeight; }
+    // Inject species-specific lure suggestion into caption
+    const species = identifiedFish?.species;
+    if (species && SPECIES_DB[species]) {
+      const capEl = document.getElementById('catch-caption-input');
+      if (capEl && !capEl.value) {
+        capEl.placeholder = `Try: "${SPECIES_DB[species].tip.slice(0, 60)}…"`;
+      }
+    }
   }, 250);
 }
 
@@ -5395,6 +5412,46 @@ async function toggleFollow() {
 //  NOTIFICATIONS
 // ══════════════════════════════════════════
 
+// ── FEED QUICK STATS ──
+async function loadFeedQuickStats() {
+  const el = document.getElementById('feed-quick-stats');
+  if (!el || !sb || !currentUser) return;
+  try {
+    const [catchRes, follRes, streakDays] = await Promise.all([
+      sb.from('catches').select('id, weight_lbs, created_at').eq('user_id', currentUser.id).eq('post_type', 'catch').order('created_at', { ascending: false }),
+      sb.from('follows').select('*', { count: 'exact', head: true }).eq('follower_id', currentUser.id),
+    ]);
+    const catches = catchRes.data || [];
+    const totalLbs = catches.reduce((s, c) => s + (parseFloat(c.weight_lbs) || 0), 0);
+    const best = catches.reduce((b, c) => Math.max(b, parseFloat(c.weight_lbs) || 0), 0);
+    // Streak: count consecutive days with a catch ending today
+    let streak = 0;
+    if (catches.length) {
+      const days = new Set(catches.map(c => new Date(c.created_at).toDateString()));
+      const today = new Date();
+      for (let i = 0; i < 365; i++) {
+        const d = new Date(today.getTime() - i * 86400000).toDateString();
+        if (days.has(d)) streak++;
+        else if (i > 0) break;
+      }
+    }
+    const chips = [
+      { val: catches.length, lbl: 'Catches', icon: '🎣', action: `showScreen('profile')` },
+      { val: totalLbs > 0 ? totalLbs.toFixed(1) + ' lb' : '—', lbl: 'Total', icon: '⚖️', action: '' },
+      { val: best > 0 ? best + ' lb' : '—', lbl: 'Best', icon: '🏆', action: '' },
+      { val: follRes.count ?? 0, lbl: 'Following', icon: '👥', action: `showScreen('profile');switchProfileTab('saved')` },
+      streak > 1 ? { val: streak + '🔥', lbl: 'Day Streak', icon: '', action: '' } : null,
+    ].filter(Boolean);
+    el.style.display = '';
+    el.innerHTML = `<div class="feed-qs-bar">${chips.map(ch =>
+      `<div class="feed-qs-chip" ${ch.action ? `onclick="${ch.action}"` : ''}>
+        ${ch.icon ? `<span style="font-size:14px;">${ch.icon}</span>` : ''}
+        <div><div class="feed-qs-val">${ch.val}</div><div class="feed-qs-lbl">${ch.lbl}</div></div>
+      </div>`
+    ).join('')}</div>`;
+  } catch (e) { console.warn('loadFeedQuickStats:', e.message); }
+}
+
 // ── EXPLORE ──
 async function loadExplore() {
   showFishingTip();
@@ -5704,21 +5761,37 @@ async function loadNotifications() {
       list.innerHTML = '<p style="padding:32px 20px;color:var(--gray);text-align:center;">No notifications yet</p>';
       return;
     }
-    const icons = { like: '❤️', comment: '💬', follow: '👤' };
+    const icons = { like: '❤️', comment: '💬', follow: '👤', message: '💬' };
     const msgs = {
-      like: (n) => `<b>@${esc(n.actor_username || 'Someone')}</b> liked your ${n.catch_species ? esc(n.catch_species) + ' catch' : 'post'}`,
-      comment: (n) => `<b>@${esc(n.actor_username || 'Someone')}</b> commented on your ${n.catch_species ? esc(n.catch_species) + ' catch' : 'post'}`,
-      follow: (n) => `<b>@${esc(n.actor_username || 'Someone')}</b> started following you`,
+      like: (n) => `<b>@${esc(n.actor_username || 'Someone')}</b> liked your ${n.catch_species ? esc(n.catch_species) + ' catch' : 'post'} ❤️`,
+      comment: (n) => `<b>@${esc(n.actor_username || 'Someone')}</b> commented: "${n.catch_species ? esc(n.catch_species) : 'your post'}"`,
+      follow: (n) => `<b>@${esc(n.actor_username || 'Someone')}</b> started following you 🎣`,
     };
-    list.innerHTML = data.map(n => `
-      <div class="notif-item${n.read ? '' : ' unread'}" onclick="markNotifRead('${n.id}', this, '${n.catch_id || ''}')">
-        <div class="notif-av">${icons[n.type] || '🔔'}</div>
-        <div class="notif-content">
-          <div class="notif-text">${msgs[n.type]?.(n) || 'New notification'}</div>
-          <div class="notif-time">${timeAgo(n.created_at)}</div>
-        </div>
-        ${!n.read ? '<div class="notif-unread-dot"></div>' : ''}
-      </div>`).join('');
+    // Fetch actor avatars
+    const actorIds = [...new Set(data.filter(n => n.actor_id).map(n => n.actor_id))];
+    let avatarMap = {};
+    if (actorIds.length) {
+      const { data: actors } = await sb.from('profiles').select('id, avatar_url').in('id', actorIds);
+      (actors || []).forEach(a => { avatarMap[a.id] = a.avatar_url; });
+    }
+    list.innerHTML = `<div style="padding:10px 16px 4px;display:flex;align-items:center;justify-content:space-between;"><div style="font-size:17px;font-weight:800;color:#111;letter-spacing:-0.5px;">Activity</div></div>` +
+      data.map(n => {
+        const avUrl = n.actor_id ? avatarMap[n.actor_id] : null;
+        const avHtml = avUrl
+          ? `<div class="notif-av" style="background:url(${esc(avUrl)}) center/cover;font-size:0;cursor:pointer;" onclick="if('${n.actor_id}')openUserProfile('${n.actor_id}')"></div>`
+          : `<div class="notif-av" style="cursor:pointer;" onclick="if('${n.actor_id}')openUserProfile('${n.actor_id}')">${icons[n.type] || '🔔'}</div>`;
+        const followBackBtn = n.type === 'follow' && n.actor_id
+          ? `<button onclick="event.stopPropagation();quickFollowBack('${n.actor_id}',this)" style="flex-shrink:0;border:1.5px solid rgba(27,46,75,0.2);background:#fff;color:var(--navy);border-radius:14px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">Follow</button>` : '';
+        return `<div class="notif-item${n.read ? '' : ' unread'}" onclick="markNotifRead('${n.id}', this, '${n.catch_id || ''}')">
+          ${avHtml}
+          <div class="notif-content" style="flex:1;min-width:0;">
+            <div class="notif-text">${msgs[n.type]?.(n) || 'New notification'}</div>
+            <div class="notif-time">${timeAgo(n.created_at)}</div>
+          </div>
+          ${followBackBtn}
+          ${!n.read ? '<div class="notif-unread-dot"></div>' : ''}
+        </div>`;
+      }).join('');
     // Mark all as read in DB
     await sb.from('notifications').update({ read: true }).eq('user_id', currentUser.id).eq('read', false);
     const badge = document.getElementById('notif-badge');
@@ -5733,6 +5806,25 @@ function markNotifRead(id, el, catchId) {
   el.classList.remove('unread');
   el.querySelector('.notif-unread-dot')?.remove();
   if (catchId && UUID_RE.test(catchId)) openComments(catchId);
+}
+
+async function quickFollowBack(userId, btn) {
+  if (!sb || !currentUser) { showToast('Sign in to follow'); return; }
+  btn.textContent = '…';
+  btn.disabled = true;
+  try {
+    const { data: exists } = await sb.from('follows').select('id').eq('follower_id', currentUser.id).eq('following_id', userId).maybeSingle();
+    if (exists) {
+      await sb.from('follows').delete().eq('follower_id', currentUser.id).eq('following_id', userId);
+      btn.textContent = 'Follow'; btn.disabled = false;
+      showToast('Unfollowed');
+    } else {
+      await sb.from('follows').insert({ follower_id: currentUser.id, following_id: userId });
+      btn.textContent = '✓ Following'; btn.style.color = 'var(--green)'; btn.disabled = false;
+      showToast('Following! 🎣');
+      createNotification(userId, 'follow', null, '');
+    }
+  } catch { btn.textContent = 'Follow'; btn.disabled = false; }
 }
 
 // ══════════════════════════════════════════
