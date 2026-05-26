@@ -1468,6 +1468,8 @@ body {
         </div>
         <!-- My Quick Stats Bar -->
         <div id="feed-quick-stats" style="display:none;"></div>
+        <!-- On This Day -->
+        <div id="feed-on-this-day" style="display:none;"></div>
         <!-- Catch of the Day -->
         <div id="cotd-banner" style="display:none;"></div>
         <!-- Feed filter tabs -->
@@ -1795,6 +1797,15 @@ body {
           <div class="log-row"><div class="log-row-l"><span class="log-row-ico"><svg width="10" height="14" viewBox="0 0 10 13" fill="none" stroke="#1B2E4B" stroke-width="1.7" stroke-linecap="round"><circle cx="5" cy="2" r="1.1" fill="#1B2E4B" stroke="none"/><path d="M5 3.1v5.2"/><path d="M5 8.3c0 2.3 3.2 2.3 3.2 0"/><path d="M8.2 8.3l0.8 1.7"/></svg></span> Lure used</div><div class="tog on" id="tog-lure" onclick="this.classList.toggle('on')"></div></div>
           <div class="log-row"><div class="log-row-l"><span class="log-row-ico"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#1B2E4B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="7"/><path d="M5 8l2 2 4-4"/></svg></span> Keep / release</div><div class="tog" id="tog-kept" onclick="this.classList.toggle('on')"></div></div>
           <div class="log-row"><div class="log-row-l"><span class="log-row-ico"><svg width="16" height="13" viewBox="0 0 18 14" fill="none" stroke="#1B2E4B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 5C1 3.9 1.9 3 3 3h1.4l1-2h5.2l1 2H15c1.1 0 2 .9 2 2v6c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V5z"/><circle cx="9" cy="8" r="2.3"/></svg></span> Fish Picture</div><div class="tog" id="tog-selfie" onclick="this.classList.toggle('on')"></div></div>
+        </div>
+        <!-- Weather chip while logging -->
+        <div id="log-weather-chip" style="display:none;margin:0 0 8px;padding:10px 14px;background:#fff;border-radius:14px;border:1.5px solid rgba(14,165,233,0.2);display:flex;align-items:center;gap:10px;">
+          <div style="font-size:22px;" id="lwc-icon">🌤️</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:12px;font-weight:700;color:#111;" id="lwc-temp"></div>
+            <div style="font-size:11px;color:var(--gray);" id="lwc-cond"></div>
+          </div>
+          <div style="font-size:10px;color:var(--gray);font-weight:600;">Auto-attached 🛰️</div>
         </div>
         <!-- Caption field -->
         <div style="margin:0 0 8px;padding:12px;background:#fff;border-radius:16px;border:1.5px solid rgba(0,0,0,0.08);">
@@ -2579,7 +2590,7 @@ function showScreen(name, back = false) {
   updateTabBar(name);
 
   if (name === 'scan') startCamera();
-  if (name === 'feed') { loadFeed(); loadStoriesRow(); loadFeedQuickStats(); }
+  if (name === 'feed') { loadFeed(); loadStoriesRow(); loadFeedQuickStats(); loadOnThisDay(); }
   if (name === 'leaderboard') loadLeaderboard();
   if (name === 'explore') loadExplore();
   if (name === 'profile') loadProfileScreen();
@@ -3298,7 +3309,7 @@ function goToLog() {
   setTimeout(() => {
     if (aiLength !== null) { const i = document.getElementById('length-input'); if (i) i.value = aiLength; }
     if (aiWeight !== null) { const i = document.getElementById('weight-input');  if (i) i.value = aiWeight; }
-    // Inject species-specific lure suggestion into caption
+    // Species-specific lure tip
     const species = identifiedFish?.species;
     if (species && SPECIES_DB[species]) {
       const capEl = document.getElementById('catch-caption-input');
@@ -3306,7 +3317,35 @@ function goToLog() {
         capEl.placeholder = `Try: "${SPECIES_DB[species].tip.slice(0, 60)}…"`;
       }
     }
+    // Auto-attach weather
+    attachWeatherToLog();
   }, 250);
+}
+
+async function attachWeatherToLog() {
+  const chip = document.getElementById('log-weather-chip');
+  if (!chip || !navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(async (pos) => {
+    try {
+      const { latitude: lat, longitude: lon } = pos.coords;
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=relativehumidity_2m,windspeed_10m&wind_speed_unit=mph&temperature_unit=fahrenheit&timezone=auto&forecast_days=1`;
+      const res = await fetch(url);
+      const data = await res.json();
+      const cw = data.current_weather;
+      if (!cw) return;
+      const tempF = Math.round(cw.temperature);
+      const wind = Math.round(cw.windspeed);
+      const wc = cw.weathercode;
+      const icon = wc <= 1 ? '☀️' : wc <= 3 ? '⛅' : wc <= 49 ? '🌫️' : wc <= 69 ? '🌧️' : wc <= 79 ? '🌨️' : '⛈️';
+      const cond = wc <= 1 ? 'Clear' : wc <= 3 ? 'Partly Cloudy' : wc <= 49 ? 'Foggy' : wc <= 69 ? 'Rainy' : wc <= 79 ? 'Snowy' : 'Stormy';
+      setEl('lwc-icon', icon);
+      setEl('lwc-temp', `${tempF}°F · Wind ${wind} mph`);
+      setEl('lwc-cond', cond);
+      chip.style.display = 'flex';
+      // Store weather for when catch is saved
+      window._catchWeather = { temp_f: tempF, wind_mph: wind, condition: cond, icon };
+    } catch {}
+  }, () => {}, { timeout: 5000 });
 }
 
 // ══════════════════════════════════════════
@@ -5324,9 +5363,46 @@ function renderCommentItem(c) {
   const u = c.profiles?.username || 'angler';
   const avUrl = c.profiles?.avatar_url;
   const avHtml = avUrl
-    ? `<div class="cs-cav" style="background:url(${esc(avUrl)}) center/cover no-repeat;font-size:0;"></div>`
-    : `<div class="cs-cav">${u.slice(0,2).toUpperCase()}</div>`;
-  return `<div class="cs-comment">${avHtml}<div style="flex:1;min-width:0;"><div class="cs-comment-name">${esc(u)}</div><div class="cs-comment-text">${esc(c.text)}</div><div class="cs-comment-time">${timeAgo(c.created_at)}</div></div></div>`;
+    ? `<div class="cs-cav" style="background:url(${esc(avUrl)}) center/cover no-repeat;font-size:0;cursor:pointer;" onclick="openUserProfile('${c.user_id}')"></div>`
+    : `<div class="cs-cav" style="cursor:pointer;" onclick="openUserProfile('${c.user_id}')">${u.slice(0,2).toUpperCase()}</div>`;
+  const cmtLikes = parseInt(STORE.get(`cmtlikes_${c.id}`, '0'));
+  const cmtLiked = STORE.get(`cmtliked_${c.id}`, 'false') === 'true';
+  return `<div class="cs-comment" data-cmtid="${c.id}">
+    ${avHtml}
+    <div style="flex:1;min-width:0;">
+      <div class="cs-comment-name" style="cursor:pointer;" onclick="openUserProfile('${c.user_id}')">${esc(u)}</div>
+      <div class="cs-comment-text">${esc(c.text)}</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:4px;">
+        <div class="cs-comment-time">${timeAgo(c.created_at)}</div>
+        <button onclick="replyToComment('${esc(u)}')" style="background:none;border:none;cursor:pointer;font-size:11px;font-weight:600;color:var(--gray);padding:0;font-family:inherit;">Reply</button>
+        <button id="cmtlike-${c.id}" onclick="toggleCommentLike('${c.id}',this)" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:3px;font-size:11px;font-weight:600;color:${cmtLiked ? '#ff375f' : 'var(--gray)'};padding:0;font-family:inherit;">
+          ${cmtLiked ? '❤️' : '🤍'} <span id="cmtlike-count-${c.id}">${cmtLikes || ''}</span>
+        </button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function toggleCommentLike(cmtId, btn) {
+  const liked = STORE.get(`cmtliked_${cmtId}`, 'false') === 'true';
+  const count = parseInt(STORE.get(`cmtlikes_${cmtId}`, '0'));
+  const next = !liked;
+  const nextCount = count + (next ? 1 : -1);
+  STORE.set(`cmtliked_${cmtId}`, String(next));
+  STORE.set(`cmtlikes_${cmtId}`, String(Math.max(0, nextCount)));
+  if (btn) {
+    btn.style.color = next ? '#ff375f' : 'var(--gray)';
+    btn.innerHTML = `${next ? '❤️' : '🤍'} <span id="cmtlike-count-${cmtId}">${Math.max(0, nextCount) || ''}</span>`;
+  }
+}
+
+function replyToComment(username) {
+  const input = document.getElementById('cs-input');
+  if (input) {
+    input.value = `@${username} `;
+    input.focus();
+    input.setSelectionRange(input.value.length, input.value.length);
+  }
 }
 
 function renderDbComments(cmts) {
@@ -5794,6 +5870,51 @@ async function loadFeedQuickStats() {
       </div>`
     ).join('')}</div>`;
   } catch (e) { console.warn('loadFeedQuickStats:', e.message); }
+}
+
+// ── ON THIS DAY ──
+async function loadOnThisDay() {
+  const el = document.getElementById('feed-on-this-day');
+  if (!el || !sb || !currentUser) return;
+  try {
+    const now = new Date();
+    const month = now.getMonth() + 1;
+    const day = now.getDate();
+    const thisYear = now.getFullYear();
+
+    const { data } = await sb.from('catches')
+      .select('id, species, weight_lbs, photo_url, created_at')
+      .eq('user_id', currentUser.id)
+      .eq('post_type', 'catch');
+
+    if (!data?.length) return;
+    // Filter to same month/day but past years
+    const matches = data.filter(c => {
+      const d = new Date(c.created_at);
+      return d.getMonth() + 1 === month && d.getDate() === day && d.getFullYear() < thisYear;
+    });
+    if (!matches.length) { el.style.display = 'none'; return; }
+
+    const best = matches.reduce((b, c) => (parseFloat(c.weight_lbs) || 0) > (parseFloat(b.weight_lbs) || 0) ? c : b, matches[0]);
+    const yearsAgo = thisYear - new Date(best.created_at).getFullYear();
+    const thumb = best.photo_url
+      ? `<div style="width:56px;height:56px;border-radius:12px;flex-shrink:0;background:url(${esc(best.photo_url)}) center/cover no-repeat;"></div>`
+      : `<div style="width:56px;height:56px;border-radius:12px;flex-shrink:0;background:linear-gradient(135deg,#1B2E4B,#0ea5e9);display:flex;align-items:center;justify-content:center;font-size:26px;">🐟</div>`;
+
+    el.style.display = '';
+    el.innerHTML = `<div style="margin:8px 12px;padding:14px;background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(245,158,11,0.04));border:1.5px solid rgba(245,158,11,0.2);border-radius:18px;cursor:pointer;" onclick="openComments('${best.id}')">
+      <div style="font-size:10px;font-weight:800;color:#f59e0b;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;">📅 On This Day · ${yearsAgo} Year${yearsAgo !== 1 ? 's' : ''} Ago</div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        ${thumb}
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:15px;font-weight:800;color:#111;letter-spacing:-0.4px;">${esc(best.species || 'Unknown')}</div>
+          <div style="font-size:12px;color:var(--gray);margin-top:2px;">${best.weight_lbs ? parseFloat(best.weight_lbs).toFixed(1) + ' lbs · ' : ''}${new Date(best.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
+        </div>
+        <div style="font-size:20px;">🎉</div>
+      </div>
+      ${matches.length > 1 ? `<div style="font-size:11px;color:#f59e0b;font-weight:600;margin-top:8px;">+ ${matches.length - 1} more catch${matches.length > 2 ? 'es' : ''} on this date</div>` : ''}
+    </div>`;
+  } catch {}
 }
 
 // ── EXPLORE ──
