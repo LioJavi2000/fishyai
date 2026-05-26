@@ -1044,6 +1044,9 @@ body {
 .settings-toggle.on{background:#34c759;}
 .settings-toggle-thumb{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.2);transition:transform 0.2s;}
 .settings-toggle.on .settings-toggle-thumb{transform:translateX(18px);}
+/* ── EDIT PROFILE SHORTCUT ── */
+.edit-profile-shortcut{border:1.5px solid rgba(27,46,75,0.2);background:#fff;color:var(--navy);border-radius:20px;padding:8px 24px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:-0.2px;margin-top:4px;transition:background 0.15s;}
+.edit-profile-shortcut:active{background:var(--surface);}
 /* ── EXPLORE SEARCH RESULTS ── */
 .explore-search-result-user{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:0.5px solid rgba(0,0,0,0.06);cursor:pointer;}
 .explore-search-result-user:active{background:var(--surface);}
@@ -1258,6 +1261,7 @@ body {
         <div class="feed-filter-tabs" id="feed-filter-tabs">
           <button class="feed-ftab active" id="fft-foryou" onclick="setFeedFilter('foryou')">For You</button>
           <button class="feed-ftab" id="fft-following" onclick="setFeedFilter('following')">Following</button>
+          <button class="feed-ftab" id="fft-top" onclick="setFeedFilter('top')">Top</button>
         </div>
         <div id="feed-ptr" class="feed-ptr" style="display:none;">↓ Pull to refresh</div>
         <div id="feed-content"></div>
@@ -1719,6 +1723,7 @@ body {
 
           <!-- Follow / own-profile action -->
           <button class="follow-btn follow-btn-v2" id="follow-btn" onclick="toggleFollow()">+ Follow</button>
+          <button class="edit-profile-shortcut" id="edit-profile-shortcut" onclick="openEditProfile()" style="display:none;">Edit Profile</button>
 
           <!-- Badges -->
           <div class="sec-hd-v2">Badges</div>
@@ -2077,9 +2082,17 @@ body {
       <span class="cs-head-title">Comments</span>
       <div class="cs-close-btn" onclick="closeComments()">✕</div>
     </div>
+    <!-- Post preview header inside comments sheet -->
+    <div id="cs-post-preview" style="display:none;padding:10px 16px 8px;border-bottom:0.5px solid rgba(0,0,0,0.08);display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="closeComments()">
+      <div id="cs-post-photo" style="width:44px;height:44px;border-radius:10px;background:#d4e6f5;flex-shrink:0;background-size:cover;background-position:center;"></div>
+      <div style="flex:1;min-width:0;">
+        <div id="cs-post-species" style="font-size:13px;font-weight:700;color:#111;letter-spacing:-0.2px;"></div>
+        <div id="cs-post-owner" style="font-size:12px;color:var(--gray);"></div>
+      </div>
+    </div>
     <div class="cs-body" id="cs-body"></div>
     <div class="cs-footer">
-      <div class="cs-cav">Me</div>
+      <div class="cs-cav" id="cs-my-av" style="background-size:cover;background-position:center;">Me</div>
       <input class="cs-input" id="cs-input" placeholder="Add a comment…" onkeydown="if(event.key==='Enter')sendComment()">
       <button class="cs-send" onclick="sendComment()">Post</button>
     </div>
@@ -2531,7 +2544,10 @@ async function loadProfileScreen() {
     setEl('prof-total-weight', totalLbs > 0 ? `${totalLbs.toFixed(1)} lbs total` : '');
 
     // Follow button
+    const editShortcut = document.getElementById('edit-profile-shortcut');
     const followBtn = document.getElementById('follow-btn');
+    const isOwnProfile = !viewingUserId || uid === currentUser?.id;
+    if (editShortcut) editShortcut.style.display = isOwnProfile ? 'block' : 'none';
     if (followBtn) {
       if (!currentUser || uid === currentUser.id) {
         followBtn.style.display = 'none';
@@ -3631,6 +3647,7 @@ function setFeedFilter(tab) {
   feedFilter = tab;
   document.getElementById('fft-foryou')?.classList.toggle('active', tab === 'foryou');
   document.getElementById('fft-following')?.classList.toggle('active', tab === 'following');
+  document.getElementById('fft-top')?.classList.toggle('active', tab === 'top');
   loadFeed(false);
 }
 
@@ -3679,9 +3696,15 @@ async function loadFeed(append = false) {
     let query = sb.from('catches')
       .select('*, profiles!catches_user_id_fkey(username, avatar_url, current_rank)')
       .eq('is_public', true)
-      .neq('post_type', 'story')
-      .order('created_at', { ascending: false })
-      .range(from, from + FEED_PAGE_SIZE - 1);
+      .neq('post_type', 'story');
+
+    if (feedFilter === 'top') {
+      // Top catches this week: fetch more and sort by like count client-side
+      const since = new Date(Date.now() - 7 * 86400000).toISOString();
+      query = query.gte('created_at', since).order('created_at', { ascending: false }).limit(50);
+    } else {
+      query = query.order('created_at', { ascending: false }).range(from, from + FEED_PAGE_SIZE - 1);
+    }
 
     if (followIds) query = query.in('user_id', followIds);
 
@@ -3696,9 +3719,15 @@ async function loadFeed(append = false) {
       return;
     }
 
-    if (catches.length < FEED_PAGE_SIZE) feedAllLoaded = true;
+    if (feedFilter !== 'top' && catches.length < FEED_PAGE_SIZE) feedAllLoaded = true;
 
-    const ids = catches.map(c => c.id);
+    // For 'top' tab: sort by like count, paginate client-side
+    let displayCatches = catches;
+    if (feedFilter === 'top') {
+      feedAllLoaded = true; // top tab always shows one batch
+    }
+
+    const ids = displayCatches.map(c => c.id);
     const [likesRes, cmtRes] = await Promise.all([
       sb.from('likes').select('catch_id').in('catch_id', ids),
       sb.from('comments').select('catch_id').in('catch_id', ids),
@@ -3706,6 +3735,11 @@ async function loadFeed(append = false) {
     const likeMap = {}, cmtMap = {};
     (likesRes.data || []).forEach(l => { likeMap[l.catch_id] = (likeMap[l.catch_id] || 0) + 1; });
     (cmtRes.data  || []).forEach(c => { cmtMap[c.catch_id]  = (cmtMap[c.catch_id]  || 0) + 1; });
+
+    // Sort by likes for 'top' tab
+    if (feedFilter === 'top') {
+      displayCatches = [...displayCatches].sort((a,b) => (likeMap[b.id]||0) - (likeMap[a.id]||0));
+    }
 
     const myLikes = new Set(), myBookmarks = new Set();
     if (currentUser) {
@@ -3717,7 +3751,7 @@ async function loadFeed(append = false) {
       (mbRes.data || []).forEach(b => myBookmarks.add(b.catch_id));
     }
 
-    const html = catches.map(c => catchCard(c, likeMap[c.id] || 0, myLikes.has(c.id), cmtMap[c.id] || 0)).join('');
+    const html = displayCatches.map(c => catchCard(c, likeMap[c.id] || 0, myLikes.has(c.id), cmtMap[c.id] || 0)).join('');
     const fc = document.getElementById('feed-content');
     if (!append) {
       fc.innerHTML = html;
@@ -4552,40 +4586,94 @@ function clearAllData() {
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+let _cmtRealtimeSub = null;
+
 async function openComments(postId) {
   activePostId = postId;
   document.getElementById('cs-sheet').classList.add('open');
   document.getElementById('cs-backdrop').classList.add('open');
   setTimeout(() => document.getElementById('cs-input')?.focus(), 380);
 
+  // Update my avatar in footer
+  const myAv = document.getElementById('cs-my-av');
+  if (myAv) {
+    if (currentProfile?.avatar_url) {
+      myAv.style.backgroundImage = `url(${esc(currentProfile.avatar_url)})`;
+      myAv.style.backgroundSize = 'cover';
+      myAv.style.backgroundPosition = 'center';
+      myAv.textContent = '';
+    } else {
+      myAv.style.backgroundImage = '';
+      myAv.textContent = (currentProfile?.username || 'Me').slice(0,2).toUpperCase();
+    }
+  }
+
   const body = document.getElementById('cs-body');
   body.innerHTML = '<div class="cs-empty">Loading…</div>';
 
+  // Hide post preview initially
+  const preview = document.getElementById('cs-post-preview');
+  if (preview) preview.style.display = 'none';
+
   if (UUID_RE.test(postId) && sb) {
     try {
+      // Load catch info for preview header
+      const { data: catchData } = await sb.from('catches')
+        .select('id, species, weight_lbs, photo_url, user_id, profiles!catches_user_id_fkey(username, avatar_url)')
+        .eq('id', postId).single();
+      if (catchData && preview) {
+        const photoEl = document.getElementById('cs-post-photo');
+        const speciesEl = document.getElementById('cs-post-species');
+        const ownerEl = document.getElementById('cs-post-owner');
+        if (catchData.photo_url && photoEl) { photoEl.style.backgroundImage = `url(${esc(catchData.photo_url)})`; }
+        if (speciesEl) speciesEl.textContent = catchData.species || 'Unknown';
+        if (ownerEl) ownerEl.textContent = `@${catchData.profiles?.username || 'angler'}${catchData.weight_lbs ? ' · ' + parseFloat(catchData.weight_lbs).toFixed(1) + ' lbs' : ''}`;
+        preview.style.display = 'flex';
+      }
+
       const { data: cmts, error } = await sb.from('comments')
-        .select('*, profiles!comments_user_id_fkey(username)')
+        .select('*, profiles!comments_user_id_fkey(username, avatar_url)')
         .eq('catch_id', postId)
         .order('created_at', { ascending: true });
       if (error) throw error;
       renderDbComments(cmts || []);
+
+      // Subscribe to realtime comments
+      if (_cmtRealtimeSub) { sb.removeChannel(_cmtRealtimeSub); _cmtRealtimeSub = null; }
+      _cmtRealtimeSub = sb.channel(`comments:${postId}`)
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'comments', filter: `catch_id=eq.${postId}` }, async (payload) => {
+          if (payload.new && payload.new.user_id !== currentUser?.id) {
+            const { data: profile } = await sb.from('profiles').select('username, avatar_url').eq('id', payload.new.user_id).single();
+            const cmtWithProfile = { ...payload.new, profiles: profile };
+            const body = document.getElementById('cs-body');
+            const empty = body?.querySelector('.cs-empty');
+            if (empty) empty.remove();
+            body?.insertAdjacentHTML('beforeend', renderCommentItem(cmtWithProfile));
+            body?.scrollTo({ top: body.scrollHeight, behavior: 'smooth' });
+          }
+        })
+        .subscribe();
       return;
     } catch(e) { console.warn('openComments:', e); }
   }
-  // Fallback to static
-  const list = COMMENTS[postId] || [];
-  body.innerHTML = list.length
-    ? list.map(c => `<div class="cs-comment"><div class="cs-cav">${c.av}</div><div><div class="cs-comment-name">${c.name}</div><div class="cs-comment-text">${c.text}</div><div class="cs-comment-time">${c.time}</div></div></div>`).join('')
-    : '<div class="cs-empty">No comments yet. Be first.</div>';
+  // Fallback
+  body.innerHTML = '<div class="cs-empty">No comments yet. Be first.</div>';
+}
+
+function renderCommentItem(c) {
+  const u = c.profiles?.username || 'angler';
+  const avUrl = c.profiles?.avatar_url;
+  const avHtml = avUrl
+    ? `<div class="cs-cav" style="background:url(${esc(avUrl)}) center/cover no-repeat;font-size:0;"></div>`
+    : `<div class="cs-cav">${u.slice(0,2).toUpperCase()}</div>`;
+  return `<div class="cs-comment">${avHtml}<div style="flex:1;min-width:0;"><div class="cs-comment-name">${esc(u)}</div><div class="cs-comment-text">${esc(c.text)}</div><div class="cs-comment-time">${timeAgo(c.created_at)}</div></div></div>`;
 }
 
 function renderDbComments(cmts) {
   const body = document.getElementById('cs-body');
-  if (!cmts.length) { body.innerHTML = '<div class="cs-empty">No comments yet. Be first.</div>'; return; }
-  body.innerHTML = cmts.map(c => {
-    const u = c.profiles?.username || 'angler';
-    return `<div class="cs-comment"><div class="cs-cav">${u.slice(0,2).toUpperCase()}</div><div><div class="cs-comment-name">${esc(u)}</div><div class="cs-comment-text">${esc(c.text)}</div><div class="cs-comment-time">${timeAgo(c.created_at)}</div></div></div>`;
-  }).join('');
+  if (!cmts.length) { body.innerHTML = '<div class="cs-empty">No comments yet. Be the first! 💬</div>'; return; }
+  body.innerHTML = cmts.map(renderCommentItem).join('');
+  body.scrollTop = body.scrollHeight;
 }
 
 function closeComments() {
@@ -4593,6 +4681,7 @@ function closeComments() {
   document.getElementById('cs-backdrop').classList.remove('open');
   document.getElementById('cs-input').value = '';
   activePostId = null;
+  if (_cmtRealtimeSub && sb) { sb.removeChannel(_cmtRealtimeSub); _cmtRealtimeSub = null; }
 }
 
 async function sendComment() {
@@ -4606,20 +4695,17 @@ async function sendComment() {
     input.value = '';
     try {
       await sb.from('comments').insert({ user_id: currentUser.id, catch_id: activePostId, text });
-      const { data: cmts } = await sb.from('comments')
-        .select('*, profiles!comments_user_id_fkey(username)')
-        .eq('catch_id', activePostId)
-        .order('created_at', { ascending: true });
-      renderDbComments(cmts || []);
+      // Optimistically append own comment
+      const body = document.getElementById('cs-body');
+      const empty = body?.querySelector('.cs-empty');
+      if (empty) empty.remove();
+      const myComment = { user_id: currentUser.id, catch_id: activePostId, text, created_at: new Date().toISOString(), profiles: { username: currentProfile?.username || 'you', avatar_url: currentProfile?.avatar_url } };
+      body?.insertAdjacentHTML('beforeend', renderCommentItem(myComment));
+      body?.scrollTo({ top: body.scrollHeight, behavior: 'smooth' });
       // Bump comment count in feed card
-      const likeBtn = document.getElementById(`like-db-${activePostId}`);
-      if (likeBtn) {
-        const cmtSpan = likeBtn.closest('.card')?.querySelectorAll('.act-btn')[1]?.querySelector('span');
-        if (cmtSpan) cmtSpan.textContent = parseInt(cmtSpan.textContent || 0) + 1;
-      }
+      const cmtSpanEl = document.querySelector(`.cmt-count-${activePostId}`);
+      if (cmtSpanEl) cmtSpanEl.textContent = parseInt(cmtSpanEl.textContent || 0) + 1;
       // Notify post owner
-      const card = document.querySelector(`[data-owner]#card-${activePostId}`) ||
-                   document.querySelector(`.card[data-owner]`);
       const cardEl = document.getElementById(`like-db-${activePostId}`)?.closest('[data-owner]');
       const ownerId = cardEl?.dataset.owner;
       if (ownerId && ownerId !== currentUser.id) {
