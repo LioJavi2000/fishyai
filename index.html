@@ -1011,6 +1011,20 @@ body {
 .explore-follow-btn{margin-left:auto;flex-shrink:0;border:1.5px solid var(--navy);background:var(--navy);color:#fff;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:background 0.15s,color 0.15s;}
 .explore-follow-btn.following{background:#fff;color:var(--navy);}
 .explore-placeholder{padding:32px 16px;text-align:center;color:var(--gray);font-size:13px;grid-column:1/-1;}
+/* ── CATCH OF THE DAY ── */
+.cotd-banner{display:flex;align-items:center;gap:12px;margin:8px 12px;background:linear-gradient(135deg,rgba(27,46,75,0.95),rgba(14,165,233,0.9));border-radius:16px;padding:12px;cursor:pointer;overflow:hidden;position:relative;}
+.cotd-photo{width:48px;height:48px;border-radius:10px;flex-shrink:0;background:#0ea5e9;}
+.cotd-content{flex:1;min-width:0;}
+.cotd-label{font-size:10px;font-weight:700;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;}
+.cotd-title{font-size:15px;font-weight:800;color:#fff;letter-spacing:-0.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cotd-sub{font-size:11px;color:rgba(255,255,255,0.75);margin-top:1px;}
+.cotd-arrow{font-size:22px;color:rgba(255,255,255,0.5);font-weight:300;flex-shrink:0;}
+/* ── CATCH THUMB BADGES ── */
+.catch-pb-badge{position:absolute;top:6px;left:6px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;font-size:9px;font-weight:900;padding:2px 5px;border-radius:6px;letter-spacing:0.3px;}
+.catch-weight-badge{position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:8px;}
+.catch-thumb{position:relative;}
+/* ── PROF HERO SUB ── */
+.prof-hero-sub-v2{font-size:11px;color:var(--gray);font-weight:500;margin-top:2px;letter-spacing:-0.1px;}
 /* ── PROFILE 4-STAT ROW ── */
 .prof-stat-row-4{grid-template-columns:repeat(4,1fr)!important;}
 .prof-stat-row-4 .prof-stat-num-v2{font-size:15px;}
@@ -1238,6 +1252,8 @@ body {
             <button class="fce-share-btn" id="fce-share-btn" onclick="shareFeedPost()" disabled>Post</button>
           </div>
         </div>
+        <!-- Catch of the Day -->
+        <div id="cotd-banner" style="display:none;"></div>
         <!-- Feed filter tabs -->
         <div class="feed-filter-tabs" id="feed-filter-tabs">
           <button class="feed-ftab active" id="fft-foryou" onclick="setFeedFilter('foryou')">For You</button>
@@ -1664,6 +1680,7 @@ body {
           <div class="prof-hero-v2">
             <div class="prof-hero-num-v2" id="prof-catches">0</div>
             <div class="prof-hero-lbl-v2">Total Catches</div>
+            <div class="prof-hero-sub-v2" id="prof-total-weight"></div>
           </div>
 
           <div class="prof-divider"></div>
@@ -2142,7 +2159,10 @@ async function init() {
       showScreen('feed');
       loadFeed();
       loadStoriesRow();
-      loadLeaderboard();
+      loadCatchOfTheDay();
+      // Deep link: ?catch=uuid opens that catch's comments
+      const urlCatch = new URLSearchParams(location.search).get('catch');
+      if (urlCatch && UUID_RE.test(urlCatch)) setTimeout(() => openComments(urlCatch), 600);
     }
     sb.auth.onAuthStateChange(async (event, session) => {
       const prevUser = currentUser;
@@ -2503,11 +2523,12 @@ async function loadProfileScreen() {
     const best      = weights.length ? Math.max(...weights) : 0;
     const totalLbs  = weights.reduce((a, b) => a + b, 0);
 
-    setEl('prof-catches',   catchList.length || 0);
-    setEl('prof-species',   species || 0);
-    setEl('prof-best',      best > 0 ? `${best} lb` : '—');
-    setEl('prof-followers', follRes.count ?? 0);
-    setEl('prof-following', followingRes.count ?? 0);
+    setEl('prof-catches',      catchList.length || 0);
+    setEl('prof-species',      species || 0);
+    setEl('prof-best',         best > 0 ? `${best} lb` : '—');
+    setEl('prof-followers',    follRes.count ?? 0);
+    setEl('prof-following',    followingRes.count ?? 0);
+    setEl('prof-total-weight', totalLbs > 0 ? `${totalLbs.toFixed(1)} lbs total` : '');
 
     // Follow button
     const followBtn = document.getElementById('follow-btn');
@@ -2534,15 +2555,29 @@ async function loadProfileScreen() {
     // Reset tabs to catches view
     switchProfileTab('catches');
 
-    // Catch grid (fish only)
+    // Catch grid (fish only) — show all, with PB badge for best catch
     const grid = document.getElementById('catch-grid');
     const emptyEl = document.getElementById('catch-grid-empty');
     if (grid) {
       if (catchList.length > 0) {
         const fishSvg = `<svg width="36" height="20" viewBox="0 0 100 55" fill="rgba(255,255,255,0.5)"><path d="M8 28Q28 6 64 19Q77 10 96 28Q77 46 64 37Q28 50 8 28Z"/><circle cx="76" cy="22" r="3.5" fill="rgba(255,255,255,0.8)"/></svg>`;
-        const thumbs = catchList.slice(0, 9).map(c => {
+        // Track per-species personal bests
+        const speciesBest = {};
+        catchList.forEach(c => {
+          const w = parseFloat(c.weight_lbs) || 0;
+          if (!speciesBest[c.species] || w > speciesBest[c.species]) speciesBest[c.species] = w;
+        });
+        const thumbs = catchList.map(c => {
           const bg = c.photo_url ? `background:url(${esc(c.photo_url)}) center/cover no-repeat;` : 'background:#d4e6f5;';
-          return `<div class="catch-thumb" style="${bg}" onclick="openStoryViewer('${c.id}')">${c.photo_url ? '' : fishSvg}<div class="catch-label">${esc(c.species)}</div></div>`;
+          const w = parseFloat(c.weight_lbs) || 0;
+          const isPB = w > 0 && w === speciesBest[c.species] && Object.values(speciesBest).filter(v => v === w).length <= catchList.filter(x => x.species === c.species && parseFloat(x.weight_lbs) === w).length;
+          const pbBadge = (w > 0 && w >= speciesBest[c.species]) ? `<div class="catch-pb-badge">PB</div>` : '';
+          const wLabel = w > 0 ? `<div class="catch-weight-badge">${w} lb</div>` : '';
+          return `<div class="catch-thumb" style="${bg}" onclick="openComments('${c.id}')">
+            ${c.photo_url ? '' : fishSvg}
+            ${pbBadge}${wLabel}
+            <div class="catch-label">${esc(c.species)}</div>
+          </div>`;
         }).join('');
         grid.innerHTML = thumbs;
         if (emptyEl) emptyEl.style.display = 'none';
@@ -3694,14 +3729,63 @@ async function loadFeed(append = false) {
 
     if (!feedAllLoaded) {
       fc.insertAdjacentHTML('beforeend',
-        `<div id="feed-load-more" style="text-align:center;padding:16px;color:var(--gray);font-size:13px;cursor:pointer;letter-spacing:-0.2px;" onclick="loadFeed(true)">Load more</div>`);
+        `<div id="feed-load-more" style="text-align:center;padding:20px;color:var(--gray);font-size:13px;letter-spacing:-0.2px;opacity:0.6;">· · ·</div>`);
+    } else if (feedPage > 1) {
+      fc.insertAdjacentHTML('beforeend',
+        `<div style="text-align:center;padding:20px 16px 32px;color:var(--gray);font-size:12px;letter-spacing:-0.2px;">You've seen all the catches 🎣</div>`);
     }
     feedPage++;
   } catch(e) {
     console.error('loadFeed:', e);
   } finally {
     feedLoading = false;
+    attachFeedScroll();
   }
+}
+
+function attachFeedScroll() {
+  const wrap = document.querySelector('#screen-feed .feed-wrap');
+  if (!wrap || wrap._scrollAttached) return;
+  wrap._scrollAttached = true;
+  wrap.addEventListener('scroll', () => {
+    if (wrap.scrollTop + wrap.clientHeight >= wrap.scrollHeight - 300 && !feedLoading && !feedAllLoaded) {
+      loadFeed(true);
+    }
+  }, { passive: true });
+}
+
+// ── CATCH OF THE DAY ──
+async function loadCatchOfTheDay() {
+  const banner = document.getElementById('cotd-banner');
+  if (!banner || !sb) return;
+  try {
+    const since = new Date(Date.now() - 24 * 3600000).toISOString();
+    const { data: top } = await sb.from('catches')
+      .select('id, species, weight_lbs, photo_url, user_id, profiles!catches_user_id_fkey(username)')
+      .eq('is_public', true).eq('post_type', 'catch')
+      .gte('created_at', since)
+      .not('photo_url', 'is', null)
+      .order('created_at', { ascending: false })
+      .limit(20);
+    if (!top?.length) return;
+    const ids = top.map(c => c.id);
+    const { data: likes } = await sb.from('likes').select('catch_id').in('catch_id', ids);
+    const likeMap = {};
+    (likes || []).forEach(l => { likeMap[l.catch_id] = (likeMap[l.catch_id]||0)+1; });
+    const winner = [...top].sort((a,b) => (likeMap[b.id]||0)-(likeMap[a.id]||0))[0];
+    if (!winner || (likeMap[winner.id]||0) === 0) return;
+    const u = winner.profiles?.username || 'angler';
+    banner.style.display = '';
+    banner.innerHTML = `<div class="cotd-banner" onclick="openComments('${winner.id}')">
+      <div class="cotd-photo" style="background:url(${esc(winner.photo_url)}) center/cover no-repeat;"></div>
+      <div class="cotd-content">
+        <div class="cotd-label">🏆 Catch of the Day</div>
+        <div class="cotd-title">${esc(winner.species||'Unknown Fish')}</div>
+        <div class="cotd-sub">@${esc(u)}${winner.weight_lbs ? ' · ' + parseFloat(winner.weight_lbs).toFixed(1) + ' lbs' : ''} · ❤️ ${likeMap[winner.id]}</div>
+      </div>
+      <div class="cotd-arrow">›</div>
+    </div>`;
+  } catch(e) { console.warn('loadCatchOfTheDay:', e.message); }
 }
 
 // ── STORIES ROW ──
@@ -3816,18 +3900,21 @@ const PIN_SVG  = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" st
 const PH_SVG   = `<svg class="ph-fish" viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg"><path d="M5 25 Q25 5 62 18 Q74 10 95 25 Q74 40 62 32 Q25 45 5 25Z" fill="white"/><circle cx="74" cy="22" r="2.5" fill="white"/></svg>`;
 
 function catchCard(c, likes, liked, cmtCount = 0) {
-  const u   = c.profiles?.username || 'angler';
-  const av  = u.slice(0, 2).toUpperCase();
+  const u    = c.profiles?.username || 'angler';
+  const avUrl = c.profiles?.avatar_url;
+  const avHtml = avUrl
+    ? `<div class="av" style="background:url(${esc(avUrl)}) center/cover no-repeat;font-size:0;flex-shrink:0;"></div>`
+    : `<div class="av" style="flex-shrink:0;">${u.slice(0,2).toUpperCase()}</div>`;
   const isMe = currentUser && c.user_id === currentUser.id;
   const nameHtml = isMe
     ? `${esc(u)} <span style="font-size:10px;color:var(--navy);background:rgba(27,46,75,0.1);padding:2px 6px;border-radius:8px;font-weight:600;">You</span>`
     : esc(u);
 
   const stats = [
-    (c.show_weight !== false && c.weight_lbs) ? `<b>${c.weight_lbs} lbs</b>` : '',
+    (c.show_weight !== false && c.weight_lbs) ? `<b>${parseFloat(c.weight_lbs).toFixed(1)} lbs</b>` : '',
     (c.show_length !== false && c.length_in)  ? `${c.length_in} in` : '',
     (c.show_lure   !== false && c.lure_used)  ? esc(c.lure_used) : '',
-    (c.show_kept   !== false && c.kept === false) ? 'Released' : '',
+    (c.show_kept   !== false && c.kept === false) ? 'C&R' : '',
   ].filter(Boolean).join(' · ');
 
   const spotHtml = (c.show_spot !== false && c.spot_name)
@@ -3836,25 +3923,33 @@ function catchCard(c, likes, liked, cmtCount = 0) {
   const dtHeart = `<div class="double-tap-heart" id="dth-${c.id}"><svg width="80" height="80" viewBox="0 0 24 24" fill="#ff375f" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>`;
 
   const photo = c.photo_url
-    ? `<div class="post-photo" ondblclick="doubleTapLike('${c.id}')"  ontouchend="handlePhotoTouch(event,'${c.id}')"><img src="${esc(c.photo_url)}" alt="${esc(c.species)}" loading="lazy">${dtHeart}<div class="post-fish-over"><span class="fish-tag">${esc(c.species)}</span></div></div>`
-    : `<div class="post-photo ph-ocean" ondblclick="doubleTapLike('${c.id}')" ontouchend="handlePhotoTouch(event,'${c.id}')">${PH_SVG}${dtHeart}<div class="post-fish-over"><span class="fish-tag">${esc(c.species)}</span></div></div>`;
+    ? `<div class="post-photo" ondblclick="doubleTapLike('${c.id}')" ontouchend="handlePhotoTouch(event,'${c.id}')"><img src="${esc(c.photo_url)}" alt="${esc(c.species||'')}" loading="lazy">${dtHeart}<div class="post-fish-over"><span class="fish-tag">${esc(c.species||'')}</span></div></div>`
+    : `<div class="post-photo ph-ocean" ondblclick="doubleTapLike('${c.id}')" ontouchend="handlePhotoTouch(event,'${c.id}')">${PH_SVG}${dtHeart}<div class="post-fish-over"><span class="fish-tag">${esc(c.species||'')}</span></div></div>`;
 
   const captionHtml = c.caption
     ? `<div style="padding:10px 14px 4px;font-size:14px;color:#111;letter-spacing:-0.2px;line-height:1.5;">${esc(c.caption)}</div>`
     : '';
 
-  return `<div class="card" data-owner="${c.user_id}" data-species="${esc(c.species||'')}" style="margin-top:8px;animation:card-rise 0.4s var(--ease) both;">
+  const menuBtn = `<button class="act-btn card-menu-btn" onclick="event.stopPropagation();openCardMenu('${c.id}','${c.user_id}',event)" title="More" style="margin-left:auto;padding:8px 6px;">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="#999"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
+  </button>`;
+
+  return `<div class="card" data-id="${c.id}" data-owner="${c.user_id}" data-species="${esc(c.species||'')}" style="margin-top:8px;animation:card-rise 0.4s var(--ease) both;">
     <div class="post-hd" style="cursor:pointer;" onclick="openUserProfile('${c.user_id}')">
-      <div class="av">${av}</div>
-      <div style="flex:1"><div class="post-name">${nameHtml}</div>${spotHtml}</div>
-      <span class="post-time">${timeAgo(c.created_at)}</span>
+      ${avHtml}
+      <div style="flex:1;min-width:0;"><div class="post-name">${nameHtml}</div>${spotHtml}</div>
+      <span class="post-time" style="flex-shrink:0;">${timeAgo(c.created_at)}</span>
     </div>
     ${captionHtml}
     ${photo}
     <div class="post-actions">
       <button class="act-btn${liked?' liked':''}" id="like-db-${c.id}" onclick="event.stopPropagation();toggleLikeDb('${c.id}')">${HEART_SVG}<span class="like-count">${likes}</span></button>
-      <button class="act-btn" onclick="event.stopPropagation();openComments('${c.id}')">${CMT_SVG}<span>${cmtCount}</span></button>
-      <button class="act-btn" id="bm-${c.id}" style="margin-left:auto;" onclick="event.stopPropagation();toggleBookmarkDb('${c.id}',this)">${BM_SVG}</button>
+      <button class="act-btn" onclick="event.stopPropagation();openComments('${c.id}')">${CMT_SVG}<span class="cmt-count-${c.id}">${cmtCount}</span></button>
+      <button class="act-btn" onclick="event.stopPropagation();shareCard('${c.id}','${esc(u)}','${esc(c.species||'')}')" title="Share">
+        <svg class="share-svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </button>
+      <button class="act-btn" id="bm-${c.id}" onclick="event.stopPropagation();toggleBookmarkDb('${c.id}',this)">${BM_SVG}</button>
+      ${menuBtn}
     </div>
     <div class="post-likes">${likes} like${likes !== 1 ? 's' : ''}</div>
     ${stats ? `<div class="post-stats">${stats}</div>` : ''}
@@ -3896,6 +3991,71 @@ async function toggleBookmarkDb(catchId, btn) {
     else            await sb.from('bookmarks').delete().eq('user_id', currentUser.id).eq('catch_id', catchId);
   } catch { btn.classList.toggle('bookmarked'); }
 }
+
+// ── SHARE CARD ──
+async function shareCard(catchId, username, species) {
+  const text = `Check out this ${species || 'catch'} by @${username} on Fishy AI! 🎣`;
+  const url = window.location.href.split('?')[0] + `?catch=${catchId}`;
+  try {
+    if (navigator.share) {
+      await navigator.share({ title: `Fishy AI · ${species}`, text, url });
+    } else {
+      await navigator.clipboard.writeText(`${text}\n${url}`);
+      showToast('Link copied to clipboard!');
+    }
+  } catch { showToast('Could not share'); }
+}
+
+// ── CARD 3-DOT MENU ──
+let _cardMenuOpen = null;
+function openCardMenu(catchId, ownerId, e) {
+  e.stopPropagation();
+  closeCardMenu();
+  const isOwn = currentUser && ownerId === currentUser.id;
+  const items = isOwn
+    ? [
+        { label: 'Delete Post', icon: '🗑', action: `deleteOwnCatch('${catchId}')`, danger: true },
+        { label: 'Share', icon: '📤', action: `shareCard('${catchId}','','')` },
+      ]
+    : [
+        { label: 'Report Post', icon: '⚠️', action: `reportPost('${catchId}')`, danger: true },
+        { label: 'Share', icon: '📤', action: `shareCard('${catchId}','','')` },
+        { label: 'Copy Link', icon: '🔗', action: `copyLink('${catchId}')` },
+      ];
+  const menu = document.createElement('div');
+  menu.id = 'card-menu-popup';
+  menu.style.cssText = `position:fixed;z-index:999;background:#fff;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,0.18),0 2px 8px rgba(0,0,0,0.08);overflow:hidden;min-width:160px;`;
+  menu.innerHTML = items.map(it =>
+    `<div onclick="${it.action};closeCardMenu()" style="padding:14px 18px;font-size:14px;font-weight:600;color:${it.danger?'#ff375f':'#111'};cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:0.5px solid rgba(0,0,0,0.06);">${it.icon} ${it.label}</div>`
+  ).join('');
+  const btn = e.currentTarget || e.target.closest('button');
+  const rect = btn?.getBoundingClientRect() || { right: window.innerWidth - 16, bottom: 100 };
+  menu.style.right = `${window.innerWidth - rect.right}px`;
+  menu.style.top = `${rect.bottom + 6}px`;
+  document.body.appendChild(menu);
+  _cardMenuOpen = menu;
+  setTimeout(() => document.addEventListener('click', closeCardMenu, { once: true }), 0);
+}
+function closeCardMenu() {
+  if (_cardMenuOpen) { _cardMenuOpen.remove(); _cardMenuOpen = null; }
+}
+function copyLink(catchId) {
+  const url = window.location.href.split('?')[0] + `?catch=${catchId}`;
+  navigator.clipboard.writeText(url).then(() => showToast('Link copied!')).catch(() => showToast('Could not copy'));
+}
+async function deleteOwnCatch(catchId) {
+  if (!confirm('Delete this post permanently?')) return;
+  if (!sb || !currentUser) return;
+  try {
+    await sb.from('catches').delete().eq('id', catchId).eq('user_id', currentUser.id);
+    document.querySelector(`.card[data-id="${catchId}"]`)?.remove();
+    showToast('Post deleted');
+  } catch { showToast('Could not delete post'); }
+}
+async function reportPost(catchId) {
+  showToast('Post reported — we\'ll review it shortly.');
+}
+
 
 // ══════════════════════════════════════════
 //  DOUBLE-TAP TO LIKE
