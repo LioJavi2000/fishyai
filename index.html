@@ -1011,6 +1011,11 @@ body {
 .explore-follow-btn{margin-left:auto;flex-shrink:0;border:1.5px solid var(--navy);background:var(--navy);color:#fff;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:background 0.15s,color 0.15s;}
 .explore-follow-btn.following{background:#fff;color:var(--navy);}
 .explore-placeholder{padding:32px 16px;text-align:center;color:var(--gray);font-size:13px;grid-column:1/-1;}
+/* ── STORY VIEWER UPGRADES ── */
+.sv-react-btn{background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.25);border-radius:50%;width:40px;height:40px;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(8px);transition:transform 0.15s,background 0.15s;-webkit-tap-highlight-color:transparent;}
+.sv-react-btn:active,.sv-react-btn.reacted{transform:scale(1.25);background:rgba(255,255,255,0.35);}
+.sv-progress-seg{flex:1;height:2.5px;background:rgba(255,255,255,0.35);border-radius:2px;overflow:hidden;}
+.sv-progress-fill{height:100%;background:#fff;width:0%;transition:width 0.1s linear;}
 /* ── CATCH OF THE DAY ── */
 .cotd-banner{display:flex;align-items:center;gap:12px;margin:8px 12px;background:linear-gradient(135deg,rgba(27,46,75,0.95),rgba(14,165,233,0.9));border-radius:16px;padding:12px;cursor:pointer;overflow:hidden;position:relative;}
 .cotd-photo{width:48px;height:48px;border-radius:10px;flex-shrink:0;background:#0ea5e9;}
@@ -1078,6 +1083,79 @@ body {
 .ep-input:focus{background:#ebebef;}
 .ep-save-btn{display:block;width:100%;margin-top:8px;padding:14px;background:var(--navy);color:#fff;font-size:15px;font-weight:700;border-radius:16px;border:none;cursor:pointer;font-family:inherit;letter-spacing:-0.3px;box-shadow:0 4px 16px rgba(27,46,75,0.28);transition:transform 0.15s;}
 .ep-save-btn:active{transform:scale(0.98);}
+/* ── DIRECT MESSAGES ── */
+.dm-hd{display:flex;align-items:center;gap:10px;padding:14px 16px 10px;border-bottom:0.5px solid rgba(0,0,0,0.08);}
+.dm-hd-title{font-size:17px;font-weight:800;color:#111;letter-spacing:-0.5px;flex:1;}
+.dm-compose-btn{width:32px;height:32px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.dm-list-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:0.5px solid rgba(0,0,0,0.06);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background 0.12s;}
+.dm-list-item:active{background:#f7f8fa;}
+.dm-list-name{font-size:14px;font-weight:700;color:#111;letter-spacing:-0.3px;}
+.dm-list-preview{font-size:12px;color:var(--gray);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px;}
+.dm-list-time{font-size:10px;color:var(--gray);margin-left:auto;flex-shrink:0;align-self:flex-start;margin-top:2px;}
+.dm-unread-badge{width:8px;height:8px;border-radius:50%;background:var(--action-blue);flex-shrink:0;margin-left:4px;}
+.dm-thread-wrap{display:flex;flex-direction:column;height:100%;background:#fff;}
+.dm-thread-hd{padding:10px 16px 10px;border-bottom:0.5px solid rgba(0,0,0,0.08);display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.dm-thread-hd-name{font-size:15px;font-weight:700;color:#111;letter-spacing:-0.3px;}
+.dm-thread-hd-sub{font-size:11px;color:var(--gray);}
+.dm-thread-body{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:6px;}
+.dm-thread-input-row{padding:8px 14px calc(env(safe-area-inset-bottom,0px)+8px);border-top:0.5px solid rgba(0,0,0,0.08);display:flex;gap:8px;align-items:flex-end;flex-shrink:0;background:#fff;}
+.dm-msg-wrap{display:flex;flex-direction:column;}
+.dm-msg-wrap.mine{align-items:flex-end;}
+.dm-msg-wrap.theirs{align-items:flex-start;}
+.dm-msg{max-width:72%;padding:9px 14px;border-radius:18px;font-size:14px;line-height:1.45;letter-spacing:-0.1px;word-break:break-word;}
+.dm-msg.mine{background:var(--navy);color:#fff;border-bottom-right-radius:5px;}
+.dm-msg.theirs{background:#f0f2f5;color:#111;border-bottom-left-radius:5px;}
+.dm-msg-time{font-size:10px;color:var(--gray);margin-top:2px;padding:0 4px;}
+.dm-date-sep{text-align:center;font-size:11px;color:var(--gray);font-weight:600;padding:8px 0;}
+.dm-thread-input{flex:1;border:1.5px solid rgba(0,0,0,0.1);border-radius:22px;padding:9px 14px;font-size:14px;font-family:inherit;outline:none;resize:none;max-height:80px;line-height:1.4;background:#f7f8fa;transition:border-color 0.15s;}
+.dm-thread-input:focus{border-color:var(--navy);background:#fff;}
+.dm-send-btn{width:36px;height:36px;border-radius:50%;background:var(--navy);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;opacity:0.4;transition:opacity 0.15s,transform 0.15s;}
+.dm-send-btn.ready{opacity:1;}
+.dm-send-btn:active{transform:scale(0.9);}
+.dm-empty{text-align:center;padding:40px 20px;color:var(--gray);font-size:13px;line-height:1.6;}
+/* ── WEATHER WIDGET ── */
+.weather-widget{margin:0 16px 10px;padding:12px 14px;background:linear-gradient(135deg,#1B2E4B 0%,#0a7acc 100%);border-radius:18px;display:flex;align-items:center;gap:12px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.weather-icon{font-size:30px;flex-shrink:0;}
+.weather-info{flex:1;}
+.weather-temp{font-size:20px;font-weight:800;letter-spacing:-0.5px;color:#fff;}
+.weather-cond{font-size:11px;color:rgba(255,255,255,0.75);margin-top:1px;}
+.weather-rating{font-size:11px;font-weight:700;background:rgba(255,255,255,0.18);border-radius:10px;padding:4px 10px;color:#fff;text-align:center;flex-shrink:0;}
+.weather-cond-row{display:flex;gap:6px;margin:0 16px 10px;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none;}
+.weather-cond-row::-webkit-scrollbar{display:none;}
+.cond-pill{flex-shrink:0;background:#fff;border-radius:12px;padding:8px 10px;display:flex;flex-direction:column;align-items:center;min-width:60px;box-shadow:0 1px 8px rgba(0,0,0,0.06);}
+.cond-pill-ico{font-size:16px;margin-bottom:2px;}
+.cond-pill-val{font-size:11px;font-weight:700;color:#111;}
+.cond-pill-lbl{font-size:9px;color:var(--gray);font-weight:600;}
+/* ── FISHING TIP ── */
+.tip-card{padding:12px 14px;background:rgba(14,165,233,0.07);border-radius:16px;border:1.5px solid rgba(14,165,233,0.16);margin-bottom:12px;}
+.tip-card-hd{font-size:10px;font-weight:800;color:#0ea5e9;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px;display:flex;align-items:center;gap:5px;}
+.tip-card-body{font-size:13px;color:#333;line-height:1.5;letter-spacing:-0.1px;}
+/* ── CATCH EDIT ── */
+.edit-catch-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:3000;opacity:0;pointer-events:none;transition:opacity 0.25s;}
+.edit-catch-backdrop.open{opacity:1;pointer-events:all;}
+.edit-catch-sheet{position:fixed;left:0;right:0;bottom:0;z-index:3001;background:#fff;border-radius:26px 26px 0 0;padding:0 0 calc(env(safe-area-inset-bottom,0px)+16px);transform:translateY(100%);transition:transform 0.38s cubic-bezier(0.32,0.72,0,1);max-height:85vh;overflow-y:auto;}
+.edit-catch-sheet.open{transform:translateY(0);}
+.edit-catch-hd{padding:16px 20px 0;display:flex;align-items:center;justify-content:space-between;}
+.edit-catch-title{font-size:17px;font-weight:800;color:#111;letter-spacing:-0.5px;}
+/* ── STREAK BANNER ── */
+.streak-banner{margin:8px 16px 4px;padding:10px 14px;background:linear-gradient(135deg,#ff6b35,#f7c59f);border-radius:14px;display:flex;align-items:center;gap:10px;}
+.streak-fire{font-size:20px;flex-shrink:0;}
+.streak-txt{font-size:13px;font-weight:700;color:#fff;letter-spacing:-0.2px;}
+.streak-sub{font-size:11px;color:rgba(255,255,255,0.8);}
+/* ── DM NAV ICON ── */
+.feed-dm-btn{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;-webkit-tap-highlight-color:transparent;}
+.feed-dm-unread{position:absolute;top:1px;right:1px;background:#ff375f;border-radius:50%;width:9px;height:9px;border:1.5px solid #fff;display:none;}
+/* ── SPECIES DETAIL PANEL ── */
+.species-detail-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:3000;opacity:0;pointer-events:none;transition:opacity 0.25s;}
+.species-detail-backdrop.open{opacity:1;pointer-events:all;}
+.species-detail-sheet{position:fixed;left:0;right:0;bottom:0;z-index:3001;background:#fff;border-radius:26px 26px 0 0;padding:0 0 calc(env(safe-area-inset-bottom,0px)+20px);transform:translateY(100%);transition:transform 0.38s cubic-bezier(0.32,0.72,0,1);max-height:85vh;overflow-y:auto;}
+.species-detail-sheet.open{transform:translateY(0);}
+.species-detail-hero{height:140px;background:#1B2E4B;position:relative;overflow:hidden;border-radius:26px 26px 0 0;}
+.species-detail-emoji{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:64px;}
+.species-detail-body{padding:16px 20px;}
+/* ── PROFILE DM BUTTON ── */
+.dm-profile-btn{border:1.5px solid rgba(27,46,75,0.2);background:#fff;color:var(--navy);border-radius:20px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:-0.2px;display:flex;align-items:center;gap:5px;}
+.dm-profile-btn:active{background:var(--surface);}
 </style>
 </head>
 <body>
@@ -1207,6 +1285,10 @@ body {
         <div class="feed-hd">
           <span class="feed-title">Feed</span>
           <div style="display:flex;align-items:center;gap:4px;">
+            <div class="feed-dm-btn" onclick="showScreen('messages')">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              <div class="feed-dm-unread" id="feed-dm-unread"></div>
+            </div>
             <div class="notif-bell-wrap" id="notif-bell-btn" onclick="showScreen('notifications')">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
               <div class="notif-badge" id="notif-badge" style="display:none;">0</div>
@@ -1726,8 +1808,14 @@ body {
           </div>
 
           <!-- Follow / own-profile action -->
-          <button class="follow-btn follow-btn-v2" id="follow-btn" onclick="toggleFollow()">+ Follow</button>
-          <button class="edit-profile-shortcut" id="edit-profile-shortcut" onclick="openEditProfile()" style="display:none;">Edit Profile</button>
+          <div style="display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;">
+            <button class="follow-btn follow-btn-v2" id="follow-btn" onclick="toggleFollow()">+ Follow</button>
+            <button class="edit-profile-shortcut" id="edit-profile-shortcut" onclick="openEditProfile()" style="display:none;">Edit Profile</button>
+            <button class="dm-profile-btn" id="profile-dm-btn" style="display:none;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Message
+            </button>
+          </div>
 
           <!-- Badges -->
           <div class="sec-hd-v2">Badges</div>
@@ -1792,22 +1880,37 @@ body {
     <!-- ══════ STORY VIEWER ══════ -->
     <div class="screen" id="screen-story-viewer">
       <div style="background:#000;height:100%;position:relative;overflow:hidden;">
-        <div id="sv-bg" style="position:absolute;inset:0;background:#1B2E4B;background-size:cover;background-position:center;background-repeat:no-repeat;transition:background-image 0.2s;"></div>
-        <div style="position:absolute;inset:0;background:rgba(0,0,0,0.45);z-index:1;"></div>
-        <div style="position:absolute;top:0;left:0;right:0;z-index:10;padding:14px 16px;display:flex;align-items:center;gap:12px;">
-          <div class="av" id="sv-av" style="border:2.5px solid rgba(255,255,255,0.8);background:rgba(255,255,255,0.15);color:#fff;flex-shrink:0;font-size:13px;font-weight:700;"></div>
+        <div id="sv-bg" style="position:absolute;inset:0;background:#1B2E4B;background-size:cover;background-position:center;background-repeat:no-repeat;transition:background-image 0.3s;"></div>
+        <div style="position:absolute;inset:0;background:rgba(0,0,0,0.4);z-index:1;"></div>
+        <!-- Story progress bar -->
+        <div id="sv-progress-wrap" style="position:absolute;top:8px;left:12px;right:12px;z-index:15;display:flex;gap:4px;"></div>
+        <!-- Header -->
+        <div style="position:absolute;top:20px;left:0;right:0;z-index:10;padding:10px 16px;display:flex;align-items:center;gap:12px;">
+          <div class="av" id="sv-av" style="border:2.5px solid rgba(255,255,255,0.8);background:rgba(255,255,255,0.15);color:#fff;flex-shrink:0;font-size:13px;font-weight:700;background-size:cover;background-position:center;"></div>
           <div style="flex:1;">
             <div style="font-size:14px;font-weight:700;color:#fff;letter-spacing:-0.3px;" id="sv-username"></div>
-            <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:1px;" id="sv-time"></div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:1px;display:flex;align-items:center;gap:6px;"><span id="sv-time"></span><span id="sv-views" style="display:none;">· 👁 <span id="sv-view-count">0</span></span></div>
           </div>
-          <div onclick="goBack()" style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(8px);">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+          <button onclick="svTogglePause()" id="sv-pause-btn" style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(8px);border:none;color:#fff;font-size:14px;">⏸</button>
+          <div onclick="goBack()" style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(8px);">✕</div>
+        </div>
+        <!-- Story content -->
+        <div style="position:absolute;bottom:0;left:0;right:0;z-index:10;padding:16px 16px 28px;">
+          <div id="sv-species" style="display:inline-block;background:rgba(0,0,0,0.55);backdrop-filter:blur(12px);color:#fff;font-size:14px;font-weight:700;padding:8px 16px;border-radius:22px;letter-spacing:-0.3px;margin-bottom:8px;"></div>
+          <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;" id="sv-details"></div>
+          <!-- Reactions row -->
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+            <button class="sv-react-btn" onclick="svReact('🔥','this.dataset.catchId')" data-emoji="🔥" id="sv-react-fire">🔥</button>
+            <button class="sv-react-btn" onclick="svReact('🐟','this.dataset.catchId')" data-emoji="🐟" id="sv-react-fish">🐟</button>
+            <button class="sv-react-btn" onclick="svReact('😮','this.dataset.catchId')" data-emoji="😮" id="sv-react-wow">😮</button>
+            <button class="sv-react-btn" onclick="svReact('🏆','this.dataset.catchId')" data-emoji="🏆" id="sv-react-trophy">🏆</button>
+            <div style="flex:1;"></div>
+            <button onclick="openComments(svCurrentCatchId)" style="background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.3);border-radius:20px;padding:7px 14px;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;backdrop-filter:blur(8px);">💬 Comment</button>
           </div>
         </div>
-        <div style="position:absolute;bottom:0;left:0;right:0;z-index:10;padding:24px 18px 36px;">
-          <div id="sv-species" style="display:inline-block;background:rgba(0,0,0,0.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#fff;font-size:14px;font-weight:700;padding:8px 16px;border-radius:22px;letter-spacing:-0.3px;margin-bottom:10px;"></div>
-          <div style="display:flex;gap:7px;flex-wrap:wrap;" id="sv-details"></div>
-        </div>
+        <!-- Tap zones for prev/next -->
+        <div style="position:absolute;top:0;left:0;bottom:0;width:40%;z-index:8;" onclick="svNavigate(-1)"></div>
+        <div style="position:absolute;top:0;right:0;bottom:0;width:40%;z-index:8;" onclick="svNavigate(1)"></div>
       </div>
     </div>
 
@@ -1871,6 +1974,10 @@ body {
         <div id="explore-search-results" style="display:none;padding:0 0 16px;"></div>
         <!-- Home content -->
         <div id="explore-home">
+          <!-- Weather / Conditions widget -->
+          <div id="explore-weather" style="display:none;margin-bottom:4px;"></div>
+          <!-- Fishing Tip of the Day -->
+          <div id="explore-tip" style="display:none;padding:0 16px;margin-bottom:4px;"></div>
           <div class="explore-sec-hd">Trending This Week 🔥</div>
           <div id="explore-trending" class="explore-trending-grid">
             <div class="explore-placeholder">Loading…</div>
@@ -1879,6 +1986,11 @@ body {
           <div id="explore-species" class="explore-species-row"></div>
           <div class="explore-sec-hd">Who to Follow 🎣</div>
           <div id="explore-who-to-follow"></div>
+          <div class="explore-sec-hd">Fish Encyclopedia 📖</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 8px;">
+            ${Object.keys(SPECIES_DB||{}).map ? '' : ''}
+            <div id="explore-encyclopedia" style="display:flex;flex-wrap:wrap;gap:6px;width:100%;"></div>
+          </div>
           <div class="explore-sec-hd">Leaderboard <span style="font-weight:500;color:var(--gray);font-size:12px;">Top Catches</span></div>
           <div id="explore-lb" style="padding-bottom:8px;"></div>
         </div>
@@ -1936,6 +2048,48 @@ body {
           <div class="settings-row-icon">⚠️</div>
           <div class="settings-row-body"><div class="settings-row-title" style="color:#ff375f;">Delete Account</div><div class="settings-row-sub" style="color:#ff375f;">Permanently delete all data</div></div>
           <div class="settings-row-arrow" style="color:#ff375f;">›</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ MESSAGES (DM LIST) ══════ -->
+    <div class="screen" id="screen-messages">
+      <div class="dm-thread-wrap">
+        <div class="dm-hd">
+          <button onclick="goBack()" style="background:none;border:none;cursor:pointer;padding:0;display:flex;align-items:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <div class="dm-hd-title">Messages</div>
+          <div class="dm-compose-btn" onclick="openDMCompose()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M20 14.66V20a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2h5.34"/><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"/></svg>
+          </div>
+        </div>
+        <div id="dm-list-body" style="flex:1;overflow-y:auto;">
+          <div class="dm-empty">Loading messages…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ DM THREAD ══════ -->
+    <div class="screen" id="screen-dm-thread">
+      <div class="dm-thread-wrap">
+        <div class="dm-thread-hd">
+          <button onclick="showScreen('messages')" style="background:none;border:none;cursor:pointer;padding:0;display:flex;align-items:center;flex-shrink:0;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <div id="dmt-av" class="av" style="width:36px;height:36px;font-size:12px;flex-shrink:0;"></div>
+          <div style="flex:1;min-width:0;">
+            <div class="dm-thread-hd-name" id="dmt-name">—</div>
+            <div class="dm-thread-hd-sub" id="dmt-sub">@username</div>
+          </div>
+          <div onclick="openUserProfile(currentDMUserId)" style="cursor:pointer;color:var(--navy);font-size:12px;font-weight:600;">View</div>
+        </div>
+        <div class="dm-thread-body" id="dmt-body"></div>
+        <div class="dm-thread-input-row">
+          <textarea class="dm-thread-input" id="dmt-input" placeholder="Message…" rows="1" oninput="dmInputChanged(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendDM();}"></textarea>
+          <button class="dm-send-btn" id="dmt-send-btn" onclick="sendDM()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
         </div>
       </div>
     </div>
@@ -2144,6 +2298,7 @@ const BACK_MAP = {
   profile:'feed', paywall:'feed',
   'story-editor':'scan', 'post-editor':'scan',
   'story-viewer':'feed', notifications:'feed', settings:'profile',
+  messages:'feed', 'dm-thread':'messages',
 };
 const STATUS_TITLES = {
   onboard1:'',onboard2:'',auth:'',feed:'Fishy AI',scan:'',processing:'',
@@ -2151,6 +2306,7 @@ const STATUS_TITLES = {
   explore:'Explore',settings:'Settings',
   profile:'Profile',paywall:'Fishy AI','story-editor':'','post-editor':'New Post',
   'story-viewer':'', notifications:'Notifications',
+  messages:'Messages', 'dm-thread':'',
 };
 
 // ══════════════════════════════════════════
@@ -2183,6 +2339,9 @@ async function init() {
       loadFeed();
       loadStoriesRow();
       loadCatchOfTheDay();
+      loadNotifCount();
+      loadDMUnreadCount();
+      setInterval(() => { if (currentUser && sb) { loadNotifCount(); loadDMUnreadCount(); } }, 60000);
       // Deep link: ?catch=uuid opens that catch's comments
       const urlCatch = new URLSearchParams(location.search).get('catch');
       if (urlCatch && UUID_RE.test(urlCatch)) setTimeout(() => openComments(urlCatch), 600);
@@ -2254,7 +2413,8 @@ function showScreen(name, back = false) {
   if (name === 'map') setTimeout(initMap, 80);
   if (name === 'notifications') loadNotifications();
   if (name === 'settings') loadSettingsScreen();
-  if (name !== 'profile' && name !== 'story-viewer') viewingUserId = null;
+  if (name === 'messages') loadDMs();
+  if (name !== 'profile' && name !== 'story-viewer' && name !== 'dm-thread') viewingUserId = null;
 }
 
 function updateStatusBar(name) {
@@ -2558,6 +2718,12 @@ async function loadProfileScreen() {
     const followBtn = document.getElementById('follow-btn');
     const isOwnProfile = !viewingUserId || uid === currentUser?.id;
     if (editShortcut) editShortcut.style.display = isOwnProfile ? 'block' : 'none';
+    // DM button for other profiles
+    const dmBtn = document.getElementById('profile-dm-btn');
+    if (dmBtn) dmBtn.style.display = (!isOwnProfile && currentUser) ? 'flex' : 'none';
+    if (dmBtn && !isOwnProfile && profile) {
+      dmBtn.onclick = () => startDMWith(uid, profile.username, profile.display_name || profile.username, profile.avatar_url);
+    }
     if (followBtn) {
       if (!currentUser || uid === currentUser.id) {
         followBtn.style.display = 'none';
@@ -3957,44 +4123,136 @@ async function loadStoriesRow() {
   } catch(e) { console.error('loadStoriesRow:', e); }
 }
 
+let svStoryList = [];
+let svCurrentIndex = 0;
+let svCurrentCatchId = null;
+let svProgressTimer = null;
+let svPaused = false;
+
 async function openStoryViewer(catchId) {
   if (!sb) return;
   try {
-    const { data: c } = await sb.from('catches')
-      .select('*, profiles!catches_user_id_fkey(username)')
-      .eq('id', catchId).single();
-    if (!c) return;
+    const since = new Date(Date.now() - 24 * 3600000).toISOString();
+    const { data: stories } = await sb.from('catches')
+      .select('*, profiles!catches_user_id_fkey(username, avatar_url)')
+      .eq('is_public', true).eq('post_type', 'story')
+      .gte('created_at', since)
+      .order('created_at', { ascending: false })
+      .limit(20);
 
-    const bg = document.getElementById('sv-bg');
-    if (bg) {
-      if (c.photo_url) {
-        bg.style.backgroundImage = `url(${esc(c.photo_url)})`;
-      } else {
-        bg.style.backgroundImage = 'none';
-        bg.style.background = '#1B2E4B';
-      }
+    svStoryList = stories || [];
+    const idx = svStoryList.findIndex(s => s.id === catchId);
+    svCurrentIndex = idx >= 0 ? idx : 0;
+    if (!svStoryList.length) {
+      // Fallback: just load the single catch
+      const { data: c } = await sb.from('catches').select('*, profiles!catches_user_id_fkey(username, avatar_url)').eq('id', catchId).single();
+      if (c) svStoryList = [c];
     }
-
-    const u = c.profiles?.username || 'angler';
-    setEl('sv-av', u.slice(0, 2).toUpperCase());
-    setEl('sv-username', u);
-    setEl('sv-time', timeAgo(c.created_at));
-    setEl('sv-species', c.species || 'Unknown fish');
-
-    const pills = [];
-    if (c.show_weight !== false && c.weight_lbs) pills.push(`⚖️ ${c.weight_lbs} lbs`);
-    if (c.show_length !== false && c.length_in)  pills.push(`📏 ${c.length_in} in`);
-    if (c.show_lure   !== false && c.lure_used)  pills.push(`🎣 ${esc(c.lure_used)}`);
-    if (c.kept === false) pills.push('Released ✅');
-    if (c.show_spot   !== false && c.spot_name)  pills.push(`📍 ${esc(c.spot_name)}`);
-
-    const det = document.getElementById('sv-details');
-    if (det) det.innerHTML = pills.map(p =>
-      `<div style="background:rgba(255,255,255,0.18);backdrop-filter:blur(8px);color:#fff;font-size:11px;font-weight:500;padding:4px 10px;border-radius:14px;">${p}</div>`
-    ).join('');
-
+    svRenderCurrentStory();
     showScreen('story-viewer');
   } catch(e) { console.error('openStoryViewer:', e); }
+}
+
+function svRenderCurrentStory() {
+  const c = svStoryList[svCurrentIndex];
+  if (!c) { goBack(); return; }
+  svCurrentCatchId = c.id;
+  svPaused = false;
+
+  const bg = document.getElementById('sv-bg');
+  if (bg) {
+    bg.style.backgroundImage = c.photo_url ? `url(${esc(c.photo_url)})` : 'none';
+    if (!c.photo_url) bg.style.background = '#1B2E4B';
+  }
+
+  const u = c.profiles?.username || 'angler';
+  const avUrl = c.profiles?.avatar_url;
+  const avEl = document.getElementById('sv-av');
+  if (avEl) {
+    if (avUrl) { avEl.style.backgroundImage = `url(${esc(avUrl)})`; avEl.style.backgroundSize='cover'; avEl.style.backgroundPosition='center'; avEl.textContent=''; }
+    else { avEl.style.backgroundImage=''; avEl.textContent = u.slice(0,2).toUpperCase(); }
+  }
+  setEl('sv-username', u);
+  setEl('sv-time', timeAgo(c.created_at));
+  setEl('sv-species', c.species || 'Unknown fish');
+
+  const pauseBtn = document.getElementById('sv-pause-btn');
+  if (pauseBtn) pauseBtn.textContent = '⏸';
+
+  const pills = [];
+  if (c.show_weight !== false && c.weight_lbs) pills.push(`⚖️ ${parseFloat(c.weight_lbs).toFixed(1)} lbs`);
+  if (c.show_length !== false && c.length_in)  pills.push(`📏 ${c.length_in} in`);
+  if (c.show_lure   !== false && c.lure_used)  pills.push(`🎣 ${esc(c.lure_used)}`);
+  if (c.kept === false) pills.push('C&R ✅');
+  if (c.show_spot   !== false && c.spot_name)  pills.push(`📍 ${esc(c.spot_name)}`);
+  if (c.caption) pills.push(`"${esc(c.caption.slice(0,40))}${c.caption.length>40?'…':''}"`);
+
+  const det = document.getElementById('sv-details');
+  if (det) det.innerHTML = pills.map(p =>
+    `<div style="background:rgba(255,255,255,0.18);backdrop-filter:blur(8px);color:#fff;font-size:11px;font-weight:500;padding:4px 10px;border-radius:14px;">${p}</div>`
+  ).join('');
+
+  // Progress bars
+  const wrap = document.getElementById('sv-progress-wrap');
+  if (wrap) {
+    wrap.innerHTML = svStoryList.map((_, i) =>
+      `<div class="sv-progress-seg" id="svp-${i}"><div class="sv-progress-fill" id="svpf-${i}" style="width:${i<svCurrentIndex?'100%':'0%'}"></div></div>`
+    ).join('');
+  }
+
+  // Animate current segment
+  clearInterval(svProgressTimer);
+  const DURATION = 7000;
+  const startTime = Date.now();
+  const fill = document.getElementById(`svpf-${svCurrentIndex}`);
+  svProgressTimer = setInterval(() => {
+    if (svPaused) return;
+    const elapsed = Date.now() - startTime;
+    const pct = Math.min(100, (elapsed / DURATION) * 100);
+    if (fill) fill.style.width = pct + '%';
+    if (pct >= 100) {
+      clearInterval(svProgressTimer);
+      svNavigate(1);
+    }
+  }, 80);
+
+  // Record view + show count to story owner
+  if (sb && currentUser) {
+    if (c.user_id !== currentUser.id) {
+      sb.from('story_views').upsert({ catch_id: c.id, user_id: currentUser.id }, { onConflict: 'catch_id,user_id' }).then(() => {}).catch(()=>{});
+    } else {
+      // Show view count to owner
+      sb.from('story_views').select('*', { count: 'exact', head: true }).eq('catch_id', c.id).then(({ count }) => {
+        const viewWrap = document.getElementById('sv-views');
+        const viewCount = document.getElementById('sv-view-count');
+        if (viewWrap && count >= 0) { viewWrap.style.display = 'inline-flex'; if (viewCount) viewCount.textContent = count; }
+      }).catch(()=>{});
+    }
+  }
+}
+
+function svNavigate(dir) {
+  clearInterval(svProgressTimer);
+  const next = svCurrentIndex + dir;
+  if (next < 0 || next >= svStoryList.length) { goBack(); return; }
+  svCurrentIndex = next;
+  svRenderCurrentStory();
+}
+
+function svTogglePause() {
+  svPaused = !svPaused;
+  const btn = document.getElementById('sv-pause-btn');
+  if (btn) btn.textContent = svPaused ? '▶' : '⏸';
+}
+
+async function svReact(emoji) {
+  if (!currentUser || !svCurrentCatchId) { showToast('Sign in to react'); return; }
+  const btn = document.querySelector(`[data-emoji="${emoji}"]`);
+  if (btn) { btn.classList.add('reacted'); setTimeout(() => btn.classList.remove('reacted'), 600); }
+  showToast(emoji);
+  try {
+    await sb.from('story_reactions').upsert({ catch_id: svCurrentCatchId, user_id: currentUser.id, emoji }, { onConflict: 'catch_id,user_id' });
+  } catch { /* no-op */ }
 }
 
 function timeAgo(ts) {
@@ -4126,6 +4384,7 @@ function openCardMenu(catchId, ownerId, e) {
   const isOwn = currentUser && ownerId === currentUser.id;
   const items = isOwn
     ? [
+        { label: 'Edit Post', icon: '✏️', action: `openEditCatch('${catchId}')` },
         { label: 'Delete Post', icon: '🗑', action: `deleteOwnCatch('${catchId}')`, danger: true },
         { label: 'Share', icon: '📤', action: `shareCard('${catchId}','','')` },
       ]
@@ -5138,10 +5397,22 @@ async function toggleFollow() {
 
 // ── EXPLORE ──
 async function loadExplore() {
+  showFishingTip();
+  loadWeatherWidget();
   loadExploreTrending();
   loadExploreSpecies();
   loadExploreWhoToFollow();
   loadExploreLb();
+  loadExploreEncyclopedia();
+}
+
+function loadExploreEncyclopedia() {
+  const el = document.getElementById('explore-encyclopedia');
+  if (!el) return;
+  el.innerHTML = Object.keys(SPECIES_DB).map(s => {
+    const d = SPECIES_DB[s];
+    return `<button class="explore-species-pill" onclick="openSpeciesDetail('${esc(s)}')" style="background:#fff;box-shadow:0 1px 6px rgba(0,0,0,0.07);">${d.emoji} ${esc(s)}</button>`;
+  }).join('');
 }
 
 async function loadExploreTrending() {
@@ -5186,9 +5457,12 @@ async function loadExploreSpecies() {
     const counts = {};
     data.forEach(c => { if (c.species) counts[c.species] = (counts[c.species] || 0) + 1; });
     const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0, 12);
-    el.innerHTML = sorted.map(([species, count]) =>
-      `<div class="explore-species-pill" onclick="searchSpecies('${esc(species)}')">${esc(species)} <span style="color:var(--gray);font-weight:500;">${count}</span></div>`
-    ).join('');
+    el.innerHTML = sorted.map(([species, count]) => {
+      const hasDetail = species in SPECIES_DB;
+      const action = hasDetail ? `openSpeciesDetail('${esc(species)}')` : `searchSpecies('${esc(species)}')`;
+      const dot = hasDetail ? `<span style="width:5px;height:5px;border-radius:50%;background:#0ea5e9;display:inline-block;margin-left:3px;"></span>` : '';
+      return `<div class="explore-species-pill" onclick="${action}">${esc(species)}${dot} <span style="color:var(--gray);font-weight:500;">${count}</span></div>`;
+    }).join('');
   } catch(e) { console.warn('loadExploreSpecies:', e.message); }
 }
 
@@ -5230,11 +5504,14 @@ async function loadExploreWhoToFollow() {
         : `<div class="explore-user-av">${(u.username||'?').slice(0,2).toUpperCase()}</div>`;
       return `<div class="explore-user-row" onclick="openUserProfile('${u.id}')">
         ${avHtml}
-        <div>
+        <div style="flex:1;min-width:0;">
           <div class="explore-user-name">${esc(u.display_name || u.username)}</div>
           <div class="explore-user-sub">@${esc(u.username)} · ${u.count} catches</div>
         </div>
-        <button class="explore-follow-btn" id="explf-${u.id}" onclick="event.stopPropagation();exploreFollow('${u.id}',this)">Follow</button>
+        <div style="display:flex;gap:6px;flex-shrink:0;">
+          <button onclick="event.stopPropagation();startDMWith('${u.id}','${esc(u.username)}','${esc(u.display_name||u.username)}','${esc(u.avatar_url||'')}')" style="border:1.5px solid rgba(27,46,75,0.18);background:#fff;color:var(--navy);border-radius:14px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">DM</button>
+          <button class="explore-follow-btn" id="explf-${u.id}" onclick="event.stopPropagation();exploreFollow('${u.id}',this)">Follow</button>
+        </div>
       </div>`;
     }).join('');
   } catch(e) { console.warn('loadExploreWhoToFollow:', e.message); }
@@ -5317,9 +5594,12 @@ async function doExploreSearch(query) {
         const avHtml = u.avatar_url
           ? `<div class="explore-user-av" style="background-image:url(${esc(u.avatar_url)});width:38px;height:38px;font-size:0;"></div>`
           : `<div class="explore-user-av" style="width:38px;height:38px;">${(u.username||'?').slice(0,2).toUpperCase()}</div>`;
+        const dmBtn = currentUser && u.id !== currentUser.id
+          ? `<button onclick="event.stopPropagation();startDMWith('${u.id}','${esc(u.username)}','${esc(u.display_name||u.username)}','${esc(u.avatar_url||'')}')" style="margin-left:auto;border:1.5px solid rgba(27,46,75,0.2);background:#fff;color:var(--navy);border-radius:16px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;flex-shrink:0;">DM</button>` : '';
         return `<div class="explore-search-result-user" onclick="openUserProfile('${u.id}')">
           ${avHtml}
-          <div><div style="font-size:14px;font-weight:700;color:#111;">${esc(u.display_name||u.username)}</div><div style="font-size:12px;color:var(--gray);">@${esc(u.username)}</div></div>
+          <div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:700;color:#111;">${esc(u.display_name||u.username)}</div><div style="font-size:12px;color:var(--gray);">@${esc(u.username)}</div></div>
+          ${dmBtn}
         </div>`;
       }).join('');
     }
@@ -5364,8 +5644,8 @@ async function doExploreSearch(query) {
   });
 })();
 
-// ── NOTIFICATION AUTO-POLL ──
-setInterval(() => { if (currentUser && sb) loadNotifCount(); }, 60000);
+// ── NOTIFICATION + DM AUTO-POLL ──
+setInterval(() => { if (currentUser && sb) { loadNotifCount(); loadDMUnreadCount(); } }, 90000);
 
 async function createNotification(userId, type, catchId, catchSpecies) {
   if (!sb || !currentUser || !userId) return;
@@ -5876,6 +6156,425 @@ function closeRankPreview() {
 }
 
 // ══════════════════════════════════════════
+//  DIRECT MESSAGES
+// ══════════════════════════════════════════
+let currentDMConvoId = null;
+let currentDMUserId = null;
+let _dmRealtimeSub = null;
+
+async function loadDMs() {
+  const body = document.getElementById('dm-list-body');
+  if (!body) return;
+  if (!sb || !currentUser) {
+    body.innerHTML = '<div class="dm-empty">Sign in to view messages</div>';
+    return;
+  }
+  body.innerHTML = '<div class="dm-empty">Loading…</div>';
+  try {
+    const { data: convos, error } = await sb
+      .from('conversations')
+      .select('*')
+      .or(`user1_id.eq.${currentUser.id},user2_id.eq.${currentUser.id}`)
+      .order('last_message_at', { ascending: false })
+      .limit(40);
+    if (error) throw error;
+    if (!convos || convos.length === 0) {
+      body.innerHTML = '<div class="dm-empty">No messages yet.<br>Find an angler and tap Message to start a chat.</div>';
+      return;
+    }
+    // Fetch other user profiles
+    const otherIds = convos.map(c => c.user1_id === currentUser.id ? c.user2_id : c.user1_id);
+    const { data: profiles } = await sb.from('profiles').select('id,username,display_name,avatar_url').in('id', otherIds);
+    const profileMap = Object.fromEntries((profiles || []).map(p => [p.id, p]));
+    body.innerHTML = convos.map(c => {
+      const otherId = c.user1_id === currentUser.id ? c.user2_id : c.user1_id;
+      const p = profileMap[otherId] || {};
+      const name = p.display_name || p.username || 'Angler';
+      const uname = p.username || '';
+      const avHtml = p.avatar_url
+        ? `<div class="av" style="width:44px;height:44px;background:url(${esc(p.avatar_url)}) center/cover;font-size:0;flex-shrink:0;"></div>`
+        : `<div class="av" style="width:44px;height:44px;font-size:14px;flex-shrink:0;">${name.slice(0,2).toUpperCase()}</div>`;
+      const preview = c.last_message ? esc(c.last_message).slice(0, 50) : 'Start a conversation';
+      const t = c.last_message_at ? timeAgo(c.last_message_at) : '';
+      return `<div class="dm-list-item" onclick="openDMThread('${c.id}','${otherId}','${esc(name)}','${esc(uname)}','${esc(p.avatar_url||'')}')">
+        ${avHtml}
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:4px;">
+            <div class="dm-list-name">${esc(name)}</div>
+            <div class="dm-list-time">${t}</div>
+          </div>
+          <div class="dm-list-preview">@${esc(uname)} · ${preview}</div>
+        </div>
+      </div>`;
+    }).join('');
+  } catch (e) {
+    body.innerHTML = `<div class="dm-empty">Could not load messages</div>`;
+    console.warn('loadDMs:', e.message);
+  }
+}
+
+async function startDMWith(userId, username, displayName, avatarUrl) {
+  if (!sb || !currentUser) { showToast('Sign in to message'); return; }
+  if (userId === currentUser.id) return;
+  // Get or create conversation
+  const [u1, u2] = [currentUser.id, userId].sort();
+  const { data: existing } = await sb.from('conversations').select('id').eq('user1_id', u1).eq('user2_id', u2).maybeSingle();
+  let convoId = existing?.id;
+  if (!convoId) {
+    const { data: created, error } = await sb.from('conversations').insert({ user1_id: u1, user2_id: u2 }).select('id').single();
+    if (error) { showToast('Could not start conversation'); return; }
+    convoId = created.id;
+  }
+  openDMThread(convoId, userId, displayName, username, avatarUrl || '');
+}
+
+async function openDMThread(convoId, otherUserId, name, username, avatarUrl) {
+  currentDMConvoId = convoId;
+  currentDMUserId = otherUserId;
+  // Set header
+  const dmtAv = document.getElementById('dmt-av');
+  const dmtName = document.getElementById('dmt-name');
+  const dmtSub = document.getElementById('dmt-sub');
+  if (dmtAv) {
+    if (avatarUrl) { dmtAv.style.backgroundImage = `url(${esc(avatarUrl)})`; dmtAv.style.backgroundSize = 'cover'; dmtAv.textContent = ''; }
+    else { dmtAv.style.backgroundImage = ''; dmtAv.textContent = name.slice(0,2).toUpperCase(); }
+  }
+  if (dmtName) dmtName.textContent = name;
+  if (dmtSub) dmtSub.textContent = `@${username}`;
+  showScreen('dm-thread');
+  await loadDMMessages(convoId);
+  subscribeDMRealtime(convoId);
+}
+
+async function loadDMMessages(convoId) {
+  const body = document.getElementById('dmt-body');
+  if (!body || !sb) return;
+  body.innerHTML = '<div class="dm-empty">Loading…</div>';
+  try {
+    const { data: msgs, error } = await sb.from('messages')
+      .select('*')
+      .eq('conversation_id', convoId)
+      .order('created_at', { ascending: true })
+      .limit(100);
+    if (error) throw error;
+    // Mark as read
+    await sb.from('messages').update({ read: true }).eq('conversation_id', convoId).neq('sender_id', currentUser.id).eq('read', false);
+    renderDMMessages(msgs || []);
+    body.scrollTop = body.scrollHeight;
+  } catch (e) { console.warn('loadDMMessages:', e.message); }
+}
+
+function renderDMMessages(msgs) {
+  const body = document.getElementById('dmt-body');
+  if (!body) return;
+  if (!msgs.length) { body.innerHTML = '<div class="dm-empty">No messages yet. Say hello! 🎣</div>'; return; }
+  let lastDate = '';
+  body.innerHTML = msgs.map(m => {
+    const mine = m.sender_id === currentUser?.id;
+    const cls = mine ? 'mine' : 'theirs';
+    const d = new Date(m.created_at);
+    const dateStr = d.toLocaleDateString('en', { month:'short', day:'numeric' });
+    let dateSep = '';
+    if (dateStr !== lastDate) { lastDate = dateStr; dateSep = `<div class="dm-date-sep">${dateStr}</div>`; }
+    const t = d.toLocaleTimeString('en', { hour:'numeric', minute:'2-digit' });
+    return `${dateSep}<div class="dm-msg-wrap ${cls}"><div class="dm-msg ${cls}">${esc(m.body)}</div><div class="dm-msg-time">${t}</div></div>`;
+  }).join('');
+}
+
+function subscribeDMRealtime(convoId) {
+  if (_dmRealtimeSub && sb) { sb.removeChannel(_dmRealtimeSub); _dmRealtimeSub = null; }
+  if (!sb) return;
+  _dmRealtimeSub = sb.channel(`messages:${convoId}`)
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `conversation_id=eq.${convoId}` }, async (payload) => {
+      const m = payload.new;
+      if (m.sender_id === currentUser?.id) return; // already rendered optimistically
+      const body = document.getElementById('dmt-body');
+      if (!body) return;
+      const mine = false;
+      const d = new Date(m.created_at);
+      const t = d.toLocaleTimeString('en', { hour:'numeric', minute:'2-digit' });
+      body.insertAdjacentHTML('beforeend', `<div class="dm-msg-wrap theirs"><div class="dm-msg theirs">${esc(m.body)}</div><div class="dm-msg-time">${t}</div></div>`);
+      body.scrollTop = body.scrollHeight;
+      await sb.from('messages').update({ read: true }).eq('id', m.id);
+    })
+    .subscribe();
+}
+
+function dmInputChanged(el) {
+  const btn = document.getElementById('dmt-send-btn');
+  if (btn) btn.classList.toggle('ready', el.value.trim().length > 0);
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 80) + 'px';
+}
+
+async function sendDM() {
+  const inp = document.getElementById('dmt-input');
+  const body = document.getElementById('dmt-body');
+  const body_text = inp?.value.trim();
+  if (!body_text || !currentDMConvoId || !sb || !currentUser) return;
+  inp.value = '';
+  dmInputChanged(inp);
+  // Optimistic
+  const t = new Date().toLocaleTimeString('en', { hour:'numeric', minute:'2-digit' });
+  const emptyMsg = body?.querySelector('.dm-empty');
+  if (emptyMsg) emptyMsg.remove();
+  body?.insertAdjacentHTML('beforeend', `<div class="dm-msg-wrap mine"><div class="dm-msg mine">${esc(body_text)}</div><div class="dm-msg-time">${t}</div></div>`);
+  if (body) body.scrollTop = body.scrollHeight;
+  try {
+    await sb.from('messages').insert({ conversation_id: currentDMConvoId, sender_id: currentUser.id, body: body_text });
+    await sb.from('conversations').update({ last_message: body_text, last_message_at: new Date().toISOString() }).eq('id', currentDMConvoId);
+    loadDMUnreadCount();
+  } catch (e) { showToast('Could not send message'); }
+}
+
+function openDMCompose() {
+  showToast('Search for an angler in Explore to start a conversation');
+}
+
+async function loadDMUnreadCount() {
+  if (!sb || !currentUser) return;
+  try {
+    const { count } = await sb.from('messages')
+      .select('*', { count: 'exact', head: true })
+      .eq('read', false)
+      .neq('sender_id', currentUser.id)
+      .in('conversation_id', await (async () => {
+        const { data } = await sb.from('conversations').select('id').or(`user1_id.eq.${currentUser.id},user2_id.eq.${currentUser.id}`);
+        return (data || []).map(c => c.id);
+      })());
+    const badge = document.getElementById('feed-dm-unread');
+    if (badge) badge.style.display = count > 0 ? 'block' : 'none';
+  } catch {}
+}
+
+// ══════════════════════════════════════════
+//  WEATHER / CONDITIONS
+// ══════════════════════════════════════════
+const WEATHER_CONDITIONS = [
+  { min: 0, max: 10, icon: '❄️', label: 'Freezing', rating: 'Poor', color: '#607D8B' },
+  { min: 10, max: 32, icon: '🥶', label: 'Very Cold', rating: 'Slow', color: '#78909C' },
+  { min: 32, max: 50, icon: '🌥️', label: 'Cold', rating: 'Fair', color: '#546E7A' },
+  { min: 50, max: 65, icon: '⛅', label: 'Cool', rating: 'Good', color: '#0ea5e9' },
+  { min: 65, max: 80, icon: '☀️', label: 'Warm', rating: 'Excellent', color: '#f59e0b' },
+  { min: 80, max: 95, icon: '🌡️', label: 'Hot', rating: 'Good', color: '#f97316' },
+  { min: 95, max: 200, icon: '🔥', label: 'Very Hot', rating: 'Slow', color: '#ef4444' },
+];
+
+async function loadWeatherWidget() {
+  const el = document.getElementById('explore-weather');
+  if (!el) return;
+  try {
+    const pos = await new Promise((res, rej) => navigator.geolocation.getCurrentPosition(res, rej, { timeout: 5000 }));
+    const { latitude: lat, longitude: lon } = pos.coords;
+    const resp = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,wind_speed_10m,precipitation,weather_code&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch`);
+    const data = await resp.json();
+    const temp = Math.round(data.current.temperature_2m);
+    const wind = Math.round(data.current.wind_speed_10m);
+    const precip = data.current.precipitation;
+    const wc = data.current.weather_code;
+    const cond = WEATHER_CONDITIONS.find(c => temp >= c.min && temp < c.max) || WEATHER_CONDITIONS[4];
+    let weatherIcon = cond.icon;
+    if (wc >= 61 && wc <= 67) weatherIcon = '🌧️';
+    else if (wc >= 71 && wc <= 77) weatherIcon = '❄️';
+    else if (wc >= 95) weatherIcon = '⛈️';
+    else if (wc >= 45) weatherIcon = '🌫️';
+    const fishingScore = temp >= 60 && temp <= 80 && wind < 15 && precip < 0.1 ? 'Great day to fish! 🎣' :
+                         temp >= 50 && temp <= 88 ? 'Decent conditions 🎣' : 'Tough conditions';
+    el.style.display = 'block';
+    el.innerHTML = `<div class="weather-widget" onclick="toggleWeatherDetails()">
+      <div class="weather-icon">${weatherIcon}</div>
+      <div class="weather-info">
+        <div class="weather-temp">${temp}°F</div>
+        <div class="weather-cond">${cond.label} · Wind ${wind} mph${precip > 0 ? ' · Rain' : ''}</div>
+      </div>
+      <div class="weather-rating">${fishingScore}</div>
+    </div>
+    <div class="weather-cond-row" id="weather-cond-row" style="display:none;">
+      <div class="cond-pill"><div class="cond-pill-ico">🌡️</div><div class="cond-pill-val">${temp}°F</div><div class="cond-pill-lbl">Temp</div></div>
+      <div class="cond-pill"><div class="cond-pill-ico">💨</div><div class="cond-pill-val">${wind} mph</div><div class="cond-pill-lbl">Wind</div></div>
+      <div class="cond-pill"><div class="cond-pill-ico">🌧️</div><div class="cond-pill-val">${precip > 0 ? precip.toFixed(2) + '"' : 'None'}</div><div class="cond-pill-lbl">Rain</div></div>
+      <div class="cond-pill"><div class="cond-pill-ico">⏱️</div><div class="cond-pill-val">${new Date().toLocaleTimeString('en',{hour:'numeric',minute:'2-digit'})}</div><div class="cond-pill-lbl">Now</div></div>
+      <div class="cond-pill"><div class="cond-pill-ico">🎣</div><div class="cond-pill-val">${cond.rating}</div><div class="cond-pill-lbl">Fishing</div></div>
+    </div>`;
+  } catch {
+    // No geolocation or API fail — show generic widget
+    el.style.display = 'block';
+    el.innerHTML = `<div class="weather-widget">
+      <div class="weather-icon">🎣</div>
+      <div class="weather-info">
+        <div class="weather-temp" style="font-size:15px;">Fishing Conditions</div>
+        <div class="weather-cond">Enable location for live weather</div>
+      </div>
+    </div>`;
+  }
+}
+
+function toggleWeatherDetails() {
+  const row = document.getElementById('weather-cond-row');
+  if (row) row.style.display = row.style.display === 'none' ? 'flex' : 'none';
+}
+
+// ══════════════════════════════════════════
+//  FISHING TIP OF THE DAY
+// ══════════════════════════════════════════
+const FISHING_TIPS = [
+  { tip: 'Fish are most active during early morning and late evening — golden hours produce the biggest catches.', icon: '🌅' },
+  { tip: 'When water is clear, downsize your line. Fish can see heavy monofilament in calm, clear conditions.', icon: '💧' },
+  { tip: 'Match the hatch — use lures that mimic the baitfish or insects in your local water body.', icon: '🪲' },
+  { tip: 'Cloudy days often produce better topwater action. Overcast skies reduce shadows that spook fish.', icon: '☁️' },
+  { tip: 'Always wet your hands before handling fish to protect their slime coat if you plan to release them.', icon: '🐟' },
+  { tip: 'After a cold front, fish move deeper and become lethargic. Slow down your retrieve.', icon: '🌬️' },
+  { tip: 'Look for structure — fallen trees, rock piles, and weed beds all hold fish.', icon: '🌿' },
+  { tip: 'Bright lures work best on sunny days; natural-colored lures shine in stained or murky water.', icon: '☀️' },
+  { tip: 'The "Carolina rig" is a tournament staple — great for covering large areas of bottom structure.', icon: '🎣' },
+  { tip: 'Set your hook with a sharp, short snap — not a big sweeping motion. Speed matters more than force.', icon: '⚡' },
+  { tip: 'Check local regulations before every trip — slot limits and bag limits change seasonally.', icon: '📋' },
+  { tip: 'Fish orient facing into the current. Cast upstream and let your bait drift naturally to them.', icon: '🌊' },
+  { tip: 'Topwater lures work best in the morning. As the sun rises, switch to crankbaits or jigs.', icon: '🌄' },
+  { tip: 'Barometric pressure dropping often triggers a feeding frenzy — hit the water before the storm.', icon: '⛈️' },
+  { tip: 'Finesse fishing wins in pressured waters — smaller baits, lighter line, and slower presentations.', icon: '🎯' },
+];
+
+function showFishingTip() {
+  const el = document.getElementById('explore-tip');
+  if (!el) return;
+  const day = Math.floor(Date.now() / 86400000);
+  const tip = FISHING_TIPS[day % FISHING_TIPS.length];
+  el.style.display = 'block';
+  el.innerHTML = `<div class="tip-card">
+    <div class="tip-card-hd">${tip.icon} Pro Tip of the Day</div>
+    <div class="tip-card-body">${tip.tip}</div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════
+//  CATCH EDIT
+// ══════════════════════════════════════════
+async function openEditCatch(catchId) {
+  if (!sb || !currentUser) return;
+  try {
+    const { data: c } = await sb.from('catches').select('id,species,weight_lbs,length_in,caption').eq('id', catchId).single();
+    if (!c) return;
+    document.getElementById('edit-catch-id').value = c.id;
+    document.getElementById('edit-catch-species').value = c.species || '';
+    document.getElementById('edit-catch-weight').value = c.weight_lbs || '';
+    document.getElementById('edit-catch-length').value = c.length_in || '';
+    document.getElementById('edit-catch-caption').value = c.caption || '';
+    document.getElementById('edit-catch-backdrop').classList.add('open');
+    document.getElementById('edit-catch-sheet').classList.add('open');
+  } catch (e) { showToast('Could not load catch'); }
+}
+
+function closeEditCatch() {
+  document.getElementById('edit-catch-backdrop').classList.remove('open');
+  document.getElementById('edit-catch-sheet').classList.remove('open');
+}
+
+async function saveEditCatch() {
+  const id = document.getElementById('edit-catch-id').value;
+  const species = document.getElementById('edit-catch-species').value.trim();
+  const weight = parseFloat(document.getElementById('edit-catch-weight').value) || null;
+  const length = parseFloat(document.getElementById('edit-catch-length').value) || null;
+  const caption = document.getElementById('edit-catch-caption').value.trim() || null;
+  if (!id || !species) { showToast('Species is required'); return; }
+  try {
+    const { error } = await sb.from('catches').update({ species, weight_lbs: weight, length_in: length, caption }).eq('id', id).eq('user_id', currentUser.id);
+    if (error) throw error;
+    closeEditCatch();
+    showToast('Catch updated!');
+    loadFeed(false);
+    loadProfileScreen();
+  } catch (e) { showToast('Could not save: ' + (e.message || 'try again')); }
+}
+
+async function deleteCatch(catchId) {
+  if (!catchId || !sb || !currentUser) return;
+  if (!confirm('Delete this catch permanently?')) return;
+  closeEditCatch();
+  try {
+    await sb.from('catches').delete().eq('id', catchId).eq('user_id', currentUser.id);
+    showToast('Catch deleted');
+    loadFeed(false);
+    loadProfileScreen();
+  } catch (e) { showToast('Could not delete'); }
+}
+
+// ══════════════════════════════════════════
+//  SPECIES DETAIL SHEET
+// ══════════════════════════════════════════
+const SPECIES_DB = {
+  'Largemouth Bass': { emoji: '🐟', sci: 'Micropterus salmoides', habitat: 'Lakes, ponds, slow rivers with vegetation', diet: 'Bluegill, crawfish, frogs, mice', record: '22 lbs 4 oz — Georgia, 1932', tip: 'Target structure at dawn and dusk. Use plastic worms in summer, jerkbaits in spring.', color: '#2d7a3a' },
+  'Smallmouth Bass': { emoji: '🐟', sci: 'Micropterus dolomieu', habitat: 'Clear rocky streams, rivers, and lakes', diet: 'Crawfish, insects, small fish', record: '11 lbs 15 oz — Dale Hollow, TN, 1955', tip: 'Natural presentations win — tube jigs and finesse worms in cold clear water.', color: '#7d5a1e' },
+  'Rainbow Trout': { emoji: '🐟', sci: 'Oncorhynchus mykiss', habitat: 'Cold, clear streams and lakes', diet: 'Insects, small fish, eggs', record: '48 lbs — Great Bear Lake, Canada, 2009', tip: 'Match the hatch with dry flies in evening. In lakes, use PowerBait near stocked areas.', color: '#c45a6b' },
+  'Walleye': { emoji: '🐟', sci: 'Sander vitreus', habitat: 'Large lakes and rivers with low-light areas', diet: 'Yellow perch, shad, crawfish', record: '25 lbs — Old Hickory Lake, TN, 1960', tip: 'Walleye have sensitive eyes — fish at night or in low-light. Jigs tipped with minnows work year-round.', color: '#c4a232' },
+  'Channel Catfish': { emoji: '🐟', sci: 'Ictalurus punctatus', habitat: 'Rivers, lakes, ponds', diet: 'Shad, crawfish, insects, carrion', record: '58 lbs — Santee-Cooper Reservoir, SC, 1964', tip: 'Use stink baits or chicken liver on the bottom in deep holes after dark.', color: '#5a7a8a' },
+  'Northern Pike': { emoji: '🐟', sci: 'Esox lucius', habitat: 'Weedy lakes and slow rivers', diet: 'Fish, frogs, ducks, muskrats', record: '55 lbs 1 oz — Germany, 1986', tip: 'Large flashy spoons and swimbaits trigger predatory strikes. Target weed edges.', color: '#3a6a3a' },
+  'Bluegill': { emoji: '🐟', sci: 'Lepomis macrochirus', habitat: 'Ponds, lakes, slow streams', diet: 'Insects, worms, small fish', record: '4 lbs 12 oz — Ketona Lake, AL, 1950', tip: 'Live worms under a bobber. Fish near brush piles and dock edges.', color: '#1a5a8a' },
+  'Crappie': { emoji: '🐟', sci: 'Pomoxis sp.', habitat: 'Lakes, reservoirs, ponds', diet: 'Small fish, insects', record: '5 lbs 3 oz — Enid Dam, MS, 1957', tip: 'Fish vertically with small tube jigs near brush piles, especially in spring.', color: '#7a3a6a' },
+  'Striped Bass': { emoji: '🐟', sci: 'Morone saxatilis', habitat: 'Coastal waters, large rivers', diet: 'Shad, anchovies, eels', record: '81 lbs 14 oz — Atlantic City, NJ, 2011', tip: 'Surface poppers at dawn during the fall run. Follow diving birds to find feeding schools.', color: '#2a4a7a' },
+  'Salmon': { emoji: '🐟', sci: 'Oncorhynchus / Salmo sp.', habitat: 'Ocean, large rivers', diet: 'Shrimp, herring, smelt', record: 'Chinook — 97 lbs 4 oz — Alaska, 1985', tip: 'During spawning runs, drift eggs or flies through holding pools. Check current regulations.', color: '#c46a3a' },
+};
+
+function openSpeciesDetail(species) {
+  const data = SPECIES_DB[species];
+  if (!data) { showToast('Species info not available'); return; }
+  const hero = document.getElementById('species-detail-hero');
+  const emoji = document.getElementById('species-detail-emoji');
+  const name = document.getElementById('species-detail-name');
+  const sci = document.getElementById('species-detail-sci');
+  const body = document.getElementById('species-detail-body');
+  if (hero) hero.style.background = data.color;
+  if (emoji) emoji.textContent = data.emoji;
+  if (name) name.textContent = species;
+  if (sci) sci.textContent = data.sci;
+  if (body) body.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
+      <div style="background:#f7f8fa;border-radius:12px;padding:10px;"><div style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Habitat</div><div style="font-size:12px;color:#111;line-height:1.4;">${data.habitat}</div></div>
+      <div style="background:#f7f8fa;border-radius:12px;padding:10px;"><div style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Diet</div><div style="font-size:12px;color:#111;line-height:1.4;">${data.diet}</div></div>
+    </div>
+    <div style="background:#f7f8fa;border-radius:12px;padding:12px;margin-bottom:10px;">
+      <div style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">World Record</div>
+      <div style="font-size:13px;color:#111;font-weight:600;">🏆 ${data.record}</div>
+    </div>
+    <div style="background:rgba(14,165,233,0.07);border:1.5px solid rgba(14,165,233,0.16);border-radius:12px;padding:12px;margin-bottom:16px;">
+      <div style="font-size:10px;font-weight:700;color:#0ea5e9;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">🎣 Pro Tip</div>
+      <div style="font-size:13px;color:#333;line-height:1.5;">${data.tip}</div>
+    </div>
+    <button onclick="closeSpeciesDetail()" style="width:100%;padding:13px;background:var(--navy);color:#fff;border:none;border-radius:14px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;">Got it</button>`;
+  document.getElementById('species-detail-backdrop').classList.add('open');
+  document.getElementById('species-detail-sheet').classList.add('open');
+}
+
+function closeSpeciesDetail() {
+  document.getElementById('species-detail-backdrop').classList.remove('open');
+  document.getElementById('species-detail-sheet').classList.remove('open');
+}
+
+// ══════════════════════════════════════════
+//  ACTIVITY STREAK
+// ══════════════════════════════════════════
+function updateStreak() {
+  const catches = STORE.get('catches', []);
+  if (!catches.length) return;
+  const today = new Date().toDateString();
+  const lastCatch = new Date(catches[0]?.created_at || Date.now()).toDateString();
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  let streak = parseInt(STORE.get('streak', '0'));
+  const lastStreakDate = STORE.get('streakDate', '');
+  if (lastCatch === today && lastStreakDate !== today) {
+    if (lastStreakDate === yesterday) { streak++; } else { streak = 1; }
+    STORE.set('streakDate', today);
+    STORE.set('streak', String(streak));
+  }
+  return streak;
+}
+
+// ══════════════════════════════════════════
+//  NAVIGATION ADDITIONS
+// ══════════════════════════════════════════
+const _origShowScreen = showScreen;
+
+// ══════════════════════════════════════════
 //  BOOT
 // ══════════════════════════════════════════
 init();
@@ -5894,6 +6593,52 @@ init();
 
 <!-- ══════ BADGE EARN CELEBRATION ══════ -->
 <div id="badge-earn-overlay" style="display:none;"></div>
+
+<!-- ══════ CATCH EDIT MODAL ══════ -->
+<div class="edit-catch-backdrop" id="edit-catch-backdrop" onclick="closeEditCatch()"></div>
+<div class="edit-catch-sheet" id="edit-catch-sheet">
+  <div class="edit-catch-hd">
+    <div class="edit-catch-title">Edit Catch</div>
+    <button onclick="closeEditCatch()" style="background:none;border:none;cursor:pointer;width:30px;height:30px;border-radius:50%;background:#f4f5f7;display:flex;align-items:center;justify-content:center;">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div style="padding:16px 20px;">
+    <input type="hidden" id="edit-catch-id">
+    <div class="ep-field">
+      <label class="ep-label">Species</label>
+      <input class="ep-input" id="edit-catch-species" placeholder="e.g. Largemouth Bass">
+    </div>
+    <div class="ep-field">
+      <label class="ep-label">Weight (lbs)</label>
+      <input class="ep-input" id="edit-catch-weight" type="number" step="0.1" placeholder="0.0">
+    </div>
+    <div class="ep-field">
+      <label class="ep-label">Length (in)</label>
+      <input class="ep-input" id="edit-catch-length" type="number" step="0.5" placeholder="0">
+    </div>
+    <div class="ep-field">
+      <label class="ep-label">Caption</label>
+      <textarea class="ep-input" id="edit-catch-caption" placeholder="Add a caption…" rows="3" style="resize:none;"></textarea>
+    </div>
+    <button class="ep-save-btn" onclick="saveEditCatch()">Save Changes</button>
+    <button onclick="deleteCatch(document.getElementById('edit-catch-id').value)" style="display:block;width:100%;margin-top:10px;padding:13px;background:none;color:#ff375f;font-size:14px;font-weight:700;border:1.5px solid rgba(255,55,95,0.2);border-radius:16px;cursor:pointer;font-family:inherit;letter-spacing:-0.3px;">Delete Catch</button>
+  </div>
+</div>
+
+<!-- ══════ SPECIES DETAIL SHEET ══════ -->
+<div class="species-detail-backdrop" id="species-detail-backdrop" onclick="closeSpeciesDetail()"></div>
+<div class="species-detail-sheet" id="species-detail-sheet">
+  <div class="species-detail-hero" id="species-detail-hero">
+    <div class="species-detail-emoji" id="species-detail-emoji">🐟</div>
+    <div style="position:absolute;bottom:12px;left:16px;right:16px;z-index:2;">
+      <div style="font-size:20px;font-weight:800;color:#fff;letter-spacing:-0.5px;" id="species-detail-name"></div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.7);font-style:italic;" id="species-detail-sci"></div>
+    </div>
+    <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.55) 0%,transparent 60%);"></div>
+  </div>
+  <div class="species-detail-body" id="species-detail-body"></div>
+</div>
 
 <!-- ══════ RANK PREVIEW MODAL ══════ -->
 <div class="rp-overlay" id="rp-overlay" onclick="closeRankPreview()">
