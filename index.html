@@ -1690,6 +1690,10 @@ body {
       <div class="map-wrap">
         <div id="leaflet-map"></div>
         <div class="map-locate-btn" onclick="mapLocateMe()" title="My location">📍</div>
+        <div style="position:absolute;top:8px;left:50%;transform:translateX(-50%);z-index:500;display:flex;gap:6px;">
+          <button onclick="setMapLayer('all')" id="map-tab-all" style="background:var(--navy);color:#fff;border:none;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 12px rgba(0,0,0,0.18);">All Catches</button>
+          <button onclick="setMapLayer('mine')" id="map-tab-mine" style="background:rgba(255,255,255,0.9);color:#111;border:none;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 12px rgba(0,0,0,0.12);backdrop-filter:blur(8px);">My Catches</button>
+        </div>
         <div class="map-sheet" id="map-card">
           <div class="map-sheet-close" onclick="closeMapCard()">✕</div>
           <div class="map-sheet-handle"></div>
@@ -1710,6 +1714,9 @@ body {
               <div class="map-sheet-ico">🚗</div>
               <div><div class="map-sheet-lbl" id="mc-dist"></div><div class="map-sheet-val">From your location</div></div>
             </div>
+          </div>
+          <div id="mc-view-post-row" style="display:none;padding:4px 16px 12px;">
+            <button style="width:100%;padding:11px;background:var(--navy);color:#fff;border:none;border-radius:14px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">View Post 🐟</button>
           </div>
         </div>
       </div>
@@ -2854,12 +2861,37 @@ function renderProfileStats(catchList, el) {
       <div style="font-size:9px;color:var(--gray);white-space:nowrap;">${monthLabels[i]}</div>
     </div>`).join('');
 
+  // Day-of-week heatmap
+  const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const dayCounts = [0,0,0,0,0,0,0];
+  catchList.forEach(c => { if (c.created_at) dayCounts[new Date(c.created_at).getDay()]++; });
+  const maxDay = Math.max(...dayCounts, 1);
+  const bestDay = dayCounts.indexOf(Math.max(...dayCounts));
+  const dayBars = dayNames.map((d, i) => {
+    const v = dayCounts[i];
+    const h = Math.max(3, Math.round(v / maxDay * 32));
+    const active = i === bestDay && v > 0;
+    return `<div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;">
+      <div style="font-size:9px;color:${active?'#0ea5e9':'var(--gray)'};">${v||''}</div>
+      <div style="width:100%;background:${active?'#0ea5e9':v?'rgba(14,165,233,0.4)':'rgba(0,0,0,0.07)'};border-radius:3px;height:${h}px;"></div>
+      <div style="font-size:8px;color:${active?'#0ea5e9':'var(--gray)'};font-weight:${active?700:500};">${d}</div>
+    </div>`;
+  }).join('');
+
   el.innerHTML = `
-    <div style="display:flex;align-items:flex-end;gap:4px;height:60px;margin-bottom:10px;">${chartBars}</div>
+    <div style="margin-bottom:12px;">
+      <div style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">6-Month Catches</div>
+      <div style="display:flex;align-items:flex-end;gap:4px;height:56px;">${chartBars}</div>
+    </div>
+    <div style="margin-bottom:12px;">
+      <div style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Best Days to Fish</div>
+      <div style="display:flex;align-items:flex-end;gap:3px;height:46px;">${dayBars}</div>
+      ${bestDay >= 0 && dayCounts[bestDay] > 0 ? `<div style="font-size:11px;color:#0ea5e9;font-weight:600;margin-top:4px;">Your best day: ${dayNames[bestDay]}s 🎣</div>` : ''}
+    </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
       <div style="background:#fff;border-radius:10px;padding:10px;">
         <div style="font-size:10px;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px;">Top Species</div>
-        ${topSpecies.map(([s,n]) => `<div style="font-size:12px;color:#111;font-weight:600;margin-bottom:2px;">${esc(s)} <span style="color:var(--gray);font-weight:500;">${n}×</span></div>`).join('')}
+        ${topSpecies.map(([s,n]) => `<div style="font-size:12px;color:#111;font-weight:600;margin-bottom:2px;">${esc(s)} <span style="color:var(--gray);font-weight:500;">${n}×</span></div>`).join('') || '<div style="font-size:12px;color:var(--gray);">No data yet</div>'}
       </div>
       <div style="background:#fff;border-radius:10px;padding:10px;">
         <div style="font-size:10px;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px;">Fav Lure</div>
@@ -4338,8 +4370,9 @@ function catchCard(c, likes, liked, cmtCount = 0) {
       <button class="act-btn" id="bm-${c.id}" onclick="event.stopPropagation();toggleBookmarkDb('${c.id}',this)">${BM_SVG}</button>
       ${menuBtn}
     </div>
-    <div class="post-likes">${likes} like${likes !== 1 ? 's' : ''}</div>
+    <div class="post-likes" onclick="event.stopPropagation();showLikesList('${c.id}')" style="cursor:pointer;">${likes} like${likes !== 1 ? 's' : ''}</div>
     ${stats ? `<div class="post-stats">${stats}</div>` : ''}
+    ${isMe && cmtCount > 0 ? `<div style="padding:2px 14px 8px;font-size:11px;color:var(--gray);cursor:pointer;" onclick="event.stopPropagation();openComments('${c.id}')">View all ${cmtCount} comments</div>` : ''}
   </div>`;
 }
 
@@ -5293,32 +5326,59 @@ function initMap() {
   loadMapCatches();
 }
 
+let _mapCatchMarkers = [];
+let _mapLayer = 'all';
+
+function setMapLayer(layer) {
+  _mapLayer = layer;
+  const allBtn = document.getElementById('map-tab-all');
+  const mineBtn = document.getElementById('map-tab-mine');
+  if (allBtn) { allBtn.style.background = layer === 'all' ? 'var(--navy)' : 'rgba(255,255,255,0.9)'; allBtn.style.color = layer === 'all' ? '#fff' : '#111'; }
+  if (mineBtn) { mineBtn.style.background = layer === 'mine' ? 'var(--navy)' : 'rgba(255,255,255,0.9)'; mineBtn.style.color = layer === 'mine' ? '#fff' : '#111'; }
+  _mapCatchMarkers.forEach(m => { try { leafletMap?.removeLayer(m); } catch {} });
+  _mapCatchMarkers = [];
+  loadMapCatches();
+}
+
 async function loadMapCatches() {
   if (!sb || !leafletMap) return;
   try {
-    const { data } = await sb.from('catches')
-      .select('id, species, weight_lbs, lat, lng, spot_name, photo_url, profiles!catches_user_id_fkey(username)')
-      .eq('is_public', true)
-      .eq('post_type', 'catch')
-      .not('lat', 'is', null)
-      .not('lng', 'is', null)
-      .order('created_at', { ascending: false })
-      .limit(200);
+    let query;
+    if (_mapLayer === 'mine' && currentUser) {
+      query = sb.from('catches')
+        .select('id, species, weight_lbs, lat, lng, spot_name, photo_url, user_id, profiles!catches_user_id_fkey(username)')
+        .eq('user_id', currentUser.id)
+        .eq('post_type', 'catch')
+        .not('lat', 'is', null).not('lng', 'is', null)
+        .order('created_at', { ascending: false }).limit(200);
+    } else {
+      query = sb.from('catches')
+        .select('id, species, weight_lbs, lat, lng, spot_name, photo_url, user_id, profiles!catches_user_id_fkey(username)')
+        .eq('is_public', true).eq('post_type', 'catch')
+        .not('lat', 'is', null).not('lng', 'is', null)
+        .order('created_at', { ascending: false }).limit(200);
+    }
+    const { data } = await query;
     if (!data?.length) return;
-    const fishIcon = (species) => L.divIcon({
+    const makeIcon = (isMine) => L.divIcon({
       className: '',
-      html: `<div style="width:28px;height:28px;border-radius:50%;background:#0ea5e9;border:2.5px solid #fff;box-shadow:0 2px 8px rgba(14,165,233,0.5);display:flex;align-items:center;justify-content:center;font-size:14px;">🐟</div>`,
-      iconSize: [28, 28], iconAnchor: [14, 14],
+      html: `<div style="width:${isMine?32:26}px;height:${isMine?32:26}px;border-radius:50%;background:${isMine?'#f59e0b':'#0ea5e9'};border:2.5px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.25);display:flex;align-items:center;justify-content:center;font-size:${isMine?15:12}px;">🐟</div>`,
+      iconSize: [isMine?32:26, isMine?32:26], iconAnchor: [isMine?16:13, isMine?16:13],
     });
     data.forEach(c => {
       const u = c.profiles?.username || 'angler';
-      const marker = L.marker([c.lat, c.lng], { icon: fishIcon(c.species) })
+      const isMine = c.user_id === currentUser?.id;
+      const marker = L.marker([c.lat, c.lng], { icon: makeIcon(isMine) })
         .addTo(leafletMap)
         .on('click', e => {
           L.DomEvent.stopPropagation(e);
-          showMapCard({ name: c.species || 'Unknown Fish', sub: `by @${u}${c.spot_name ? ' · ' + c.spot_name : ''}`, lat: c.lat, lng: c.lng, type: 'catch', catchId: c.id, weight: c.weight_lbs });
+          showMapCard({ name: c.species || 'Unknown Fish', sub: `by @${u}${c.spot_name ? ' · ' + c.spot_name : ''}${c.weight_lbs ? ' · ' + parseFloat(c.weight_lbs).toFixed(1) + ' lbs' : ''}`, lat: c.lat, lng: c.lng, type: 'catch', catchId: c.id, weight: c.weight_lbs });
         });
+      _mapCatchMarkers.push(marker);
     });
+    if (_mapLayer === 'mine' && data.length === 0) {
+      showToast('No mapped catches yet. Log a catch with GPS to see it here!');
+    }
   } catch(e) { console.warn('loadMapCatches:', e.message); }
 }
 
@@ -5342,6 +5402,17 @@ function showMapCard(spot) {
     document.getElementById('mc-dist-row').style.display = 'flex';
   } else {
     document.getElementById('mc-dist-row').style.display = 'none';
+  }
+
+  // View post button for catch pins
+  const viewRow = document.getElementById('mc-view-post-row');
+  if (viewRow) {
+    if (spot.catchId) {
+      viewRow.style.display = 'block';
+      viewRow.onclick = () => { closeMapCard(); openComments(spot.catchId); };
+    } else {
+      viewRow.style.display = 'none';
+    }
   }
 
   document.getElementById('map-card')?.classList.add('visible');
@@ -6540,6 +6611,44 @@ function showFishingTip() {
 }
 
 // ══════════════════════════════════════════
+//  LIKES LIST POPUP
+// ══════════════════════════════════════════
+async function showLikesList(catchId) {
+  const backdrop = document.getElementById('likes-backdrop');
+  const sheet = document.getElementById('likes-sheet');
+  const list = document.getElementById('likes-list');
+  if (!backdrop || !sheet || !list) return;
+  backdrop.style.display = 'block';
+  sheet.style.display = 'block';
+  requestAnimationFrame(() => { sheet.style.transform = 'translateY(0)'; });
+  list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--gray);">Loading…</div>';
+  if (!sb) return;
+  try {
+    const { data: likes } = await sb.from('likes').select('user_id, profiles!likes_user_id_fkey(id, username, avatar_url, display_name)').eq('catch_id', catchId).order('created_at', { ascending: false }).limit(50);
+    if (!likes?.length) { list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--gray);">No likes yet</div>'; return; }
+    list.innerHTML = likes.map(l => {
+      const p = l.profiles || {};
+      const name = p.display_name || p.username || 'Angler';
+      const avHtml = p.avatar_url
+        ? `<div class="av" style="width:40px;height:40px;background:url(${esc(p.avatar_url)}) center/cover;font-size:0;flex-shrink:0;cursor:pointer;" onclick="closeLikesList();openUserProfile('${p.id}')"></div>`
+        : `<div class="av" style="width:40px;height:40px;font-size:12px;flex-shrink:0;cursor:pointer;" onclick="closeLikesList();openUserProfile('${p.id}')">${name.slice(0,2).toUpperCase()}</div>`;
+      return `<div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:0.5px solid rgba(0,0,0,0.06);cursor:pointer;" onclick="closeLikesList();openUserProfile('${p.id}')">
+        ${avHtml}
+        <div><div style="font-size:14px;font-weight:700;color:#111;letter-spacing:-0.2px;">${esc(name)}</div><div style="font-size:12px;color:var(--gray);">@${esc(p.username||'angler')}</div></div>
+        <div style="margin-left:auto;font-size:14px;">❤️</div>
+      </div>`;
+    }).join('');
+  } catch (e) { list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--gray);">Could not load</div>'; }
+}
+
+function closeLikesList() {
+  const backdrop = document.getElementById('likes-backdrop');
+  const sheet = document.getElementById('likes-sheet');
+  if (sheet) { sheet.style.transform = 'translateY(100%)'; setTimeout(() => { sheet.style.display = 'none'; }, 350); }
+  if (backdrop) backdrop.style.display = 'none';
+}
+
+// ══════════════════════════════════════════
 //  CATCH EDIT
 // ══════════════════════════════════════════
 async function openEditCatch(catchId) {
@@ -6685,6 +6794,16 @@ init();
 
 <!-- ══════ BADGE EARN CELEBRATION ══════ -->
 <div id="badge-earn-overlay" style="display:none;"></div>
+
+<!-- ══════ LIKES POPUP ══════ -->
+<div id="likes-backdrop" style="position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:3100;display:none;" onclick="closeLikesList()"></div>
+<div id="likes-sheet" style="position:fixed;left:0;right:0;bottom:0;z-index:3101;background:#fff;border-radius:26px 26px 0 0;max-height:60vh;overflow:hidden;display:none;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.32,0.72,0,1);">
+  <div style="padding:16px 20px 0;display:flex;align-items:center;justify-content:space-between;">
+    <div style="font-size:16px;font-weight:800;color:#111;letter-spacing:-0.4px;">❤️ Likes</div>
+    <button onclick="closeLikesList()" style="background:#f4f5f7;border:none;cursor:pointer;width:28px;height:28px;border-radius:50%;font-size:14px;display:flex;align-items:center;justify-content:center;">✕</button>
+  </div>
+  <div id="likes-list" style="overflow-y:auto;max-height:calc(60vh - 60px);padding:8px 16px 20px;"></div>
+</div>
 
 <!-- ══════ CATCH EDIT MODAL ══════ -->
 <div class="edit-catch-backdrop" id="edit-catch-backdrop" onclick="closeEditCatch()"></div>
