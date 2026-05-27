@@ -1821,7 +1821,11 @@ body {
         </div>
         <!-- Caption field -->
         <div style="margin:0 0 8px;padding:12px;background:#fff;border-radius:16px;border:1.5px solid rgba(0,0,0,0.08);">
-          <textarea id="catch-caption-input" placeholder="Add a caption… (e.g. 'Hit it on a topwater at sunrise 🌅')" style="width:100%;border:none;resize:none;font-family:inherit;font-size:13px;color:#111;outline:none;line-height:1.5;letter-spacing:-0.1px;min-height:56px;background:transparent;" rows="2"></textarea>
+          <textarea id="catch-caption-input" placeholder="Add a caption… (e.g. 'Hit it on a topwater at sunrise 🌅')" maxlength="280" oninput="updateCaptionCount(this)" style="width:100%;border:none;resize:none;font-family:inherit;font-size:13px;color:#111;outline:none;line-height:1.5;letter-spacing:-0.1px;min-height:56px;background:transparent;" rows="2"></textarea>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
+            <span id="caption-draft-badge" style="display:none;font-size:10px;color:#f59e0b;font-weight:700;background:rgba(245,158,11,0.1);padding:2px 8px;border-radius:8px;">Draft restored ✦</span>
+            <span id="caption-char-count" style="font-size:10px;color:var(--gray);margin-left:auto;">280</span>
+          </div>
         </div>
         <div style="display:flex;gap:10px;">
           <button class="btn" id="log-only-btn" onclick="postCatch(false)" style="flex:1;background:#f2f2f7;color:#1B2E4B;border:1.5px solid rgba(27,46,75,0.18);">Log Only</button>
@@ -1930,6 +1934,7 @@ body {
           <!-- Identity -->
           <div class="prof-name-v2" id="prof-name">—</div>
           <div class="prof-handle-v2" id="prof-handle" onclick="copyProfileUsername()" title="Copy username" style="cursor:pointer;">@— · California 🌊</div>
+          <div id="prof-streak-badge" style="display:none;margin-top:6px;"></div>
           <div id="prof-bio" style="display:none;font-size:13px;color:#555;text-align:center;padding:4px 20px 0;line-height:1.5;letter-spacing:-0.1px;"></div>
 
           <!-- Hero metric -->
@@ -2013,7 +2018,19 @@ body {
             <div id="prof-stats-content"></div>
           </div>
 
+          <!-- Achievements strip (own profile only) -->
+          <div id="prof-achievements-row" style="display:none;padding:0 16px 4px;">
+            <div style="font-size:13px;font-weight:800;color:#111;letter-spacing:-0.3px;margin:12px 0 8px;">🏅 Achievements</div>
+            <div id="prof-achievements-list" style="display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;"></div>
+            <div id="prof-achievements-empty" style="display:none;font-size:12px;color:var(--gray);padding:4px 0;">Log catches to unlock achievements!</div>
+          </div>
+
           <!-- Profile Tabs -->
+          <!-- Trophy row: top 3 catches -->
+          <div id="prof-trophy-row" style="display:none;padding:0 16px 8px;">
+            <div style="font-size:10px;font-weight:800;color:#f59e0b;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:8px;padding-top:4px;">🏆 Trophy Catches</div>
+            <div id="prof-trophy-cards" style="display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;"></div>
+          </div>
           <div class="prof-tabs" id="prof-tabs-row">
             <button class="prof-tab active" id="tab-catches" onclick="switchProfileTab('catches')">Catches</button>
             <button class="prof-tab" id="tab-posts" onclick="switchProfileTab('posts')">Posts</button>
@@ -2179,6 +2196,8 @@ body {
           </div>
           <div class="explore-sec-hd" id="explore-spots-hd" style="display:none;">Hot Spots 📍</div>
           <div id="explore-spots" style="display:none;padding:0 16px 8px;"></div>
+          <div class="explore-sec-hd" id="explore-near-hd" style="display:none;">Near You 📍</div>
+          <div id="explore-near" style="display:none;padding:0 16px 8px;"></div>
           <div class="explore-sec-hd">Leaderboard <span style="font-weight:500;color:var(--gray);font-size:12px;">Top Catches</span></div>
           <div id="explore-lb" style="padding-bottom:8px;"></div>
         </div>
@@ -2232,6 +2251,16 @@ body {
           <div class="settings-toggle on" id="settings-notif-follows-toggle"><div class="settings-toggle-thumb"></div></div>
         </div>
         <div class="settings-section-label">App</div>
+        <div class="settings-row" id="settings-units-row" onclick="toggleWeightUnit()">
+          <div class="settings-row-icon">⚖️</div>
+          <div class="settings-row-body"><div class="settings-row-title">Weight Unit</div><div class="settings-row-sub" id="settings-units-sub">lbs (Imperial)</div></div>
+          <div class="settings-row-arrow">›</div>
+        </div>
+        <div class="settings-row" onclick="showCatchStreak()">
+          <div class="settings-row-icon">🔥</div>
+          <div class="settings-row-body"><div class="settings-row-title">Catch Streak</div><div class="settings-row-sub" id="settings-streak-sub">Days in a row with a catch</div></div>
+          <div class="settings-row-arrow">›</div>
+        </div>
         <div class="settings-row" onclick="inviteFriends()">
           <div class="settings-row-icon">📨</div>
           <div class="settings-row-body"><div class="settings-row-title">Invite Friends</div><div class="settings-row-sub">Share Fishy AI with your fishing crew</div></div>
@@ -2240,6 +2269,11 @@ body {
         <div class="settings-row" onclick="showMyStats()">
           <div class="settings-row-icon">📊</div>
           <div class="settings-row-body"><div class="settings-row-title">My Fishing Stats</div><div class="settings-row-sub">Detailed catch analytics</div></div>
+          <div class="settings-row-arrow">›</div>
+        </div>
+        <div class="settings-row" onclick="exportMyData()">
+          <div class="settings-row-icon">📥</div>
+          <div class="settings-row-body"><div class="settings-row-title">Export My Data</div><div class="settings-row-sub">Download all your catches as CSV</div></div>
           <div class="settings-row-arrow">›</div>
         </div>
         <div class="settings-section-label">About</div>
@@ -2554,8 +2588,11 @@ async function init() {
       initOfflineBanner();
       initPullToRefresh();
       applyDarkMode(STORE.get('dark_mode', false));
+      initWeightUnitDisplay();
       setTimeout(resumeSessionTimer, 500);
       setTimeout(requestNotificationPermission, 3000);
+      setTimeout(updateStreakSub, 1000);
+      setTimeout(() => computeCatchStreak().then(s => { if (s>0) STORE.set('streak',String(s)); }), 5000);
       // Realtime new feed posts
       if (sb) {
         let _newPostCount = 0;
@@ -2986,6 +3023,72 @@ async function loadProfileScreen() {
       }
     }
 
+    // Streak badge (own profile only)
+    const streakBadgeEl = document.getElementById('prof-streak-badge');
+    if (streakBadgeEl) {
+      if (!viewingUserId) {
+        const streak = parseInt(STORE.get('streak', '0')) || 0;
+        if (streak >= 3) {
+          streakBadgeEl.style.display = 'flex';
+          streakBadgeEl.style.cssText = 'display:flex;justify-content:center;margin-top:6px;';
+          streakBadgeEl.innerHTML = `<div style="display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,rgba(245,158,11,0.15),rgba(245,158,11,0.08));border:1px solid rgba(245,158,11,0.3);border-radius:20px;padding:4px 12px;cursor:pointer;" onclick="showCatchStreak()">
+            <span style="font-size:14px;">🔥</span>
+            <span style="font-size:11px;font-weight:800;color:#d97706;letter-spacing:-0.2px;">${streak} day streak</span>
+          </div>`;
+        } else {
+          streakBadgeEl.style.display = 'none';
+        }
+      } else {
+        streakBadgeEl.style.display = 'none';
+      }
+    }
+
+    // Trophy row: top 3 catches by weight
+    const trophyRow = document.getElementById('prof-trophy-row');
+    const trophyCards = document.getElementById('prof-trophy-cards');
+    const trophies = [...catchList].filter(c => parseFloat(c.weight_lbs) > 0).sort((a,b) => parseFloat(b.weight_lbs) - parseFloat(a.weight_lbs)).slice(0,3);
+    if (trophyRow && trophyCards && trophies.length >= 1) {
+      trophyRow.style.display = '';
+      const medals = ['🥇','🥈','🥉'];
+      trophyCards.innerHTML = trophies.map((c, i) => {
+        const bg = c.photo_url ? `background:url(${esc(c.photo_url)}) center/cover no-repeat;` : 'background:linear-gradient(135deg,#1B2E4B,#0ea5e9);';
+        return `<div style="${bg}width:90px;height:120px;border-radius:14px;flex-shrink:0;position:relative;cursor:pointer;overflow:hidden;" onclick="openComments('${c.id}')">
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.65) 0%,transparent 55%);"></div>
+          <div style="position:absolute;top:5px;left:5px;font-size:16px;">${medals[i]}</div>
+          <div style="position:absolute;bottom:5px;left:5px;right:5px;">
+            <div style="font-size:11px;font-weight:800;color:#fff;letter-spacing:-0.2px;">${esc(c.species||'')}</div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.8);">${parseFloat(c.weight_lbs).toFixed(1)} lbs</div>
+          </div>
+        </div>`;
+      }).join('');
+    } else if (trophyRow) { trophyRow.style.display = 'none'; }
+
+    // Achievements strip (own profile only)
+    const achRow = document.getElementById('prof-achievements-row');
+    const achList = document.getElementById('prof-achievements-list');
+    const achEmpty = document.getElementById('prof-achievements-empty');
+    if (achRow && achList) {
+      if (isOwnProfile || !viewingUserId) {
+        achRow.style.display = '';
+        const unlocked = JSON.parse(STORE.get('achievements', '[]'));
+        if (!unlocked.length) {
+          achList.style.display = 'none';
+          if (achEmpty) achEmpty.style.display = '';
+        } else {
+          if (achEmpty) achEmpty.style.display = 'none';
+          achList.style.display = 'flex';
+          achList.innerHTML = ACHIEVEMENTS.filter(a => unlocked.includes(a.id)).map(a =>
+            `<div style="flex-shrink:0;text-align:center;cursor:pointer;min-width:64px;padding:6px 4px;background:rgba(14,165,233,0.07);border-radius:12px;" onclick='showAchievement(${JSON.stringify(a)})'>
+              <div style="font-size:30px;line-height:1;">${a.icon}</div>
+              <div style="font-size:9px;font-weight:800;color:var(--navy);margin-top:4px;letter-spacing:0.3px;">${a.badge}</div>
+            </div>`
+          ).join('');
+        }
+      } else {
+        achRow.style.display = 'none';
+      }
+    }
+
     // Follow button
     const editShortcut = document.getElementById('edit-profile-shortcut');
     const followBtn = document.getElementById('follow-btn');
@@ -3086,17 +3189,38 @@ async function loadProfileScreen() {
 }
 
 function renderProfileStats(catchList, el) {
-  if (!catchList.length) { el.innerHTML = '<div style="color:var(--gray);font-size:12px;">Log catches to see your stats!</div>'; return; }
+  if (!catchList.length) {
+    el.innerHTML = `<div style="text-align:center;padding:20px 0;">
+      <div style="font-size:40px;margin-bottom:8px;">🎣</div>
+      <div style="font-size:13px;font-weight:700;color:#111;">No catches yet</div>
+      <div style="font-size:12px;color:var(--gray);margin-top:4px;">Log your first catch to see your stats!</div>
+    </div>`;
+    return;
+  }
 
-  // Top species
+  // Computed stats
+  const totalWeight = catchList.reduce((s, c) => s + (parseFloat(c.weight_lbs) || 0), 0);
+  const weighedCatches = catchList.filter(c => parseFloat(c.weight_lbs) > 0);
+  const avgWeight = weighedCatches.length ? totalWeight / weighedCatches.length : 0;
+  const heaviest = Math.max(0, ...catchList.map(c => parseFloat(c.weight_lbs) || 0));
+  const thisMonth = catchList.filter(c => new Date(c.created_at) > new Date(Date.now() - 30 * 86400000)).length;
+  const thisWeek = catchList.filter(c => new Date(c.created_at) > new Date(Date.now() - 7 * 86400000)).length;
+
+  // Species breakdown
   const speciesCount = {};
   catchList.forEach(c => { if (c.species) speciesCount[c.species] = (speciesCount[c.species]||0)+1; });
-  const topSpecies = Object.entries(speciesCount).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  const topSpecies = Object.entries(speciesCount).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const maxSpeciesCount = topSpecies[0]?.[1] || 1;
 
   // Top lure
   const lureCount = {};
   catchList.forEach(c => { if (c.lure_used) lureCount[c.lure_used] = (lureCount[c.lure_used]||0)+1; });
   const topLure = Object.entries(lureCount).sort((a,b)=>b[1]-a[1])[0];
+
+  // Top spot
+  const spotCount = {};
+  catchList.forEach(c => { if (c.spot_name && c.spot_name !== 'Unknown Spot') spotCount[c.spot_name] = (spotCount[c.spot_name]||0)+1; });
+  const topSpot = Object.entries(spotCount).sort((a,b)=>b[1]-a[1])[0];
 
   // Monthly catch count (last 6 months)
   const months = {};
@@ -3151,8 +3275,44 @@ function renderProfileStats(catchList, el) {
     calCells.push(`<div title="${cnt > 0 ? cnt + ' catch(es) on ' + dt.toLocaleDateString() : ''}" style="width:10px;height:10px;border-radius:2px;background:${bg};flex-shrink:0;" onclick="${cnt > 0 ? `showToast('${cnt} catch${cnt>1?'es':''}')` : ''}"></div>`);
   }
 
+  // Species bar chart
+  const speciesBars = topSpecies.map(([s, n], i) => {
+    const pct = Math.round(n / maxSpeciesCount * 100);
+    const colors = ['#0ea5e9','#0284c7','#0369a1','#075985','#0c4a6e'];
+    return `<div style="margin-bottom:6px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:2px;">
+        <span style="font-size:11px;font-weight:700;color:#111;">${esc(s)}</span>
+        <span style="font-size:11px;color:var(--gray);">${n} catch${n!==1?'es':''}</span>
+      </div>
+      <div style="height:6px;border-radius:3px;background:rgba(0,0,0,0.06);overflow:hidden;">
+        <div style="height:100%;width:${pct}%;background:${colors[i]};border-radius:3px;transition:width 0.5s;"></div>
+      </div>
+    </div>`;
+  }).join('');
+
   el.innerHTML = `
-    <div style="margin-bottom:12px;">
+    <!-- Quick stats row -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px;">
+      <div style="background:#fff;border-radius:12px;padding:10px 6px;text-align:center;">
+        <div style="font-size:18px;font-weight:800;color:var(--navy);letter-spacing:-0.5px;">${catchList.length}</div>
+        <div style="font-size:9px;color:var(--gray);font-weight:600;margin-top:1px;">TOTAL</div>
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:10px 6px;text-align:center;">
+        <div style="font-size:18px;font-weight:800;color:var(--navy);letter-spacing:-0.5px;">${heaviest > 0 ? heaviest.toFixed(1) : '—'}</div>
+        <div style="font-size:9px;color:var(--gray);font-weight:600;margin-top:1px;">BEST LB</div>
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:10px 6px;text-align:center;">
+        <div style="font-size:18px;font-weight:800;color:var(--navy);letter-spacing:-0.5px;">${thisWeek}</div>
+        <div style="font-size:9px;color:var(--gray);font-weight:600;margin-top:1px;">THIS WK</div>
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:10px 6px;text-align:center;">
+        <div style="font-size:18px;font-weight:800;color:var(--navy);letter-spacing:-0.5px;">${Object.keys(speciesCount).length}</div>
+        <div style="font-size:9px;color:var(--gray);font-weight:600;margin-top:1px;">SPECIES</div>
+      </div>
+    </div>
+
+    <!-- 12-week calendar -->
+    <div style="margin-bottom:14px;">
       <div style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">12-Week Activity</div>
       <div style="display:flex;flex-wrap:wrap;gap:2px;padding:2px 0;">${calCells.join('')}</div>
       <div style="display:flex;align-items:center;gap:4px;margin-top:4px;">
@@ -3164,24 +3324,47 @@ function renderProfileStats(catchList, el) {
         <span style="font-size:9px;color:var(--gray);">More</span>
       </div>
     </div>
-    <div style="margin-bottom:12px;">
+
+    <!-- Species breakdown -->
+    ${topSpecies.length ? `<div style="margin-bottom:14px;">
+      <div style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Species Breakdown</div>
+      ${speciesBars}
+    </div>` : ''}
+
+    <!-- 6-month chart -->
+    <div style="margin-bottom:14px;">
       <div style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">6-Month Catches</div>
       <div style="display:flex;align-items:flex-end;gap:4px;height:56px;">${chartBars}</div>
     </div>
-    <div style="margin-bottom:12px;">
+
+    <!-- Best days -->
+    <div style="margin-bottom:14px;">
       <div style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Best Days to Fish</div>
       <div style="display:flex;align-items:flex-end;gap:3px;height:46px;">${dayBars}</div>
       ${bestDay >= 0 && dayCounts[bestDay] > 0 ? `<div style="font-size:11px;color:#0ea5e9;font-weight:600;margin-top:4px;">Your best day: ${dayNames[bestDay]}s 🎣</div>` : ''}
     </div>
+
+    <!-- Fun facts row -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-      <div style="background:#fff;border-radius:10px;padding:10px;">
-        <div style="font-size:10px;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px;">Top Species</div>
-        ${topSpecies.map(([s,n]) => `<div style="font-size:12px;color:#111;font-weight:600;margin-bottom:2px;">${esc(s)} <span style="color:var(--gray);font-weight:500;">${n}×</span></div>`).join('') || '<div style="font-size:12px;color:var(--gray);">No data yet</div>'}
+      <div style="background:#fff;border-radius:12px;padding:12px;">
+        <div style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">Fav Lure</div>
+        <div style="font-size:13px;color:#111;font-weight:700;line-height:1.3;">${topLure ? esc(topLure[0]) : '—'}</div>
+        ${topLure ? `<div style="font-size:10px;color:var(--gray);margin-top:2px;">Used ${topLure[1]} time${topLure[1]!==1?'s':''}</div>` : ''}
       </div>
-      <div style="background:#fff;border-radius:10px;padding:10px;">
-        <div style="font-size:10px;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px;">Fav Lure</div>
-        <div style="font-size:12px;color:#111;font-weight:600;line-height:1.4;">${topLure ? esc(topLure[0]) + '<span style="color:var(--gray);font-weight:500;"> (' + topLure[1] + '×)</span>' : '—'}</div>
-        <div style="font-size:10px;color:var(--gray);margin-top:4px;">Best weight: ${catchList.reduce((b,c)=>Math.max(b,parseFloat(c.weight_lbs)||0),0) > 0 ? catchList.reduce((b,c)=>Math.max(b,parseFloat(c.weight_lbs)||0),0) + ' lbs' : '—'}</div>
+      <div style="background:#fff;border-radius:12px;padding:12px;">
+        <div style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">Fav Spot</div>
+        <div style="font-size:13px;color:#111;font-weight:700;line-height:1.3;">${topSpot ? esc(topSpot[0]) : '—'}</div>
+        ${topSpot ? `<div style="font-size:10px;color:var(--gray);margin-top:2px;">${topSpot[1]} catch${topSpot[1]!==1?'es':''}</div>` : ''}
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:12px;">
+        <div style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">Avg Weight</div>
+        <div style="font-size:13px;color:#111;font-weight:700;">${avgWeight > 0 ? avgWeight.toFixed(2) + ' lbs' : '—'}</div>
+        ${weighedCatches.length ? `<div style="font-size:10px;color:var(--gray);margin-top:2px;">From ${weighedCatches.length} weighed</div>` : ''}
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:12px;">
+        <div style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">This Month</div>
+        <div style="font-size:13px;color:#111;font-weight:700;">${thisMonth} catch${thisMonth!==1?'es':''}</div>
+        <div style="font-size:10px;color:${thisMonth >= (thisWeek > 0 ? thisWeek * 3 : 1) ? '#34c759' : 'var(--gray)'};margin-top:2px;">${thisWeek} this week</div>
       </div>
     </div>`;
 }
@@ -3431,6 +3614,8 @@ function goToLog() {
         capEl.placeholder = `Try: "${SPECIES_DB[species].tip.slice(0, 60)}…"`;
       }
     }
+    // Restore any saved draft
+    restoreLogDraft();
     // Auto-attach weather
     attachWeatherToLog();
   }, 250);
@@ -4199,6 +4384,7 @@ async function postCatch(isPublic = true) {
     aiLength = null; aiWeight = null;
     const captEl = document.getElementById('catch-caption-input');
     if (captEl) captEl.value = '';
+    clearLogDraft();
     showToast(isPublic ? 'Catch posted! 🎣' : 'Catch logged! 📋');
     showScreen(isPublic ? 'feed' : 'profile');
   } catch (err) {
@@ -4207,6 +4393,106 @@ async function postCatch(isPublic = true) {
     if (btn) { btn.textContent = isPublic ? 'Post & Log 🎣' : 'Log Only'; btn.disabled = false; }
     if (otherBtn) otherBtn.disabled = false;
   }
+}
+
+// ══════════════════════════════════════════
+//  DRAFT SAVING
+// ══════════════════════════════════════════
+function updateCaptionCount(el) {
+  const max = 280;
+  const left = max - el.value.length;
+  const counter = document.getElementById('caption-char-count');
+  if (counter) {
+    counter.textContent = left;
+    counter.style.color = left < 30 ? '#ff375f' : left < 60 ? '#f59e0b' : 'var(--gray)';
+  }
+  saveLogDraft();
+}
+
+function saveLogDraft() {
+  const caption = document.getElementById('catch-caption-input')?.value || '';
+  const weight = document.getElementById('weight-input')?.value || '';
+  const lure = document.getElementById('lure-input')?.value || '';
+  if (caption || weight || lure) {
+    STORE.set('log_draft', JSON.stringify({ caption, weight, lure, ts: Date.now() }));
+  }
+}
+
+function restoreLogDraft() {
+  const raw = STORE.get('log_draft', '');
+  if (!raw) return;
+  try {
+    const d = JSON.parse(raw);
+    if (Date.now() - d.ts > 24 * 3600000) { STORE.set('log_draft', ''); return; }
+    if (d.caption) {
+      const captEl = document.getElementById('catch-caption-input');
+      if (captEl) { captEl.value = d.caption; updateCaptionCount(captEl); }
+      const badge = document.getElementById('caption-draft-badge');
+      if (badge) badge.style.display = 'inline-block';
+      setTimeout(() => { if (badge) badge.style.display = 'none'; }, 4000);
+    }
+    if (d.weight) { const el = document.getElementById('weight-input'); if (el) el.value = d.weight; }
+    if (d.lure) { const el = document.getElementById('lure-input'); if (el) el.value = d.lure; }
+  } catch {}
+}
+
+function clearLogDraft() { STORE.set('log_draft', ''); }
+
+
+// ══════════════════════════════════════════
+//  CATCH COMPARE
+// ══════════════════════════════════════════
+let _compareA = null;
+async function openCatchCompare(catchId) {
+  if (!_compareA) {
+    _compareA = catchId;
+    showToast('Now tap another catch to compare! ⚖️');
+    return;
+  }
+  if (_compareA === catchId) { _compareA = null; showToast('Pick a different catch'); return; }
+  const bId = catchId;
+  const aId = _compareA;
+  _compareA = null;
+  try {
+    const [{ data: a }, { data: b }] = await Promise.all([
+      sb.from('catches').select('*,profiles!catches_user_id_fkey(username,avatar_url)').eq('id', aId).single(),
+      sb.from('catches').select('*,profiles!catches_user_id_fkey(username,avatar_url)').eq('id', bId).single(),
+    ]);
+    if (!a || !b) return;
+    const col = (c, isWinner) => {
+      const w = parseFloat(c.weight_lbs) || 0;
+      const l = parseFloat(c.length_in) || 0;
+      const bg = c.photo_url ? `url(${esc(c.photo_url)}) center/cover no-repeat` : 'linear-gradient(135deg,#1B2E4B,#0ea5e9)';
+      return `<div style="flex:1;text-align:center;">
+        <div style="height:140px;border-radius:14px;background:${bg};position:relative;overflow:hidden;margin-bottom:8px;">
+          ${isWinner ? '<div style="position:absolute;top:6px;right:6px;font-size:18px;">🏆</div>' : ''}
+          <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,transparent 100%);padding:8px;">
+            <div style="font-size:11px;font-weight:800;color:#fff;">${esc(c.species||'?')}</div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--gray);">@${esc(c.profiles?.username||'?')}</div>
+        <div style="font-size:18px;font-weight:800;color:${isWinner?'#f59e0b':'#111'};margin:4px 0;">${w>0?w.toFixed(1)+' lbs':'—'}</div>
+        <div style="font-size:11px;color:var(--gray);">${l>0?l.toFixed(0)+'"':''} ${c.lure_used?'· '+esc(c.lure_used):''}</div>
+      </div>`;
+    };
+    const wA = parseFloat(a.weight_lbs)||0, wB = parseFloat(b.weight_lbs)||0;
+    const modal = document.createElement('div');
+    modal.id = 'compare-modal';
+    modal.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+    modal.innerHTML = `
+      <div onclick="document.getElementById('compare-modal').remove()" style="position:absolute;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);"></div>
+      <div style="position:relative;background:#fff;border-radius:24px;padding:20px;width:100%;max-width:340px;z-index:1;">
+        <div style="font-size:15px;font-weight:800;color:#111;margin-bottom:16px;text-align:center;">⚖️ Catch Compare</div>
+        <div style="display:flex;gap:12px;align-items:center;">
+          ${col(a, wA >= wB && wA > 0)}
+          <div style="font-size:18px;font-weight:800;color:var(--gray);flex-shrink:0;">VS</div>
+          ${col(b, wB > wA && wB > 0)}
+        </div>
+        ${wA === wB && wA > 0 ? '<div style="text-align:center;font-size:12px;color:var(--gray);margin-top:12px;">It\'s a tie! 🤝</div>' : ''}
+        <button onclick="document.getElementById('compare-modal').remove()" style="width:100%;margin-top:16px;padding:12px;border:none;border-radius:12px;background:var(--navy);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">Close</button>
+      </div>`;
+    document.querySelector('.phone')?.appendChild(modal);
+  } catch { showToast('Could not load catches for comparison'); }
 }
 
 // ══════════════════════════════════════════
@@ -4764,7 +5050,17 @@ function catchCard(c, likes, liked, cmtCount = 0) {
     : `<div class="post-photo ph-ocean" ondblclick="doubleTapLike('${c.id}')" ontouchend="handlePhotoTouch(event,'${c.id}')">${PH_SVG}${dtHeart}<div class="post-fish-over"><span class="fish-tag">${esc(c.species||'')}</span></div></div>`;
 
   const captionHtml = c.caption
-    ? `<div style="padding:10px 14px 4px;font-size:14px;color:#111;letter-spacing:-0.2px;line-height:1.5;">${esc(c.caption)}</div>`
+    ? (() => {
+        const linkify = (text) => esc(text).replace(/#(\w+)/g, '<span style="color:#0ea5e9;font-weight:600;cursor:pointer;" onclick="event.stopPropagation();showScreen(\'explore\');setTimeout(()=>onExploreSearch(\'#$1\'),200)">#$1</span>').replace(/@(\w+)/g, '<span style="color:var(--navy);font-weight:600;cursor:pointer;" onclick="event.stopPropagation();showScreen(\'explore\');setTimeout(()=>onExploreSearch(\'$1\'),200)">@$1</span>');
+        const linked = linkify(c.caption);
+        const isLong = c.caption.length > 100;
+        if (!isLong) return `<div style="padding:10px 14px 4px;font-size:14px;color:#111;letter-spacing:-0.2px;line-height:1.5;">${linked}</div>`;
+        const preview = linkify(c.caption.slice(0, 100));
+        return `<div style="padding:10px 14px 4px;font-size:14px;color:#111;letter-spacing:-0.2px;line-height:1.5;" id="cap-${c.id}">
+          <span id="cap-short-${c.id}">${preview}… <span style="color:var(--gray);font-size:12px;cursor:pointer;" onclick="event.stopPropagation();document.getElementById('cap-short-${c.id}').style.display='none';document.getElementById('cap-full-${c.id}').style.display='inline';">more</span></span>
+          <span id="cap-full-${c.id}" style="display:none;">${linked}</span>
+        </div>`;
+      })()
     : '';
 
   const menuBtn = `<button class="act-btn card-menu-btn" onclick="event.stopPropagation();openCardMenu('${c.id}','${c.user_id}',event)" title="More" style="margin-left:auto;padding:8px 6px;">
@@ -4855,10 +5151,12 @@ function openCardMenu(catchId, ownerId, e) {
     ? [
         { label: 'Edit Post', icon: '✏️', action: `openEditCatch('${catchId}')` },
         { label: isPinned ? 'Unpin from Profile' : 'Pin to Profile', icon: '📌', action: `togglePinnedCatch('${catchId}')` },
+        { label: 'Compare Catch', icon: '⚖️', action: `openCatchCompare('${catchId}')` },
         { label: 'Delete Post', icon: '🗑', action: `deleteOwnCatch('${catchId}')`, danger: true },
         { label: 'Share', icon: '📤', action: `shareCard('${catchId}','','')` },
       ]
     : [
+        { label: 'Compare Catch', icon: '⚖️', action: `openCatchCompare('${catchId}')` },
         { label: 'Report Post', icon: '⚠️', action: `reportPost('${catchId}')`, danger: true },
         { label: 'Share', icon: '📤', action: `shareCard('${catchId}','','')` },
         { label: 'Copy Link', icon: '🔗', action: `copyLink('${catchId}')` },
@@ -6086,6 +6384,7 @@ async function loadExplore() {
   loadExploreBuddies();
   loadExploreHotTakes();
   loadExploreHotSpots();
+  loadExploreNearYou();
 }
 
 function loadExploreEncyclopedia() {
@@ -6322,6 +6621,56 @@ async function loadExploreBuddies() {
       }).join('')}
     </div>`;
   } catch {}
+}
+
+async function loadExploreNearYou() {
+  const el = document.getElementById('explore-near');
+  const hd = document.getElementById('explore-near-hd');
+  if (!el || !hd || !sb) return;
+  if (!navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(async (pos) => {
+    try {
+      const { latitude: lat, longitude: lon } = pos.coords;
+      // Get catches with lat/lng, compute distance, show closest 5
+      const { data } = await sb.from('catches')
+        .select('id, species, weight_lbs, photo_url, lat, lng, spot_name, created_at, profiles!catches_user_id_fkey(username)')
+        .eq('is_public', true).neq('post_type', 'story')
+        .not('lat', 'is', null).not('lng', 'is', null)
+        .order('created_at', { ascending: false }).limit(100);
+      if (!data?.length) return;
+
+      const haversine = (lat1, lon1, lat2, lon2) => {
+        const R = 3958.8; // miles
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLon/2)**2;
+        return R * 2 * Math.asin(Math.sqrt(a));
+      };
+
+      const nearby = data
+        .map(c => ({ ...c, miles: haversine(lat, lon, parseFloat(c.lat), parseFloat(c.lng)) }))
+        .filter(c => c.miles < 50)
+        .sort((a, b) => a.miles - b.miles)
+        .slice(0, 5);
+
+      if (!nearby.length) return;
+
+      hd.style.display = '';
+      el.style.display = '';
+      el.innerHTML = nearby.map(c => {
+        const bg = c.photo_url ? `url(${esc(c.photo_url)}) center/cover` : 'linear-gradient(135deg,#1B2E4B,#0ea5e9)';
+        const dist = c.miles < 1 ? `< 1 mi` : `${c.miles.toFixed(1)} mi`;
+        return `<div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:0.5px solid var(--sep);cursor:pointer;" onclick="openComments('${c.id}')">
+          <div style="width:52px;height:52px;border-radius:12px;background:${bg};flex-shrink:0;"></div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:13px;font-weight:700;color:#111;">${esc(c.species||'Fish')}</div>
+            <div style="font-size:11px;color:var(--gray);">${c.spot_name ? esc(c.spot_name) + ' · ' : ''}@${esc(c.profiles?.username||'angler')}</div>
+          </div>
+          <div style="font-size:10px;font-weight:700;color:var(--navy);background:rgba(27,46,75,0.08);padding:3px 8px;border-radius:10px;flex-shrink:0;">${dist}</div>
+        </div>`;
+      }).join('');
+    } catch {}
+  }, () => {}, { timeout: 5000 });
 }
 
 async function exploreFollow(uid, btn) {
@@ -7699,6 +8048,108 @@ async function showMyStats() {
 function showAbout() {
   const unlocked = JSON.parse(STORE.get('achievements', '[]')).length;
   alert(`🐟 Fishy AI v2.0\n\nThe social app for anglers.\nLog catches · Track species · Compete on leaderboards\n\n🏆 Your Achievements: ${unlocked}/${ACHIEVEMENTS.length} unlocked\n\nBuilt with love for fishing communities everywhere. 🎣`);
+}
+
+// ══════════════════════════════════════════
+//  WEIGHT UNIT TOGGLE
+// ══════════════════════════════════════════
+function toggleWeightUnit() {
+  const current = STORE.get('weight_unit', 'lbs');
+  const next = current === 'lbs' ? 'kg' : 'lbs';
+  STORE.set('weight_unit', next);
+  const sub = document.getElementById('settings-units-sub');
+  if (sub) sub.textContent = next === 'kg' ? 'kg (Metric)' : 'lbs (Imperial)';
+  showToast(`Weight unit set to ${next}`);
+}
+
+function initWeightUnitDisplay() {
+  const unit = STORE.get('weight_unit', 'lbs');
+  const sub = document.getElementById('settings-units-sub');
+  if (sub) sub.textContent = unit === 'kg' ? 'kg (Metric)' : 'lbs (Imperial)';
+}
+
+function formatWeight(lbs) {
+  if (!lbs) return null;
+  const unit = STORE.get('weight_unit', 'lbs');
+  if (unit === 'kg') return (parseFloat(lbs) * 0.453592).toFixed(2) + ' kg';
+  return parseFloat(lbs).toFixed(1) + ' lbs';
+}
+
+// ══════════════════════════════════════════
+//  CATCH STREAK
+// ══════════════════════════════════════════
+async function computeCatchStreak() {
+  if (!sb || !currentUser) return 0;
+  try {
+    const { data } = await sb.from('catches')
+      .select('created_at').eq('user_id', currentUser.id)
+      .order('created_at', { ascending: false }).limit(200);
+    if (!data?.length) return 0;
+    const days = new Set(data.map(c => new Date(c.created_at).toDateString()));
+    let streak = 0;
+    const today = new Date();
+    for (let i = 0; i <= 365; i++) {
+      const d = new Date(today.getTime() - i * 86400000);
+      if (days.has(d.toDateString())) streak++;
+      else if (i > 0) break;
+    }
+    STORE.set('streak', String(streak));
+    return streak;
+  } catch { return parseInt(STORE.get('streak', '0')) || 0; }
+}
+
+async function showCatchStreak() {
+  const streak = await computeCatchStreak();
+  const sub = document.getElementById('settings-streak-sub');
+  if (sub) sub.textContent = streak > 0 ? `🔥 ${streak} day${streak!==1?'s':''} in a row!` : 'No active streak — go fish! 🎣';
+  const msg = streak >= 7
+    ? `🔥 ${streak}-day streak!\n\nAmazing consistency — you're on fire!`
+    : streak > 0
+    ? `🎣 ${streak}-day streak!\n\nKeep it up — catch fish ${7-streak} more day${7-streak!==1?'s':''} to hit 7!`
+    : 'No active streak.\n\nLog a catch today to start your streak! 🎣';
+  showToast(streak > 0 ? `🔥 ${streak}-day streak!` : 'Start your streak today!');
+}
+
+// Update streak sub on settings open
+async function updateStreakSub() {
+  const cached = parseInt(STORE.get('streak','0'))||0;
+  const sub = document.getElementById('settings-streak-sub');
+  if (sub && cached > 0) sub.textContent = `🔥 ${cached} day${cached!==1?'s':''} streak`;
+}
+
+// ══════════════════════════════════════════
+//  EXPORT MY DATA
+// ══════════════════════════════════════════
+async function exportMyData() {
+  if (!sb || !currentUser) { showToast('Sign in to export data'); return; }
+  showToast('Preparing your data… ⏳');
+  try {
+    const { data: catches } = await sb.from('catches')
+      .select('species,weight_lbs,length_in,lure_used,spot_name,caption,is_public,kept,created_at')
+      .eq('user_id', currentUser.id)
+      .order('created_at', { ascending: false });
+    if (!catches?.length) { showToast('No catches to export yet'); return; }
+    const headers = ['Date','Species','Weight (lbs)','Length (in)','Lure','Spot','Caption','Public','Kept'];
+    const rows = catches.map(c => [
+      new Date(c.created_at).toLocaleDateString(),
+      c.species || '',
+      c.weight_lbs || '',
+      c.length_in || '',
+      c.lure_used || '',
+      c.spot_name || '',
+      (c.caption || '').replace(/,/g, ';'),
+      c.is_public ? 'Yes' : 'No',
+      c.kept ? 'Kept' : 'Released',
+    ].map(v => `"${v}"`).join(','));
+    const csv = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `fishy-catches-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+    showToast(`Exported ${catches.length} catches! 📥`);
+  } catch { showToast('Export failed — try again'); }
 }
 
 // ══════════════════════════════════════════
