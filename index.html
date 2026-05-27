@@ -1871,6 +1871,8 @@ body {
             <div class="lb-tab" data-filter="following" onclick="setLbTab(this,'following')">Following</div>
           </div>
         </div>
+        <!-- Personal Best card -->
+        <div id="lb-personal-best" style="display:none;margin:8px 0;"></div>
         <div class="lb-list">
           <div id="lb-list-content">
             <div class="lb-item"><div class="lb-rank gold">1</div><div class="av">TK</div><div class="lb-info"><div class="lb-name">texas_king</div><div class="lb-fish">Blue Catfish · Lake Texoma, TX</div></div><div class="lb-weight">121 lbs</div></div>
@@ -2145,6 +2147,9 @@ body {
           <div id="explore-tip" style="display:none;padding:0 16px;margin-bottom:4px;"></div>
           <!-- Weekly Challenge -->
           <div id="explore-challenge" style="display:none;padding:0 16px;margin-bottom:4px;"></div>
+          <!-- Hot Takes -->
+          <div class="explore-sec-hd" id="explore-hot-hd" style="display:none;">Hot Takes 🌶️</div>
+          <div id="explore-hot" style="display:none;padding:0 16px 4px;overflow-x:auto;scrollbar-width:none;display:none;gap:8px;"></div>
           <div class="explore-sec-hd">Trending This Week 🔥</div>
           <div id="explore-trending" class="explore-trending-grid">
             <div class="explore-placeholder">Loading…</div>
@@ -2924,6 +2929,18 @@ async function loadProfileScreen() {
     setEl('prof-followers',    follRes.count ?? 0);
     setEl('prof-following',    followingRes.count ?? 0);
     setEl('prof-total-weight', totalLbs > 0 ? `${totalLbs.toFixed(1)} lbs total` : '');
+    // Fishing since date
+    if (catchList.length > 0) {
+      const oldest = new Date(catchList[catchList.length - 1].created_at);
+      const sinceStr = oldest.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+      const handleEl = document.getElementById('prof-handle');
+      if (handleEl && !handleEl.textContent.includes('·')) {
+        // keep existing handle, skip
+      } else if (handleEl) {
+        const handleText = handleEl.textContent.split('·')[0].trim();
+        handleEl.innerHTML = `${handleText} · <span style="color:#f59e0b;font-weight:600;">Fishing since ${sinceStr}</span>`;
+      }
+    }
 
     // Follow button
     const editShortcut = document.getElementById('edit-profile-shortcut');
@@ -4881,6 +4898,36 @@ async function loadLeaderboard(filter = 'all') {
     }
 
     const { data } = await query;
+
+    // Personal best card
+    const pbEl = document.getElementById('lb-personal-best');
+    if (pbEl && currentUser && sb) {
+      try {
+        const { data: myBest } = await sb.from('catches')
+          .select('id,species,weight_lbs,spot_name,created_at')
+          .eq('user_id', currentUser.id).eq('post_type', 'catch')
+          .not('weight_lbs', 'is', null)
+          .order('weight_lbs', { ascending: false }).limit(1).single();
+        if (myBest && myBest.weight_lbs) {
+          const rank = (data || []).findIndex(c => parseFloat(c.weight_lbs) < parseFloat(myBest.weight_lbs)) + 1;
+          pbEl.style.display = '';
+          pbEl.innerHTML = `<div style="margin:0 0 0;padding:12px 16px;background:linear-gradient(135deg,rgba(245,158,11,0.1),rgba(245,158,11,0.04));border-bottom:0.5px solid rgba(245,158,11,0.15);">
+            <div style="font-size:10px;font-weight:800;color:#f59e0b;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;">⭐ Your Personal Best</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div>
+                <div style="font-size:15px;font-weight:800;color:#111;letter-spacing:-0.4px;">${esc(myBest.species||'Unknown')}</div>
+                <div style="font-size:12px;color:var(--gray);margin-top:1px;">${myBest.spot_name ? esc(myBest.spot_name) + ' · ' : ''}${new Date(myBest.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:22px;font-weight:800;color:var(--navy);letter-spacing:-0.8px;">${parseFloat(myBest.weight_lbs).toFixed(1)} lbs</div>
+                ${rank > 0 ? `<div style="font-size:10px;color:#f59e0b;font-weight:600;margin-top:1px;">Beat ${rank} angler${rank !== 1 ? 's' : ''}</div>` : `<div style="font-size:10px;color:#34c759;font-weight:600;margin-top:1px;">Top of the board! 🏆</div>`}
+              </div>
+            </div>
+          </div>`;
+        }
+      } catch {}
+    }
+
     if (!data?.length) {
       listEl.innerHTML = '<div style="text-align:center;padding:32px;color:var(--gray);font-size:13px;">No catches found for this period.</div>';
       return;
@@ -5968,6 +6015,7 @@ async function loadExplore() {
   loadExploreEncyclopedia();
   loadWeeklyChallenge();
   loadExploreBuddies();
+  loadExploreHotTakes();
 }
 
 function loadExploreEncyclopedia() {
@@ -6079,6 +6127,51 @@ async function loadExploreWhoToFollow() {
       </div>`;
     }).join('');
   } catch(e) { console.warn('loadExploreWhoToFollow:', e.message); }
+}
+
+async function loadExploreHotTakes() {
+  const el = document.getElementById('explore-hot');
+  const hd = document.getElementById('explore-hot-hd');
+  if (!el || !hd || !sb) return;
+  try {
+    const since = new Date(Date.now() - 24 * 3600000).toISOString();
+    const { data: catches } = await sb.from('catches')
+      .select('id, species, weight_lbs, photo_url, user_id, profiles!catches_user_id_fkey(username, avatar_url)')
+      .eq('is_public', true).neq('post_type', 'story')
+      .gte('created_at', since)
+      .not('photo_url', 'is', null)
+      .order('created_at', { ascending: false }).limit(30);
+
+    if (!catches?.length) return;
+    const ids = catches.map(c => c.id);
+    const { data: likes } = await sb.from('likes').select('catch_id').in('catch_id', ids);
+    const likeMap = {};
+    (likes || []).forEach(l => { likeMap[l.catch_id] = (likeMap[l.catch_id] || 0) + 1; });
+
+    // Sort by like count descending, take top 5 with >= 1 like
+    const hot = catches
+      .map(c => ({ ...c, likes: likeMap[c.id] || 0 }))
+      .sort((a, b) => b.likes - a.likes)
+      .filter(c => c.likes >= 1)
+      .slice(0, 5);
+
+    if (!hot.length) return;
+
+    hd.style.display = '';
+    el.style.display = 'flex';
+    el.innerHTML = hot.map(c => {
+      const u = c.profiles?.username || 'angler';
+      return `<div style="flex-shrink:0;width:110px;border-radius:16px;overflow:hidden;background:#1c1c1e;cursor:pointer;position:relative;" onclick="openComments('${c.id}')">
+        <img src="${esc(c.photo_url)}" style="width:110px;height:130px;object-fit:cover;display:block;">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,transparent 50%);"></div>
+        <div style="position:absolute;bottom:6px;left:8px;right:8px;">
+          <div style="font-size:12px;font-weight:800;color:#fff;letter-spacing:-0.3px;">${esc(c.species||'')}</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.7);">@${esc(u)} · ❤️${c.likes}</div>
+        </div>
+        <div style="position:absolute;top:6px;right:6px;background:rgba(255,59,48,0.9);color:#fff;font-size:10px;font-weight:800;padding:2px 6px;border-radius:8px;">🔥 HOT</div>
+      </div>`;
+    }).join('');
+  } catch {}
 }
 
 async function loadExploreBuddies() {
