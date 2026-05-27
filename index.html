@@ -1252,6 +1252,12 @@ body {
 .ptr-spinner{width:24px;height:24px;border:2.5px solid rgba(27,46,75,0.15);border-top-color:var(--navy);border-radius:50%;animation:spin 0.7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
+/* ── NEW POSTS BANNER ── */
+#new-posts-banner{position:sticky;top:0;z-index:10;text-align:center;padding:0;overflow:hidden;max-height:0;transition:max-height 0.3s var(--ease),padding 0.3s;}
+#new-posts-banner.show{max-height:48px;padding:10px;}
+#new-posts-banner-inner{display:inline-flex;align-items:center;gap:8px;background:var(--navy);color:#fff;border-radius:100px;padding:7px 16px;font-size:13px;font-weight:700;letter-spacing:-0.2px;cursor:pointer;-webkit-tap-highlight-color:transparent;box-shadow:0 4px 20px rgba(27,46,75,0.35);}
+.dark-mode #new-posts-banner-inner{background:#0ea5e9;}
+
 /* ── GEAR TAB ── */
 .dark-mode #gear-grid-content > div { background: #2c2c2e !important; }
 /* ── PINNED CATCH ── */
@@ -1479,6 +1485,12 @@ body {
           <button class="feed-ftab" id="fft-top" onclick="setFeedFilter('top')">Top</button>
         </div>
         <div id="feed-ptr" class="feed-ptr" style="display:none;">↓ Pull to refresh</div>
+        <div id="new-posts-banner">
+          <div id="new-posts-banner-inner" onclick="refreshFeedFromBanner()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.82"/></svg>
+            <span id="new-posts-count">0 new posts</span>
+          </div>
+        </div>
         <div id="feed-content"></div>
       </div>
     </div>
@@ -2165,6 +2177,8 @@ body {
             ${Object.keys(SPECIES_DB||{}).map ? '' : ''}
             <div id="explore-encyclopedia" style="display:flex;flex-wrap:wrap;gap:6px;width:100%;"></div>
           </div>
+          <div class="explore-sec-hd" id="explore-spots-hd" style="display:none;">Hot Spots 📍</div>
+          <div id="explore-spots" style="display:none;padding:0 16px 8px;"></div>
           <div class="explore-sec-hd">Leaderboard <span style="font-weight:500;color:var(--gray);font-size:12px;">Top Catches</span></div>
           <div id="explore-lb" style="padding-bottom:8px;"></div>
         </div>
@@ -2542,6 +2556,36 @@ async function init() {
       applyDarkMode(STORE.get('dark_mode', false));
       setTimeout(resumeSessionTimer, 500);
       setTimeout(requestNotificationPermission, 3000);
+      // Realtime new feed posts
+      if (sb) {
+        let _newPostCount = 0;
+        sb.channel('feed:new-catches')
+          .on('postgres_changes', {
+            event: 'INSERT', schema: 'public', table: 'catches',
+          }, (payload) => {
+            const n = payload.new;
+            if (!n || n.user_id === currentUser?.id || n.post_type === 'story' || !n.is_public) return;
+            const currentScreen = document.querySelector('.screen.active')?.id;
+            if (currentScreen !== 'screen-feed') return;
+            _newPostCount++;
+            const banner = document.getElementById('new-posts-banner');
+            const countEl = document.getElementById('new-posts-count');
+            if (banner && countEl) {
+              countEl.textContent = `${_newPostCount} new post${_newPostCount !== 1 ? 's' : ''}`;
+              banner.classList.add('show');
+            }
+          })
+          .subscribe();
+
+        window.refreshFeedFromBanner = () => {
+          _newPostCount = 0;
+          document.getElementById('new-posts-banner')?.classList.remove('show');
+          loadFeed(false);
+          const fc = document.querySelector('#screen-feed .feed-wrap');
+          if (fc) fc.scrollTop = 0;
+        };
+      }
+
       // Realtime notification listener
       if (sb && currentUser) {
         sb.channel(`notifs:${currentUser.id}`)
@@ -3094,7 +3138,32 @@ function renderProfileStats(catchList, el) {
     </div>`;
   }).join('');
 
+  // Catch calendar (12-week contribution heatmap)
+  const catchDays = {};
+  catchList.forEach(c => { if (c.created_at) { const k = new Date(c.created_at).toDateString(); catchDays[k] = (catchDays[k]||0)+1; } });
+  const today = new Date(); today.setHours(23,59,59,999);
+  const calCells = [];
+  for (let d = 83; d >= 0; d--) {
+    const dt = new Date(today.getTime() - d * 86400000);
+    const k = dt.toDateString();
+    const cnt = catchDays[k] || 0;
+    const bg = cnt === 0 ? 'rgba(0,0,0,0.06)' : cnt === 1 ? 'rgba(14,165,233,0.35)' : cnt <= 3 ? '#0ea5e9' : '#0070b8';
+    calCells.push(`<div title="${cnt > 0 ? cnt + ' catch(es) on ' + dt.toLocaleDateString() : ''}" style="width:10px;height:10px;border-radius:2px;background:${bg};flex-shrink:0;" onclick="${cnt > 0 ? `showToast('${cnt} catch${cnt>1?'es':''}')` : ''}"></div>`);
+  }
+
   el.innerHTML = `
+    <div style="margin-bottom:12px;">
+      <div style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">12-Week Activity</div>
+      <div style="display:flex;flex-wrap:wrap;gap:2px;padding:2px 0;">${calCells.join('')}</div>
+      <div style="display:flex;align-items:center;gap:4px;margin-top:4px;">
+        <span style="font-size:9px;color:var(--gray);">Less</span>
+        <div style="width:8px;height:8px;border-radius:1px;background:rgba(0,0,0,0.06);"></div>
+        <div style="width:8px;height:8px;border-radius:1px;background:rgba(14,165,233,0.35);"></div>
+        <div style="width:8px;height:8px;border-radius:1px;background:#0ea5e9;"></div>
+        <div style="width:8px;height:8px;border-radius:1px;background:#0070b8;"></div>
+        <span style="font-size:9px;color:var(--gray);">More</span>
+      </div>
+    </div>
     <div style="margin-bottom:12px;">
       <div style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">6-Month Catches</div>
       <div style="display:flex;align-items:flex-end;gap:4px;height:56px;">${chartBars}</div>
@@ -6016,6 +6085,7 @@ async function loadExplore() {
   loadWeeklyChallenge();
   loadExploreBuddies();
   loadExploreHotTakes();
+  loadExploreHotSpots();
 }
 
 function loadExploreEncyclopedia() {
@@ -6127,6 +6197,49 @@ async function loadExploreWhoToFollow() {
       </div>`;
     }).join('');
   } catch(e) { console.warn('loadExploreWhoToFollow:', e.message); }
+}
+
+async function loadExploreHotSpots() {
+  const el = document.getElementById('explore-spots');
+  const hd = document.getElementById('explore-spots-hd');
+  if (!el || !hd || !sb) return;
+  try {
+    const since = new Date(Date.now() - 7 * 86400000).toISOString();
+    const { data } = await sb.from('catches')
+      .select('spot_name, species')
+      .not('spot_name', 'is', null)
+      .gte('created_at', since)
+      .eq('is_public', true)
+      .limit(100);
+    if (!data?.length) return;
+
+    // Count by spot
+    const spotCounts = {};
+    const spotSpecies = {};
+    data.forEach(c => {
+      if (!c.spot_name) return;
+      spotCounts[c.spot_name] = (spotCounts[c.spot_name] || 0) + 1;
+      if (!spotSpecies[c.spot_name]) spotSpecies[c.spot_name] = new Set();
+      if (c.species) spotSpecies[c.spot_name].add(c.species);
+    });
+    const hotSpots = Object.entries(spotCounts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    if (hotSpots.length < 2) return;
+
+    hd.style.display = '';
+    el.style.display = '';
+    el.innerHTML = hotSpots.map(([name, count], i) => {
+      const species = [...(spotSpecies[name] || [])].slice(0,2).join(', ');
+      const flames = i === 0 ? '🔥' : i === 1 ? '🌡️' : '📍';
+      return `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--sep);cursor:pointer;" onclick="onExploreSearch('${esc(name)}')">
+        <div style="font-size:22px;width:28px;text-align:center;flex-shrink:0;">${flames}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:700;color:#111;letter-spacing:-0.2px;">${esc(name)}</div>
+          <div style="font-size:11px;color:var(--gray);">${species ? esc(species) + ' · ' : ''}${count} catch${count !== 1 ? 'es' : ''} this week</div>
+        </div>
+        <div style="font-size:11px;font-weight:700;color:var(--navy);">#${i+1}</div>
+      </div>`;
+    }).join('');
+  } catch {}
 }
 
 async function loadExploreHotTakes() {
