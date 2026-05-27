@@ -1257,6 +1257,46 @@ body {
 #new-posts-banner.show{max-height:48px;padding:10px;}
 #new-posts-banner-inner{display:inline-flex;align-items:center;gap:8px;background:var(--navy);color:#fff;border-radius:100px;padding:7px 16px;font-size:13px;font-weight:700;letter-spacing:-0.2px;cursor:pointer;-webkit-tap-highlight-color:transparent;box-shadow:0 4px 20px rgba(27,46,75,0.35);}
 .dark-mode #new-posts-banner-inner{background:#0ea5e9;}
+/* ── MORE DARK MODE ELEMENTS ── */
+.dark-mode .card { background: #1c1c1e; }
+.dark-mode .post-name,.dark-mode .post-likes { color: #fff; }
+.dark-mode .post-spot,.dark-mode .post-time { color: rgba(255,255,255,0.5); }
+.dark-mode .post-stats { color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.04); }
+.dark-mode .post-actions { border-top-color: rgba(255,255,255,0.06); }
+.dark-mode .act-btn { color: #ccc; }
+.dark-mode .act-btn svg { stroke: #ccc; }
+.dark-mode .act-btn.liked svg { stroke: #ff375f; }
+.dark-mode .cs-sheet { background: #1c1c1e; }
+.dark-mode .cs-head-title { color: #fff; }
+.dark-mode .cs-comment-name { color: #fff; }
+.dark-mode .cs-comment-text { color: #eee; }
+.dark-mode .cs-input { background: #2c2c2e; color: #fff; border-color: rgba(255,255,255,0.08); }
+.dark-mode .cs-input::placeholder { color: #555; }
+.dark-mode .cs-footer { background: #1c1c1e; border-top-color: rgba(255,255,255,0.06); }
+.dark-mode .skel-card { background: #1c1c1e; }
+.dark-mode .skel { background: linear-gradient(90deg, #2c2c2e 25%, #3a3a3c 50%, #2c2c2e 75%); background-size: 400px 100%; }
+.dark-mode #feed-tip-banner { background: rgba(14,165,233,0.08); border-color: rgba(14,165,233,0.2); }
+.dark-mode #feed-tip-text { color: #ccc; }
+.dark-mode .prof-name-v2 { color: #fff; }
+.dark-mode .prof-handle-v2 { color: rgba(255,255,255,0.5); }
+.dark-mode #prof-bio { color: rgba(255,255,255,0.6); }
+.dark-mode .prof-stat-lbl-v2 { color: rgba(255,255,255,0.4); }
+.dark-mode .prof-stat-num-v2 { color: #fff; }
+.dark-mode .prof-hero-num-v2 { color: #fff; }
+.dark-mode .prof-hero-lbl-v2 { color: rgba(255,255,255,0.5); }
+.dark-mode .prof-tab { color: rgba(255,255,255,0.4); }
+.dark-mode .prof-tab.active { color: var(--navy); }
+.dark-mode #prof-stats-panel { background: #0f0f0f; }
+.dark-mode .feed-composer-card { background: #1c1c1e; }
+.dark-mode .feed-composer-expanded { background: #1c1c1e; }
+.dark-mode .fce-textarea { background: transparent; color: #fff; }
+.dark-mode .fce-textarea::placeholder { color: #555; }
+.dark-mode .lb-item { border-bottom-color: rgba(255,255,255,0.06); }
+.dark-mode .lb-fish,.dark-mode .lb-weight { color: rgba(255,255,255,0.6); }
+.dark-mode .report-sheet { background: #1c1c1e; }
+.dark-mode .report-option { color: #fff; border-bottom-color: rgba(255,255,255,0.06); }
+.dark-mode .explore-species-pill { background: #1c1c1e !important; color: #fff; box-shadow: 0 1px 6px rgba(0,0,0,0.3) !important; }
+.dark-mode .explore-trend-card { border-color: rgba(255,255,255,0.06); }
 
 /* ── GEAR TAB ── */
 .dark-mode #gear-grid-content > div { background: #2c2c2e !important; }
@@ -1476,6 +1516,12 @@ body {
         <div id="feed-quick-stats" style="display:none;"></div>
         <!-- On This Day -->
         <div id="feed-on-this-day" style="display:none;"></div>
+        <!-- Daily fishing tip (dismissible) -->
+        <div id="feed-tip-banner" style="display:none;margin:4px 10px;background:linear-gradient(135deg,rgba(14,165,233,0.1),rgba(14,165,233,0.04));border:1px solid rgba(14,165,233,0.15);border-radius:14px;padding:10px 12px;position:relative;">
+          <div style="font-size:10px;font-weight:800;color:#0ea5e9;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:3px;" id="feed-tip-icon">🎣 Tip of the Day</div>
+          <div style="font-size:12px;color:#111;line-height:1.5;letter-spacing:-0.1px;" id="feed-tip-text"></div>
+          <button onclick="document.getElementById('feed-tip-banner').style.display='none';STORE.set('tip_dismissed',String(Math.floor(Date.now()/86400000)))" style="position:absolute;top:8px;right:10px;background:none;border:none;font-size:14px;color:var(--gray);cursor:pointer;padding:2px;">✕</button>
+        </div>
         <!-- Catch of the Day -->
         <div id="cotd-banner" style="display:none;"></div>
         <!-- Feed filter tabs -->
@@ -1492,6 +1538,10 @@ body {
           </div>
         </div>
         <div id="feed-content"></div>
+        <!-- Scroll to top FAB -->
+        <button id="feed-scroll-top" onclick="scrollFeedToTop()" style="display:none;position:sticky;bottom:80px;left:50%;transform:translateX(-50%);width:44px;height:44px;border-radius:50%;background:var(--navy);border:none;cursor:pointer;font-family:inherit;box-shadow:0 4px 20px rgba(0,0,0,0.2);align-items:center;justify-content:center;z-index:10;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
+        </button>
       </div>
     </div>
 
@@ -1882,9 +1932,10 @@ body {
           <div class="lb-sub">Ranked by weight · Live updated</div>
           <div class="lb-tabs">
             <div class="lb-tab active" data-filter="all" onclick="setLbTab(this,'all')">All Time</div>
-            <div class="lb-tab" data-filter="month" onclick="setLbTab(this,'month')">This Month</div>
-            <div class="lb-tab" data-filter="week" onclick="setLbTab(this,'week')">This Week</div>
-            <div class="lb-tab" data-filter="following" onclick="setLbTab(this,'following')">Following</div>
+            <div class="lb-tab" data-filter="month" onclick="setLbTab(this,'month')">Month</div>
+            <div class="lb-tab" data-filter="week" onclick="setLbTab(this,'week')">Week</div>
+            <div class="lb-tab" data-filter="season" onclick="setLbTab(this,'season')">Season</div>
+            <div class="lb-tab" data-filter="following" onclick="setLbTab(this,'following')">Friends</div>
           </div>
         </div>
         <!-- Personal Best card -->
@@ -2014,7 +2065,11 @@ body {
 
           <!-- My Stats mini-analytics (own profile only) -->
           <div id="prof-stats-panel" style="display:none;margin:16px 16px 0;padding:14px;background:var(--surface);border-radius:16px;">
-            <div style="font-size:13px;font-weight:800;color:#111;letter-spacing:-0.3px;margin-bottom:10px;">📊 My Stats</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+              <div style="font-size:13px;font-weight:800;color:#111;letter-spacing:-0.3px;">📊 My Stats</div>
+              <button onclick="showCatchGoalModal()" style="font-size:11px;font-weight:700;color:var(--navy);background:rgba(27,46,75,0.08);border:none;border-radius:10px;padding:4px 10px;cursor:pointer;font-family:inherit;">🎯 Set Goal</button>
+            </div>
+            <div id="prof-catch-goal" style="display:none;margin-bottom:12px;"></div>
             <div id="prof-stats-content"></div>
           </div>
 
@@ -2704,7 +2759,7 @@ function showScreen(name, back = false) {
   updateTabBar(name);
 
   if (name === 'scan') startCamera();
-  if (name === 'feed') { loadFeed(); loadStoriesRow(); loadFeedQuickStats(); loadOnThisDay(); }
+  if (name === 'feed') { loadFeed(); loadStoriesRow(); loadFeedQuickStats(); loadOnThisDay(); loadFeedTip(); }
   if (name === 'leaderboard') loadLeaderboard();
   if (name === 'explore') loadExplore();
   if (name === 'profile') loadProfileScreen();
@@ -3130,6 +3185,7 @@ async function loadProfileScreen() {
     const statsContent = document.getElementById('prof-stats-content');
     if (statsPanel && statsContent && !viewingUserId) {
       statsPanel.style.display = 'block';
+      renderCatchGoal();
       renderProfileStats(catchList, statsContent);
     } else if (statsPanel) {
       statsPanel.style.display = 'none';
@@ -4438,6 +4494,16 @@ function restoreLogDraft() {
 
 function clearLogDraft() { STORE.set('log_draft', ''); }
 
+// ══════════════════════════════════════════
+//  CATCH VIEW COUNTER (local)
+// ══════════════════════════════════════════
+function trackCardView(catchId) {
+  const key = `views_${catchId}`;
+  const count = parseInt(STORE.get(key, '0')) + 1;
+  STORE.set(key, String(count));
+  return count;
+}
+
 
 // ══════════════════════════════════════════
 //  CATCH COMPARE
@@ -4781,8 +4847,16 @@ function attachFeedScroll() {
     if (wrap.scrollTop + wrap.clientHeight >= wrap.scrollHeight - 300 && !feedLoading && !feedAllLoaded) {
       loadFeed(true);
     }
+    // Show/hide scroll-to-top button
+    const scrollTopBtn = document.getElementById('feed-scroll-top');
+    if (scrollTopBtn) scrollTopBtn.style.display = wrap.scrollTop > 400 ? 'flex' : 'none';
   }, { passive: true });
 }
+
+window.scrollFeedToTop = function() {
+  const wrap = document.querySelector('#screen-feed .feed-wrap');
+  if (wrap) wrap.scrollTo({ top: 0, behavior: 'smooth' });
+};
 
 // ── CATCH OF THE DAY ──
 async function loadCatchOfTheDay() {
@@ -5084,9 +5158,12 @@ function catchCard(c, likes, liked, cmtCount = 0) {
       <button class="act-btn" id="bm-${c.id}" onclick="event.stopPropagation();toggleBookmarkDb('${c.id}',this)">${BM_SVG}</button>
       ${menuBtn}
     </div>
-    <div class="post-likes" onclick="event.stopPropagation();showLikesList('${c.id}')" style="cursor:pointer;">${likes} like${likes !== 1 ? 's' : ''}</div>
+    <div style="display:flex;align-items:center;padding:6px 14px 2px;gap:8px;">
+      <div class="post-likes" onclick="event.stopPropagation();showLikesList('${c.id}')" style="cursor:pointer;">${likes} like${likes !== 1 ? 's' : ''}</div>
+      <div style="margin-left:auto;font-size:11px;color:var(--gray);" id="views-${c.id}">${trackCardView(c.id)} views</div>
+    </div>
     ${stats ? `<div class="post-stats">${stats}</div>` : ''}
-    ${isMe && cmtCount > 0 ? `<div style="padding:2px 14px 8px;font-size:11px;color:var(--gray);cursor:pointer;" onclick="event.stopPropagation();openComments('${c.id}')">View all ${cmtCount} comments</div>` : ''}
+    ${cmtCount > 0 ? `<div style="padding:2px 14px 8px;font-size:11px;color:var(--gray);cursor:pointer;" onclick="event.stopPropagation();openComments('${c.id}')">View all ${cmtCount} comment${cmtCount!==1?'s':''}</div>` : ''}
   </div>`;
 }
 
@@ -5254,6 +5331,16 @@ async function loadLeaderboard(filter = 'all') {
     } else if (filter === 'month') {
       const since = new Date(Date.now() - 30 * 86400000).toISOString();
       query = query.gte('created_at', since);
+    } else if (filter === 'season') {
+      const now = new Date();
+      const month = now.getMonth();
+      const year = now.getFullYear();
+      let seasonStart;
+      if (month >= 2 && month <= 4) seasonStart = new Date(year, 2, 1); // Spring: Mar-May
+      else if (month >= 5 && month <= 7) seasonStart = new Date(year, 5, 1); // Summer: Jun-Aug
+      else if (month >= 8 && month <= 10) seasonStart = new Date(year, 8, 1); // Fall: Sep-Nov
+      else seasonStart = new Date(month >= 11 ? year : year - 1, 11, 1); // Winter: Dec-Feb
+      query = query.gte('created_at', seasonStart.toISOString());
     } else if (filter === 'following' && currentUser) {
       const { data: follows } = await sb.from('follows').select('following_id').eq('follower_id', currentUser.id);
       const ids = (follows || []).map(f => f.following_id);
@@ -5766,16 +5853,27 @@ async function openComments(postId) {
     try {
       // Load catch info for preview header
       const { data: catchData } = await sb.from('catches')
-        .select('id, species, weight_lbs, photo_url, user_id, profiles!catches_user_id_fkey(username, avatar_url)')
+        .select('id, species, weight_lbs, photo_url, user_id, lat, lng, spot_name, profiles!catches_user_id_fkey(username, avatar_url)')
         .eq('id', postId).single();
       if (catchData && preview) {
         const photoEl = document.getElementById('cs-post-photo');
         const speciesEl = document.getElementById('cs-post-species');
         const ownerEl = document.getElementById('cs-post-owner');
-        if (catchData.photo_url && photoEl) { photoEl.style.backgroundImage = `url(${esc(catchData.photo_url)})`; }
-        if (speciesEl) speciesEl.textContent = catchData.species || 'Unknown';
-        if (ownerEl) ownerEl.textContent = `@${catchData.profiles?.username || 'angler'}${catchData.weight_lbs ? ' · ' + parseFloat(catchData.weight_lbs).toFixed(1) + ' lbs' : ''}`;
+        if (catchData.photo_url && photoEl) {
+          photoEl.style.backgroundImage = `url(${esc(catchData.photo_url)})`;
+        } else if (catchData.lat && catchData.lng && photoEl) {
+          const lat = parseFloat(catchData.lat), lng = parseFloat(catchData.lng);
+          const zoom = 12;
+          const mapUrl = `https://tile.openstreetmap.org/${zoom}/${Math.floor((lng+180)/360*Math.pow(2,zoom))}/${Math.floor((1-Math.log(Math.tan(lat*Math.PI/180)+1/Math.cos(lat*Math.PI/180))/Math.PI)/2*Math.pow(2,zoom))}.png`;
+          photoEl.style.backgroundImage = `url(${mapUrl})`;
+        }
+        if (speciesEl) {
+          const emoji = SPECIES_DB?.[catchData.species]?.emoji || '🐟';
+          speciesEl.textContent = `${emoji} ${catchData.species || 'Unknown'}`;
+        }
+        if (ownerEl) ownerEl.textContent = `@${catchData.profiles?.username || 'angler'}${catchData.weight_lbs ? ' · ' + parseFloat(catchData.weight_lbs).toFixed(1) + ' lbs' : ''}${catchData.spot_name ? ' · ' + catchData.spot_name : ''}`;
         preview.style.display = 'flex';
+        preview.onclick = () => openPhotoViewer(catchData.photo_url || '', catchData.species || '', '@' + (catchData.profiles?.username || 'angler'));
       }
 
       const { data: cmts, error } = await sb.from('comments')
@@ -5810,22 +5908,28 @@ async function openComments(postId) {
 function renderCommentItem(c) {
   const u = c.profiles?.username || 'angler';
   const avUrl = c.profiles?.avatar_url;
+  const isOwn = currentUser && c.user_id === currentUser.id;
   const avHtml = avUrl
     ? `<div class="cs-cav" style="background:url(${esc(avUrl)}) center/cover no-repeat;font-size:0;cursor:pointer;" onclick="openUserProfile('${c.user_id}')"></div>`
     : `<div class="cs-cav" style="cursor:pointer;" onclick="openUserProfile('${c.user_id}')">${u.slice(0,2).toUpperCase()}</div>`;
   const cmtLikes = parseInt(STORE.get(`cmtlikes_${c.id}`, '0'));
   const cmtLiked = STORE.get(`cmtliked_${c.id}`, 'false') === 'true';
-  return `<div class="cs-comment" data-cmtid="${c.id}">
+  const commentText = esc(c.text).replace(/@(\w+)/g, '<span style="color:var(--navy);font-weight:600;">@$1</span>');
+  return `<div class="cs-comment" data-cmtid="${c.id}" style="position:relative;">
     ${avHtml}
     <div style="flex:1;min-width:0;">
-      <div class="cs-comment-name" style="cursor:pointer;" onclick="openUserProfile('${c.user_id}')">${esc(u)}</div>
-      <div class="cs-comment-text">${esc(c.text)}</div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <div class="cs-comment-name" style="cursor:pointer;" onclick="openUserProfile('${c.user_id}')">${esc(u)}</div>
+        ${isOwn ? '<div style="font-size:9px;color:var(--gray);background:rgba(0,0,0,0.06);padding:1px 5px;border-radius:6px;">You</div>' : ''}
+      </div>
+      <div class="cs-comment-text">${commentText}</div>
       <div style="display:flex;align-items:center;gap:12px;margin-top:4px;">
         <div class="cs-comment-time">${timeAgo(c.created_at)}</div>
         <button onclick="replyToComment('${esc(u)}')" style="background:none;border:none;cursor:pointer;font-size:11px;font-weight:600;color:var(--gray);padding:0;font-family:inherit;">Reply</button>
         <button id="cmtlike-${c.id}" onclick="toggleCommentLike('${c.id}',this)" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:3px;font-size:11px;font-weight:600;color:${cmtLiked ? '#ff375f' : 'var(--gray)'};padding:0;font-family:inherit;">
           ${cmtLiked ? '❤️' : '🤍'} <span id="cmtlike-count-${c.id}">${cmtLikes || ''}</span>
         </button>
+        ${isOwn ? `<button onclick="deleteOwnComment('${c.id}')" style="background:none;border:none;cursor:pointer;font-size:11px;font-weight:600;color:#ff375f;padding:0;font-family:inherit;">Delete</button>` : ''}
       </div>
     </div>
   </div>`;
@@ -5851,6 +5955,20 @@ function replyToComment(username) {
     input.focus();
     input.setSelectionRange(input.value.length, input.value.length);
   }
+}
+
+async function deleteOwnComment(commentId) {
+  if (!sb || !currentUser) return;
+  if (!confirm('Delete your comment?')) return;
+  try {
+    await sb.from('comments').delete().eq('id', commentId).eq('user_id', currentUser.id);
+    document.querySelector(`.cs-comment[data-cmtid="${commentId}"]`)?.remove();
+    showToast('Comment deleted');
+    const body = document.getElementById('cs-body');
+    if (body && !body.querySelector('.cs-comment')) {
+      body.innerHTML = '<div class="cs-empty">No comments yet. Be the first! 💬</div>';
+    }
+  } catch { showToast('Could not delete comment'); }
 }
 
 function renderDbComments(cmts) {
@@ -6369,6 +6487,20 @@ async function loadOnThisDay() {
       ${matches.length > 1 ? `<div style="font-size:11px;color:#f59e0b;font-weight:600;margin-top:8px;">+ ${matches.length - 1} more catch${matches.length > 2 ? 'es' : ''} on this date</div>` : ''}
     </div>`;
   } catch {}
+}
+
+function loadFeedTip() {
+  const banner = document.getElementById('feed-tip-banner');
+  const textEl = document.getElementById('feed-tip-text');
+  const iconEl = document.getElementById('feed-tip-icon');
+  if (!banner || !textEl) return;
+  const today = Math.floor(Date.now() / 86400000);
+  const dismissed = parseInt(STORE.get('tip_dismissed', '0'));
+  if (dismissed >= today) return; // already dismissed today
+  const tip = FISHING_TIPS[today % FISHING_TIPS.length];
+  if (iconEl) iconEl.textContent = `${tip.icon} Tip of the Day`;
+  textEl.textContent = tip.tip;
+  banner.style.display = '';
 }
 
 // ── EXPLORE ──
@@ -7855,16 +7987,93 @@ function closeSpeciesDetail() {
 async function shareProfile() {
   const username = currentProfile?.username || 'angler';
   const displayName = currentProfile?.display_name || username;
-  const text = `Check out @${username}'s fishing profile on Fishy AI! 🎣`;
   const url = window.location.href.split('?')[0] + `?user=${currentUser?.id || ''}`;
+  // Show share options modal
+  const modal = document.createElement('div');
+  modal.id = 'share-profile-modal';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:flex-end;';
+  modal.innerHTML = `
+    <div onclick="document.getElementById('share-profile-modal').remove()" style="position:absolute;inset:0;background:rgba(0,0,0,0.4);backdrop-filter:blur(6px);"></div>
+    <div style="position:relative;width:100%;background:#fff;border-radius:24px 24px 0 0;padding:20px 20px 36px;z-index:1;">
+      <div style="font-size:16px;font-weight:800;color:#111;margin-bottom:4px;">Share @${esc(username)}'s Profile</div>
+      <div style="font-size:12px;color:var(--gray);margin-bottom:16px;">Let the world know about this angler 🎣</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <button onclick="shareProfileNative('${esc(username)}','${esc(displayName)}','${esc(url)}');document.getElementById('share-profile-modal').remove()" style="padding:14px;border:none;border-radius:14px;background:var(--navy);color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;">
+          📤 Share
+        </button>
+        <button onclick="navigator.clipboard.writeText('${esc(url)}').then(()=>showToast('Link copied! 📋'));document.getElementById('share-profile-modal').remove()" style="padding:14px;border:1.5px solid rgba(0,0,0,0.1);border-radius:14px;background:#f2f2f7;color:#111;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;">
+          🔗 Copy Link
+        </button>
+        <button onclick="generateProfileCard('${esc(username)}','${esc(displayName)}');document.getElementById('share-profile-modal').remove()" style="padding:14px;border:1.5px solid rgba(0,0,0,0.1);border-radius:14px;background:#f2f2f7;color:#111;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;">
+          🖼️ Profile Card
+        </button>
+        <button onclick="document.getElementById('share-profile-modal').remove()" style="padding:14px;border:1.5px solid rgba(0,0,0,0.1);border-radius:14px;background:#f2f2f7;color:var(--gray);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">
+          Cancel
+        </button>
+      </div>
+    </div>`;
+  document.querySelector('.phone')?.appendChild(modal);
+}
+
+async function shareProfileNative(username, displayName, url) {
+  const text = `Check out @${username}'s fishing profile on Fishy AI! 🎣`;
   try {
-    if (navigator.share) {
-      await navigator.share({ title: `${displayName} on Fishy AI`, text, url });
-    } else {
-      await navigator.clipboard.writeText(text + '\n' + url);
-      showToast('Profile link copied! 📋');
-    }
-  } catch { showToast('Could not share profile'); }
+    if (navigator.share) await navigator.share({ title: `${displayName} on Fishy AI`, text, url });
+    else { await navigator.clipboard.writeText(text + '\n' + url); showToast('Link copied! 📋'); }
+  } catch { showToast('Could not share'); }
+}
+
+function generateProfileCard(username, displayName) {
+  const catches = parseInt(document.getElementById('prof-catches')?.textContent) || 0;
+  const best = document.getElementById('prof-best')?.textContent || '—';
+  const species = document.getElementById('prof-species')?.textContent || '0';
+  const streak = parseInt(STORE.get('streak','0'))||0;
+  const canvas = document.createElement('canvas');
+  canvas.width = 600; canvas.height = 360;
+  const ctx = canvas.getContext('2d');
+  // Background gradient
+  const grad = ctx.createLinearGradient(0, 0, 600, 360);
+  grad.addColorStop(0, '#1B2E4B'); grad.addColorStop(1, '#0ea5e9');
+  ctx.fillStyle = grad; ctx.roundRect(0, 0, 600, 360, 24); ctx.fill();
+  // Wave decoration
+  ctx.fillStyle = 'rgba(255,255,255,0.05)';
+  ctx.beginPath(); ctx.ellipse(500, 300, 250, 150, 0, 0, Math.PI*2); ctx.fill();
+  // Logo
+  ctx.fillStyle = 'rgba(255,255,255,0.9)';
+  ctx.font = 'bold 16px system-ui'; ctx.fillText('🐟 Fishy AI', 30, 40);
+  // Name
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 36px system-ui'; ctx.fillText(displayName, 30, 100);
+  ctx.fillStyle = 'rgba(255,255,255,0.6)';
+  ctx.font = '18px system-ui'; ctx.fillText('@' + username, 30, 130);
+  // Stats
+  const stats = [
+    { label: 'Catches', val: String(catches) },
+    { label: 'Best', val: best },
+    { label: 'Species', val: species },
+    { label: 'Streak', val: streak > 0 ? `🔥${streak}d` : '—' },
+  ];
+  stats.forEach((s, i) => {
+    const x = 30 + i * 140;
+    ctx.fillStyle = 'rgba(255,255,255,0.12)';
+    ctx.roundRect(x, 165, 128, 80, 12); ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 28px system-ui'; ctx.fillText(s.val, x + 12, 205);
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.font = '13px system-ui'; ctx.fillText(s.label, x + 12, 228);
+  });
+  // Footer
+  ctx.fillStyle = 'rgba(255,255,255,0.4)';
+  ctx.font = '14px system-ui'; ctx.fillText('fishy.ai · The social app for anglers', 30, 340);
+  // Download
+  canvas.toBlob(blob => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `${username}-fishy-profile.png`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    showToast('Profile card downloaded! 🖼️');
+  });
 }
 
 // ══════════════════════════════════════════
@@ -8048,6 +8257,49 @@ async function showMyStats() {
 function showAbout() {
   const unlocked = JSON.parse(STORE.get('achievements', '[]')).length;
   alert(`🐟 Fishy AI v2.0\n\nThe social app for anglers.\nLog catches · Track species · Compete on leaderboards\n\n🏆 Your Achievements: ${unlocked}/${ACHIEVEMENTS.length} unlocked\n\nBuilt with love for fishing communities everywhere. 🎣`);
+}
+
+// ══════════════════════════════════════════
+//  CATCH GOAL
+// ══════════════════════════════════════════
+function showCatchGoalModal() {
+  const current = parseInt(STORE.get('catch_goal', '0')) || 0;
+  const n = prompt(`Set your annual catch goal (current: ${current || 'not set'}):`, current || '50');
+  if (n === null) return;
+  const goal = parseInt(n);
+  if (isNaN(goal) || goal < 1) { showToast('Enter a number greater than 0'); return; }
+  STORE.set('catch_goal', String(goal));
+  showToast(`Goal set: ${goal} catches this year! 🎯`);
+  renderCatchGoal();
+}
+
+function renderCatchGoal() {
+  const el = document.getElementById('prof-catch-goal');
+  if (!el) return;
+  const goal = parseInt(STORE.get('catch_goal', '0')) || 0;
+  if (!goal) { el.style.display = 'none'; return; }
+  // Count catches this year
+  el.style.display = '';
+  if (!sb || !currentUser) return;
+  sb.from('catches').select('id', { count: 'exact', head: true })
+    .eq('user_id', currentUser.id)
+    .eq('post_type', 'catch')
+    .gte('created_at', new Date(new Date().getFullYear(), 0, 1).toISOString())
+    .then(({ count }) => {
+      const actual = count || 0;
+      const pct = Math.min(100, Math.round(actual / goal * 100));
+      const remaining = Math.max(0, goal - actual);
+      el.innerHTML = `<div style="margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <div style="font-size:11px;font-weight:800;color:#111;text-transform:uppercase;letter-spacing:0.4px;">🎯 Annual Catch Goal</div>
+          <div style="font-size:11px;color:var(--gray);">${actual} / ${goal}</div>
+        </div>
+        <div style="height:8px;background:rgba(0,0,0,0.07);border-radius:4px;overflow:hidden;">
+          <div style="height:100%;width:${pct}%;background:${pct >= 100 ? '#34c759' : 'linear-gradient(90deg,#0ea5e9,#6366f1)'};border-radius:4px;transition:width 0.6s;"></div>
+        </div>
+        <div style="font-size:10px;color:var(--gray);margin-top:4px;">${pct >= 100 ? '🎉 Goal achieved! Amazing season!' : `${remaining} catch${remaining!==1?'es':''} to go · ${pct}% complete`}</div>
+      </div>`;
+    }).catch(() => { el.style.display = 'none'; });
 }
 
 // ══════════════════════════════════════════
