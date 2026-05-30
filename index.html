@@ -3336,7 +3336,7 @@ async function loadProfileScreen() {
       const sinceStr = oldest.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
       const handleEl = document.getElementById('prof-handle');
       if (handleEl) {
-        const handleText = handleEl.textContent.split('·')[0].trim();
+        const handleText = esc(handleEl.textContent.split('·')[0].trim());
         handleEl.innerHTML = `${handleText} · <span style="color:#f59e0b;font-weight:600;">Fishing since ${sinceStr}</span>`;
       }
     }
