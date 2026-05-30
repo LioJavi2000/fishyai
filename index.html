@@ -3335,9 +3335,7 @@ async function loadProfileScreen() {
       const oldest = new Date(catchList[catchList.length - 1].created_at);
       const sinceStr = oldest.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
       const handleEl = document.getElementById('prof-handle');
-      if (handleEl && !handleEl.textContent.includes('·')) {
-        // keep existing handle, skip
-      } else if (handleEl) {
+      if (handleEl) {
         const handleText = handleEl.textContent.split('·')[0].trim();
         handleEl.innerHTML = `${handleText} · <span style="color:#f59e0b;font-weight:600;">Fishing since ${sinceStr}</span>`;
       }
@@ -6208,6 +6206,9 @@ function doubleTapLike(catchId) {
   }
   if (sb && currentUser) {
     sb.from('likes').insert({ user_id: currentUser.id, catch_id: catchId }).catch(() => {});
+    const card = document.querySelector(`.card[data-id="${catchId}"]`);
+    const ownerId = card?.dataset.owner;
+    if (ownerId && ownerId !== currentUser.id) createNotification(ownerId, 'like', catchId, card?.dataset.species || '');
   }
 }
 
@@ -7335,13 +7336,6 @@ function quickLogAtLocation() {
   closeMapCard();
   showToast('📍 Location set · Scan your catch!');
   showScreen('scan');
-}
-
-function haversine(lat1, lon1, lat2, lon2) {
-  const R = 3958.8, r = Math.PI / 180;
-  const dLat = (lat2 - lat1) * r, dLon = (lon2 - lon1) * r;
-  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*r)*Math.cos(lat2*r)*Math.sin(dLon/2)**2;
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 }
 
 function mapLocateMe() {
