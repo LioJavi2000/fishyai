@@ -2969,6 +2969,7 @@ function showScreen(name, back = false) {
   if (name === current) return;
   if (procTimer) { clearTimeout(procTimer); procTimer = null; }
   if (current === 'scan') stopCamera();
+  if (current === 'story-viewer') { clearInterval(svProgressTimer); svProgressTimer = null; }
 
   const prev = document.getElementById('screen-' + current);
   const next = document.getElementById('screen-' + name);
@@ -4649,12 +4650,7 @@ async function postStory() {
       is_public: true,
       post_type: 'story',
     });
-    // Also keep local copy for updateStoriesRow preview
-    const story = { id: Date.now().toString(), photo_b64: capturedB64, mime: capturedMime, caption, created_at: new Date().toISOString() };
-    const stories = STORE.get('stories', []);
-    stories.unshift(story);
-    STORE.set('stories', stories.slice(0, 20));
-    updateStoriesRow();
+    capturedB64 = null; capturedMime = 'image/jpeg';
     loadStoriesRow();
     showToast('Story shared!');
     showScreen('feed');
@@ -5621,7 +5617,6 @@ async function loadFeed(append = false) {
     }
 
     const html = displayCatches.map(c => catchCard(c, likeMap[c.id] || 0, myLikes.has(c.id), cmtMap[c.id] || 0)).join('');
-    const fc = document.getElementById('feed-content');
     if (!append) {
       fc.innerHTML = html;
     } else {
@@ -5766,17 +5761,22 @@ async function loadStoriesRow() {
       followIds = (fws || []).map(f => f.following_id);
     }
 
-    // Prefer followed users; fall back to all recent public catches
-    let q = sb.from('catches')
+    // Prefer followed users; fall back to all recent public stories
+    const baseQ = () => sb.from('catches')
       .select('id, user_id, species, photo_url, created_at, profiles!catches_user_id_fkey(username)')
       .eq('is_public', true)
       .eq('post_type', 'story')
       .gte('created_at', since)
       .order('created_at', { ascending: false })
       .limit(30);
-    if (followIds.length) q = q.in('user_id', followIds);
-
-    const { data: recent } = await q;
+    let { data: recent } = followIds.length
+      ? await baseQ().in('user_id', followIds)
+      : await baseQ();
+    // If followed users have no recent stories, fall back to all stories
+    if ((!recent?.length) && followIds.length) {
+      const { data: all } = await baseQ();
+      recent = all;
+    }
     if (!recent?.length) return;
 
     // One story per user, skip own
@@ -6170,13 +6170,6 @@ async function deleteOwnCatch(catchId) {
     showToast('Post deleted');
   } catch { showToast('Could not delete post'); }
 }
-async function reportPost(catchId) {
-  _reportCatchId = catchId;
-  document.getElementById('report-backdrop')?.classList.add('open');
-  document.getElementById('report-sheet')?.classList.add('open');
-}
-
-
 // ══════════════════════════════════════════
 //  DOUBLE-TAP TO LIKE
 // ══════════════════════════════════════════
@@ -9837,12 +9830,14 @@ function closeReport() {
 }
 
 async function submitReport(reason) {
+  const catchId = _reportCatchId; // save before closeReport() clears it
   closeReport();
+  if (!catchId) return;
   showToast('Thanks for the report — we\'ll review it 👮');
-  if (sb && currentUser && _reportCatchId) {
+  if (sb && currentUser) {
     try {
-      await sb.from('catches').select('id').eq('id', _reportCatchId).single();
-    } catch {}
+      await sb.from('catch_reports').insert({ catch_id: catchId, reporter_id: currentUser.id, reason });
+    } catch { /* already reported or constraint error — toast already shown */ }
   }
 }
 
