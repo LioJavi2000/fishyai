@@ -8959,15 +8959,15 @@ async function dmSearchAnglers(q) {
 async function loadDMUnreadCount() {
   if (!sb || !currentUser) return;
   try {
+    const { data: convos } = await sb.from('conversations').select('id').or(`user1_id.eq.${currentUser.id},user2_id.eq.${currentUser.id}`);
+    const convoIds = (convos || []).map(c => c.id);
+    const badge = document.getElementById('feed-dm-unread');
+    if (!convoIds.length) { if (badge) badge.style.display = 'none'; return; }
     const { count } = await sb.from('messages')
       .select('*', { count: 'exact', head: true })
       .eq('read', false)
       .neq('sender_id', currentUser.id)
-      .in('conversation_id', await (async () => {
-        const { data } = await sb.from('conversations').select('id').or(`user1_id.eq.${currentUser.id},user2_id.eq.${currentUser.id}`);
-        return (data || []).map(c => c.id);
-      })());
-    const badge = document.getElementById('feed-dm-unread');
+      .in('conversation_id', convoIds);
     if (badge) badge.style.display = count > 0 ? 'block' : 'none';
   } catch {}
 }
