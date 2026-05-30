@@ -3117,7 +3117,7 @@ async function handleAuth() {
         // Email confirmation required
         showAuthMsg('✅ Account created! Check your email for a confirmation link, then log in.', false);
         toggleAuthMode(); // flip to login mode
-        if (btn) btn.disabled = false;
+        if (btn) { btn.textContent = orig; btn.disabled = false; }
         return;
       }
       currentUser = signInData.user;
@@ -3210,7 +3210,7 @@ async function loadProfile() {
   const displayName = currentProfile.display_name || currentProfile.username || 'Angler';
   const handle = currentProfile.username || 'angler';
   setEl('prof-name', displayName);
-  setEl('prof-handle', `@${handle} · California 🌊`);
+  setEl('prof-handle', `@${handle}${currentProfile.state ? ' · ' + currentProfile.state : ''}`);
   const av2 = displayName.slice(0, 2).toUpperCase();
   const avEl2 = document.getElementById('prof-avatar-initials');
   if (avEl2) {
@@ -3251,7 +3251,7 @@ async function loadProfileScreen() {
     const catches  = STORE.get('catches', []);
     const username = STORE.get('username', 'Angler');
     setEl('prof-name', username);
-    setEl('prof-handle', `@${username.toLowerCase().replace(/\s+/g,'_')} · California`);
+    setEl('prof-handle', `@${username.toLowerCase().replace(/\s+/g,'_')}`);
     setEl('prof-avatar-initials', username.slice(0, 2).toUpperCase());
     if (catches.length) {
       const species = new Set(catches.map(c => c.species)).size;
@@ -3273,7 +3273,7 @@ async function loadProfileScreen() {
       const uname = profile.username;
       const displayName = profile.display_name || uname;
       setEl('prof-name', displayName);
-      setEl('prof-handle', `@${uname}${profile.state ? ' · ' + profile.state : ' · California 🌊'}`);
+      setEl('prof-handle', `@${uname}${profile.state ? ' · ' + profile.state : ''}`);
       const avEl = document.getElementById('prof-avatar-initials');
       if (avEl) {
         const avatarUrl = profile.avatar_url || (!viewingUserId ? currentProfile?.avatar_url : null);
@@ -4127,7 +4127,7 @@ function togglePinnedCatch(catchId) {
 }
 
 function openUserProfile(userId) {
-  if (!userId) return;
+  if (!userId || !UUID_RE.test(userId)) return;
   viewingUserId = (userId === currentUser?.id) ? null : userId;
   showScreen('profile');
 }
@@ -4224,7 +4224,6 @@ function setScanMode(mode) {
 function openStoryCamera() {
   setScanMode('story');
   showScreen('scan');
-  startCamera();
 }
 
 function routeCapture() {
@@ -4305,6 +4304,7 @@ function getMoonPhase() {
 
 function goToLog() {
   showScreen('log');
+  setKept(false);
   setTimeout(() => {
     if (aiLength !== null) { const i = document.getElementById('length-input'); if (i) i.value = aiLength; }
     if (aiWeight !== null) { const i = document.getElementById('weight-input');  if (i) i.value = aiWeight; }
@@ -4818,9 +4818,9 @@ function initPostEditor(b64, mime) {
   // Location
   setEl('pe-location', currentSpot?.name || 'Detecting…');
   navigator.geolocation?.getCurrentPosition(
-    pos => matchOrNameSpot(pos.coords.latitude, pos.coords.longitude).then(spot => {
-      setEl('pe-location', spot?.name || 'Unknown');
-    }).catch(() => {}),
+    pos => matchOrNameSpot(pos.coords.latitude, pos.coords.longitude).then(() => {
+      setEl('pe-location', currentSpot?.name || 'Unknown');
+    }).catch(() => setEl('pe-location', 'Unknown')),
     () => setEl('pe-location', 'Unknown')
   );
   showScreen('post-editor');
@@ -5225,7 +5225,7 @@ async function postCatch(isPublic = true) {
       }
     } catch {}
 
-    capturedB64 = null; capturedMime = null;
+    capturedB64 = null; capturedMime = 'image/jpeg';
     fishMeasurement = null;
     aiLength = null; aiWeight = null;
     identifiedFish = null;
@@ -5987,9 +5987,9 @@ function catchCard(c, likes, liked, cmtCount = 0) {
 
   const dtHeart = `<div class="double-tap-heart" id="dth-${c.id}"><svg width="80" height="80" viewBox="0 0 24 24" fill="#ff375f" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>`;
 
-  const photoOwner = `${esc(u)}${c.weight_lbs ? ' · ' + parseFloat(c.weight_lbs).toFixed(1) + ' lbs' : ''}${c.length_in ? ' · ' + parseFloat(c.length_in).toFixed(0) + '"' : ''}`;
+  const photoOwner = `${u}${c.weight_lbs ? ' · ' + parseFloat(c.weight_lbs).toFixed(1) + ' lbs' : ''}${c.length_in ? ' · ' + parseFloat(c.length_in).toFixed(0) + '"' : ''}`;
   const photo = c.photo_url
-    ? `<div class="post-photo" ondblclick="doubleTapLike('${c.id}')" ontouchend="handlePhotoTouch(event,'${c.id}')" onclick="openPhotoViewer('${esc(c.photo_url)}','${esc(c.species||'')}','${photoOwner}')"><img src="${esc(c.photo_url)}" alt="${esc(c.species||'')}" loading="lazy">${dtHeart}<div class="post-fish-over"><span class="fish-tag">${esc(c.species||'')}</span></div></div>`
+    ? `<div class="post-photo" ondblclick="doubleTapLike('${c.id}')" ontouchend="handlePhotoTouch(event,'${c.id}')" onclick="openPhotoViewer('${esc(c.photo_url)}','${esc(c.species||'')}','${esc(photoOwner)}')"><img src="${esc(c.photo_url)}" alt="${esc(c.species||'')}" loading="lazy">${dtHeart}<div class="post-fish-over"><span class="fish-tag">${esc(c.species||'')}</span></div></div>`
     : `<div class="post-photo ph-ocean" ondblclick="doubleTapLike('${c.id}')" ontouchend="handlePhotoTouch(event,'${c.id}')">${PH_SVG}${dtHeart}<div class="post-fish-over"><span class="fish-tag">${esc(c.species||'')}</span></div></div>`;
 
   const captionHtml = c.caption
@@ -6524,7 +6524,7 @@ function epUpdatePreview() {
   const uname  = document.getElementById('ep-username-input')?.value.trim();
   const dispName = name || uname || 'Your Name';
   setEl('ep-preview-name', dispName);
-  setEl('ep-preview-handle', `@${uname || 'username'} · California 🌊`);
+  setEl('ep-preview-handle', `@${uname || 'username'}`);
   setEl('ep-preview-av', dispName.slice(0, 2).toUpperCase());
 }
 
@@ -6673,7 +6673,7 @@ async function saveEditProfile() {
   if (unameChanged) STORE.set('ep-uname-changes', [...(STORE.get('ep-uname-changes',[])).filter(t => Date.now()-t < EP_7_DAYS),  Date.now()]);
 
   setEl('prof-name', displayName);
-  setEl('prof-handle', `@${uname} · California 🌊`);
+  setEl('prof-handle', `@${uname}${currentProfile?.state ? ' · ' + currentProfile.state : ''}`);
   const profBioEl = document.getElementById('prof-bio');
   if (profBioEl) { profBioEl.textContent = bio; profBioEl.style.display = bio ? '' : 'none'; }
   const hwWrap = document.getElementById('prof-home-water');
@@ -8197,8 +8197,8 @@ async function loadNotifications() {
       data.map(n => {
         const avUrl = n.actor_id ? avatarMap[n.actor_id] : null;
         const avHtml = avUrl
-          ? `<div class="notif-av" style="background:url(${esc(avUrl)}) center/cover;font-size:0;cursor:pointer;" onclick="if('${n.actor_id}')openUserProfile('${n.actor_id}')"></div>`
-          : `<div class="notif-av" style="cursor:pointer;" onclick="if('${n.actor_id}')openUserProfile('${n.actor_id}')">${icons[n.type] || '🔔'}</div>`;
+          ? `<div class="notif-av" style="background:url(${esc(avUrl)}) center/cover;font-size:0;cursor:pointer;" onclick="${n.actor_id ? `openUserProfile('${n.actor_id}')` : ''}"></div>`
+          : `<div class="notif-av" style="cursor:pointer;" onclick="${n.actor_id ? `openUserProfile('${n.actor_id}')` : ''}">${icons[n.type] || '🔔'}</div>`;
         const followBackBtn = n.type === 'follow' && n.actor_id
           ? `<button onclick="event.stopPropagation();quickFollowBack('${n.actor_id}',this)" style="flex-shrink:0;border:1.5px solid rgba(27,46,75,0.2);background:#fff;color:var(--navy);border-radius:14px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">Follow</button>` : '';
         return `<div class="notif-item${n.read ? '' : ' unread'}" onclick="markNotifRead('${n.id}', this, '${n.catch_id || ''}', '${n.type || ''}', '${n.actor_id || ''}')">
@@ -8385,7 +8385,7 @@ function setEl(id, text) {
   if (el) el.textContent = String(text);
 }
 function esc(str) {
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 function updateTime() {
   const now = new Date();
