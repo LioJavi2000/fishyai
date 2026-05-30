@@ -4985,10 +4985,11 @@ async function matchOrNameSpot(lat, lng) {
     }
   }
   try {
-    const { name } = await fetch('/api/name-spot', {
+    const data = await fetch('/api/name-spot', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ lat, lng })
     }).then(r => r.json());
+    const name = data?.name || 'Unknown Spot';
     currentSpot = { name, lat, lng };
     setEl('log-spot-name', name);
   } catch {
