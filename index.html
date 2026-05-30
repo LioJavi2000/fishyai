@@ -5118,6 +5118,12 @@ function renderMeasurementSection() {
   }
 
   if (noteEl) noteEl.textContent = m.measurement_note || '';
+
+  // If user already navigated to the log screen while measurement was loading, fill in the fields now
+  if (current === 'log') {
+    if (aiLength !== null) { const i = document.getElementById('length-input'); if (i && !i.value) i.value = aiLength; }
+    if (aiWeight !== null) { const i = document.getElementById('weight-input');  if (i && !i.value) i.value = aiWeight; }
+  }
 }
 
 // ══════════════════════════════════════════
