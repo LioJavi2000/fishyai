@@ -2970,6 +2970,7 @@ function showScreen(name, back = false) {
   if (procTimer) { clearTimeout(procTimer); procTimer = null; }
   if (current === 'scan') stopCamera();
   if (current === 'story-viewer') { clearInterval(svProgressTimer); svProgressTimer = null; }
+  if (current === 'dm-thread' && name !== 'dm-thread' && _dmRealtimeSub && sb) { sb.removeChannel(_dmRealtimeSub); _dmRealtimeSub = null; }
 
   const prev = document.getElementById('screen-' + current);
   const next = document.getElementById('screen-' + name);
@@ -8176,6 +8177,7 @@ async function loadNotifications() {
       like: (n) => `<b>@${esc(n.actor_username || 'Someone')}</b> liked your ${n.catch_species ? esc(n.catch_species) + ' catch' : 'post'} ❤️`,
       comment: (n) => `<b>@${esc(n.actor_username || 'Someone')}</b> commented on your ${n.catch_species ? esc(n.catch_species) + ' catch' : 'post'} 💬`,
       follow: (n) => `<b>@${esc(n.actor_username || 'Someone')}</b> started following you 🎣`,
+      message: (n) => `<b>@${esc(n.actor_username || 'Someone')}</b> sent you a message 💬`,
       tight_lines: (n) => `<b>@${esc(n.actor_username || 'Someone')}</b> sent you Tight Lines! 🎣 Go catch a big one!`,
     };
     // Fetch actor avatars
@@ -8193,7 +8195,7 @@ async function loadNotifications() {
           : `<div class="notif-av" style="cursor:pointer;" onclick="if('${n.actor_id}')openUserProfile('${n.actor_id}')">${icons[n.type] || '🔔'}</div>`;
         const followBackBtn = n.type === 'follow' && n.actor_id
           ? `<button onclick="event.stopPropagation();quickFollowBack('${n.actor_id}',this)" style="flex-shrink:0;border:1.5px solid rgba(27,46,75,0.2);background:#fff;color:var(--navy);border-radius:14px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">Follow</button>` : '';
-        return `<div class="notif-item${n.read ? '' : ' unread'}" onclick="markNotifRead('${n.id}', this, '${n.catch_id || ''}')">
+        return `<div class="notif-item${n.read ? '' : ' unread'}" onclick="markNotifRead('${n.id}', this, '${n.catch_id || ''}', '${n.type || ''}', '${n.actor_id || ''}')">
           ${avHtml}
           <div class="notif-content" style="flex:1;min-width:0;">
             <div class="notif-text">${msgs[n.type]?.(n) || 'New notification'}</div>
@@ -8213,10 +8215,16 @@ async function loadNotifications() {
   }
 }
 
-function markNotifRead(id, el, catchId) {
+function markNotifRead(id, el, catchId, type, actorId) {
   el.classList.remove('unread');
   el.querySelector('.notif-unread-dot')?.remove();
-  if (catchId && UUID_RE.test(catchId)) openComments(catchId);
+  if (type === 'message' && actorId) {
+    showScreen('messages');
+  } else if (type === 'follow' && actorId) {
+    openUserProfile(actorId);
+  } else if (catchId && UUID_RE.test(catchId)) {
+    openComments(catchId);
+  }
 }
 
 async function markAllNotifsRead() {
@@ -8901,7 +8909,7 @@ async function sendDM() {
   try {
     await sb.from('messages').insert({ conversation_id: currentDMConvoId, sender_id: currentUser.id, body: body_text });
     await sb.from('conversations').update({ last_message: body_text, last_message_at: new Date().toISOString() }).eq('id', currentDMConvoId);
-    loadDMUnreadCount();
+    if (currentDMUserId) createNotification(currentDMUserId, 'message', null, '');
   } catch (e) { showToast('Could not send message'); }
 }
 
