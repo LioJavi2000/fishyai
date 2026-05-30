@@ -1305,50 +1305,111 @@ body {
 .dark-mode .report-option { color: #fff; border-bottom-color: rgba(255,255,255,0.06); }
 .dark-mode .explore-species-pill { background: #1c1c1e !important; color: #fff; box-shadow: 0 1px 6px rgba(0,0,0,0.3) !important; }
 .dark-mode .explore-trend-card { border-color: rgba(255,255,255,0.06); }
+/* ── DARK MODE: PROFILE STATS GRID ── */
+.dark-mode #prof-stats-content > div > div,
+.dark-mode #prof-stats-content > div > div > div { /* fun-facts cards */ }
+.dark-mode .prof-card-v2 { background: #1c1c1e; }
+.dark-mode .prof-divider { background: rgba(255,255,255,0.07); }
+.dark-mode .prof-trophy-row { background: #1c1c1e; }
+.dark-mode #log-weather-chip { background: #1c1c1e !important; border-color: rgba(14,165,233,0.25) !important; }
+.dark-mode #lwc-temp { color: #fff !important; }
+.dark-mode #lwc-cond { color: #aaa !important; }
+.dark-mode #water-temp-input { color: #fff; }
+.dark-mode #moon-phase-text { color: #aaa !important; }
+.dark-mode .log-card { background: #1c1c1e; }
+.dark-mode .log-row { border-bottom-color: rgba(255,255,255,0.06); }
+.dark-mode .log-row-l { color: rgba(255,255,255,0.7); }
+.dark-mode .log-inp { background: transparent; color: #fff; border-color: rgba(255,255,255,0.1); }
+.dark-mode .toggle-card { background: #1c1c1e; }
+.dark-mode #catch-caption-input { color: #fff; }
+.dark-mode #feed-on-this-day > div { background: rgba(245,158,11,0.08) !important; border-color: rgba(245,158,11,0.18) !important; }
+.dark-mode #feed-on-this-day span { color: #f59e0b !important; }
+.dark-mode #feed-on-this-day div[style*="color:#111"] { color: #fff !important; }
+.dark-mode #feed-on-this-day div[style*="color:var(--gray)"] { color: rgba(255,255,255,0.5) !important; }
+.dark-mode .catch-grid .catch-thumb-info { background: rgba(0,0,0,0.8) !important; }
+.dark-mode #prof-home-water span { background: rgba(14,165,233,0.12) !important; color: rgba(255,255,255,0.6) !important; }
+/* ── DARK MODE: LOG MANUAL WEATHER ── */
+.dark-mode #log-manual-weather > div:first-child { color: rgba(255,255,255,0.4) !important; }
+/* ── DARK MODE: CAPTION AREA ── */
+.dark-mode #log { background: var(--bg); }
+.dark-mode .log-wrap > div[style*="background:#fff"] { background: #1c1c1e !important; border-color: rgba(255,255,255,0.08) !important; }
+.dark-mode #caption-char-count { color: rgba(255,255,255,0.3) !important; }
+.dark-mode #log-species-title { color: #fff !important; }
+.dark-mode #log-spot-name { color: rgba(255,255,255,0.6) !important; border-bottom-color: rgba(255,255,255,0.15) !important; }
 
-/* ── GEAR TAB ── */
-.dark-mode #gear-grid-content > div { background: #2c2c2e !important; }
-.dark-mode #gear-lure-stats > div { background: #2c2c2e !important; }
-.dark-mode #gear-items-list > div { background: #2c2c2e !important; }
-.dark-mode #add-gear-modal > div { background: #1c1c1e !important; }
-.dark-mode #add-gear-modal input,.dark-mode #add-gear-modal select,.dark-mode #add-gear-modal textarea { background:#2c2c2e !important;color:#fff !important;border-color:rgba(255,255,255,0.1) !important; }
-.dark-mode .gear-cat-chip { background: #2c2c2e !important; color: #ccc !important; }
+/* ══════════════════════════════════════════
+   WAVE 13 — GEAR TAB
+══════════════════════════════════════════ */
+.gear-chip-scroll { display:flex;gap:6px;overflow-x:auto;padding:10px 0 12px;scrollbar-width:none;-ms-overflow-style:none; }
+.gear-chip-scroll::-webkit-scrollbar { display:none; }
+.dark-mode #gear-lure-stats > div { background:#2c2c2e !important; }
+.dark-mode #gear-items-list > div { background:#2c2c2e !important; }
+.dark-mode .gear-cat-chip { background:#2c2c2e !important;color:#ccc !important;border-color:rgba(255,255,255,0.06) !important; }
+.gear-cat-chip { border:1.5px solid transparent;transition:background 0.15s,color 0.15s; }
 /* ── ADD GEAR MODAL ── */
-#add-gear-modal { position:fixed;inset:0;z-index:9200;background:rgba(0,0,0,0.55);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity 0.22s; }
+#add-gear-modal { position:fixed;inset:0;z-index:9200;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity 0.22s; }
 #add-gear-modal.open { opacity:1;pointer-events:all; }
 #add-gear-modal > div { transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.32,0.72,0,1); }
 #add-gear-modal.open > div { transform:translateY(0); }
-/* ── CATCH STREAK ── */
-.streak-badge { display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#ff6b35,#ff375f);color:#fff;border-radius:20px;padding:4px 10px;font-size:12px;font-weight:800;letter-spacing:-0.3px; }
-/* ── EMOJI REACTIONS ── */
-.react-bar { display:flex;align-items:center;gap:4px;padding:4px 14px 6px;flex-wrap:wrap; }
-.react-btn { display:inline-flex;align-items:center;gap:3px;border:1.5px solid rgba(0,0,0,0.07);background:#fff;border-radius:20px;padding:4px 9px;font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.15s;font-weight:600;color:#444; }
-.react-btn:active { transform:scale(0.92); }
-.react-btn.reacted { background:rgba(14,165,233,0.08);border-color:rgba(14,165,233,0.25);color:#0ea5e9; }
-.dark-mode .react-btn { background:#2c2c2e;border-color:rgba(255,255,255,0.08);color:#ccc; }
-.dark-mode .react-btn.reacted { background:rgba(14,165,233,0.15);border-color:rgba(14,165,233,0.3);color:#38bdf8; }
-/* ── PROFILE COMPLETION ── */
-#prof-completion { overflow:hidden;transition:max-height 0.4s,opacity 0.3s; }
-.dark-mode #prof-completion > div { background:#2c2c2e !important; }
-/* ── SPECIES GOAL ── */
-.dark-mode #species-goal-card { background:#2c2c2e !important; }
-/* ── OTW STRIP ── */
-#otw-strip-wrap { padding:6px 12px 4px;display:none; }
-.otw-strip-item { display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;flex-shrink:0; }
-.otw-strip-av { position:relative;width:44px;height:44px;border-radius:50%;background:var(--grad-av);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;background-size:cover;background-position:center;border:2px solid #34c759; }
-.otw-strip-dot { position:absolute;bottom:1px;right:1px;width:10px;height:10px;border-radius:50%;background:#34c759;border:1.5px solid #fff;animation:pulse 1.5s infinite; }
-.otw-strip-name { font-size:10px;color:#333;font-weight:600;max-width:44px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
-.dark-mode .otw-strip-name { color:#ccc; }
-/* ── SAME SPOT STRIP ── */
-.dark-mode #cs-same-spot { border-bottom-color: rgba(255,255,255,0.06); }
-.dark-mode #cs-same-spot > div:first-child { color: rgba(255,255,255,0.4); }
-/* ── LURE SUGGESTIONS ── */
-.dark-mode #lure-suggestions button { background:rgba(14,165,233,0.12) !important;border-color:rgba(14,165,233,0.25) !important;color:#38bdf8 !important; }
-/* ── STREAK / COMPLETION ── */
+#add-gear-modal input:focus,#add-gear-modal select:focus { border-color:var(--navy) !important;outline:none; }
+.agm-select-wrap { position:relative; }
+.agm-select-wrap::after { content:'›';position:absolute;right:14px;top:50%;transform:translateY(-50%) rotate(90deg);font-size:16px;color:var(--gray);pointer-events:none; }
+.dark-mode #add-gear-modal > div { background:#1c1c1e !important; }
+.dark-mode #add-gear-modal input,.dark-mode #add-gear-modal select { background:#2c2c2e !important;color:#fff !important;border-color:rgba(255,255,255,0.1) !important; }
+
+/* ══════════════════════════════════════════
+   WAVE 13 — CATCH STREAK
+══════════════════════════════════════════ */
+.streak-badge { display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#ff6b35,#ff375f);color:#fff;border-radius:20px;padding:5px 12px;font-size:11.5px;font-weight:800;letter-spacing:-0.3px;box-shadow:0 2px 8px rgba(255,55,95,0.25); }
+
+/* ══════════════════════════════════════════
+   WAVE 13 — EMOJI REACTIONS
+══════════════════════════════════════════ */
+.react-bar { display:none;align-items:center;gap:5px;padding:4px 14px 10px;flex-wrap:wrap; }
+.react-btn { display:inline-flex;align-items:center;gap:3px;border:1.5px solid rgba(0,0,0,0.08);background:#f8f9fa;border-radius:100px;padding:4px 10px;font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.15s;font-weight:600;color:#555;user-select:none; }
+.react-btn:hover { border-color:rgba(0,0,0,0.15);background:#f0f2f5; }
+.react-btn:active { transform:scale(0.9); }
+.react-btn.reacted { background:rgba(14,165,233,0.1);border-color:rgba(14,165,233,0.3);color:#0369a1; }
+.dark-mode .react-btn { background:#2c2c2e;border-color:rgba(255,255,255,0.08);color:#aaa; }
+.dark-mode .react-btn:hover { background:#3a3a3c; }
+.dark-mode .react-btn.reacted { background:rgba(14,165,233,0.18);border-color:rgba(14,165,233,0.35);color:#38bdf8; }
+
+/* ══════════════════════════════════════════
+   WAVE 13 — PROFILE COMPLETION
+══════════════════════════════════════════ */
+#prof-completion { overflow:hidden; }
 .dark-mode #prof-completion > div { background:#2c2c2e !important;border-color:rgba(255,255,255,0.06) !important; }
-.dark-mode #prof-completion .ep-label { color:#888 !important; }
-/* ── ADD GEAR MODAL ── */
-.dark-mode #add-gear-modal > div { background:#1c1c1e; }
+.dark-mode #prof-completion div[style*="color:#111"] { color:#fff !important; }
+
+/* ══════════════════════════════════════════
+   WAVE 13 — OTW STRIP
+══════════════════════════════════════════ */
+#otw-strip-wrap { padding:10px 14px 12px;display:none;background:#fff;margin:6px 10px;border-radius:16px;box-shadow:0 1px 6px rgba(0,0,0,0.06); }
+.otw-strip-hd { display:flex;align-items:center;justify-content:space-between;margin-bottom:8px; }
+.otw-strip-hd-left { font-size:12px;font-weight:800;color:#111;letter-spacing:-0.2px; }
+.otw-strip-hd-right { font-size:10px;color:var(--gray);font-weight:600; }
+.otw-strip-item { display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex-shrink:0; }
+.otw-strip-av { position:relative;width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#0ea5e9,#0369a1);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;background-size:cover;background-position:center;border:2.5px solid #34c759;box-shadow:0 0 0 2px rgba(52,199,89,0.2); }
+.otw-strip-dot { position:absolute;bottom:0px;right:0px;width:11px;height:11px;border-radius:50%;background:#34c759;border:2px solid #fff;animation:pulse 1.5s infinite; }
+.otw-strip-name { font-size:10px;color:#444;font-weight:600;max-width:48px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center; }
+.dark-mode #otw-strip-wrap { background:#1c1c1e;box-shadow:0 1px 6px rgba(0,0,0,0.2); }
+.dark-mode .otw-strip-hd-left { color:#fff; }
+.dark-mode .otw-strip-name { color:#aaa; }
+
+/* ══════════════════════════════════════════
+   WAVE 13 — SAME SPOT / COMMENTS
+══════════════════════════════════════════ */
+#cs-same-spot { border-bottom:0.5px solid rgba(0,0,0,0.06); }
+.dark-mode #cs-same-spot { border-bottom-color:rgba(255,255,255,0.06); }
+.dark-mode #cs-same-spot > div:first-child > div { color:rgba(255,255,255,0.4) !important; }
+
+/* ══════════════════════════════════════════
+   WAVE 13 — LURE SUGGESTIONS
+══════════════════════════════════════════ */
+#lure-suggestions { background:#f8faff;border-radius:12px;padding:10px 12px;border:1px solid rgba(14,165,233,0.12); }
+#lure-suggestions > div:first-child { font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:7px; }
+.dark-mode #lure-suggestions { background:rgba(14,165,233,0.06) !important;border-color:rgba(14,165,233,0.15) !important; }
+.dark-mode #lure-suggestions button { background:rgba(14,165,233,0.12) !important;border-color:rgba(14,165,233,0.2) !important;color:#38bdf8 !important; }
 /* ── PINNED CATCH ── */
 .catch-thumb.pinned::after{content:'📌';position:absolute;top:5px;right:5px;font-size:14px;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.4));}
 
@@ -1586,9 +1647,9 @@ body {
         </div>
         <!-- On The Water users strip -->
         <div id="otw-strip-wrap">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-            <div style="font-size:11px;font-weight:800;color:#111;letter-spacing:-0.2px;">🎣 On The Water</div>
-            <div style="font-size:10px;color:var(--gray);">currently fishing</div>
+          <div class="otw-strip-hd">
+            <div class="otw-strip-hd-left">🎣 On The Water</div>
+            <div class="otw-strip-hd-right">currently fishing</div>
           </div>
           <div id="otw-strip-list" style="display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;padding-bottom:4px;"></div>
         </div>
@@ -1872,7 +1933,17 @@ body {
           <div class="log-overlay"></div>
         </div>
         <div style="padding:12px 12px 20px;">
-          <div id="log-species-title" style="font-size:16px;font-weight:700;color:#000;letter-spacing:-0.4px;">Largemouth Bass</div>
+          <div style="display:flex;align-items:center;gap:8px;cursor:pointer;" onclick="openSpeciesEdit()">
+            <div id="log-species-title" style="font-size:16px;font-weight:700;color:#000;letter-spacing:-0.4px;">Largemouth Bass</div>
+            <span style="font-size:10px;font-weight:600;color:var(--gray);background:rgba(0,0,0,0.06);border-radius:8px;padding:2px 8px;">✎ edit</span>
+          </div>
+          <!-- Species autocomplete dropdown -->
+          <div id="log-species-dropdown" style="display:none;position:absolute;background:#fff;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,0.18);z-index:500;width:280px;max-height:220px;overflow-y:auto;border:1.5px solid rgba(0,0,0,0.08);margin-top:4px;">
+            <div style="padding:8px 12px;border-bottom:0.5px solid rgba(0,0,0,0.06);">
+              <input id="log-species-search" placeholder="Search species…" style="width:100%;border:none;outline:none;font-size:13px;font-family:inherit;color:#111;" oninput="filterSpeciesDropdown(this.value)">
+            </div>
+            <div id="log-species-list"></div>
+          </div>
           <div style="font-size:12px;color:var(--gray);margin-top:2px;letter-spacing:-0.2px;display:flex;align-items:center;gap:3px;overflow:hidden;">
             <svg width="9" height="12" viewBox="0 0 9 12" fill="#8e8e93" style="flex-shrink:0;"><path d="M4.5 0C2.6 0 1 1.6 1 3.5 1 6.1 4.5 12 4.5 12S8 6.1 8 3.5C8 1.6 6.4 0 4.5 0zm0 5C3.7 5 3 4.3 3 3.5S3.7 2 4.5 2 6 2.7 6 3.5 5.3 5 4.5 5z"/></svg>
             <span id="log-spot-name" onclick="editSpotName()" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:140px;cursor:pointer;border-bottom:1px dashed rgba(0,0,0,0.15);">Auto-detecting location…</span>
@@ -1929,7 +2000,7 @@ body {
           <div class="log-row"><div class="log-row-l"><span class="log-row-ico"><svg width="16" height="13" viewBox="0 0 18 14" fill="none" stroke="#1B2E4B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 5C1 3.9 1.9 3 3 3h1.4l1-2h5.2l1 2H15c1.1 0 2 .9 2 2v6c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V5z"/><circle cx="9" cy="8" r="2.3"/></svg></span> Fish Picture</div><div class="tog" id="tog-selfie" onclick="this.classList.toggle('on')"></div></div>
         </div>
         <!-- Weather chip while logging -->
-        <div id="log-weather-chip" style="display:none;margin:0 0 8px;padding:10px 14px;background:#fff;border-radius:14px;border:1.5px solid rgba(14,165,233,0.2);display:flex;align-items:center;gap:10px;">
+        <div id="log-weather-chip" style="display:none;margin:0 0 8px;padding:10px 14px;background:#fff;border-radius:14px;border:1.5px solid rgba(14,165,233,0.2);align-items:center;gap:10px;">
           <div style="font-size:22px;" id="lwc-icon">🌤️</div>
           <div style="flex:1;min-width:0;">
             <div style="font-size:12px;font-weight:700;color:#111;" id="lwc-temp"></div>
@@ -1963,6 +2034,13 @@ body {
           <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
             <span id="caption-draft-badge" style="display:none;font-size:10px;color:#f59e0b;font-weight:700;background:rgba(245,158,11,0.1);padding:2px 8px;border-radius:8px;">Draft restored ✦</span>
             <span id="caption-char-count" style="font-size:10px;color:var(--gray);margin-left:auto;">280</span>
+          </div>
+          <!-- Caption quick-starters -->
+          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:0.5px solid rgba(0,0,0,0.06);">
+            <span style="font-size:9px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:0.4px;align-self:center;flex-shrink:0;">Quick:</span>
+            ${[['🌅 Sunrise catch!','🌅 Sunrise catch! Early bird gets the fish 🎣'],['🔥 Biting today!','🔥 Everything was biting today!'],['C&R 💚','Catch and release — back to fight another day 💚'],['PB alert! 🏆','Think this might be a personal best! 🏆']].map(([label, val]) =>
+              `<button onclick="insertCaption('${val.replace(/'/g,"\\'")}');event.stopPropagation();" style="border:1.5px solid rgba(0,0,0,0.1);background:rgba(0,0,0,0.02);color:#555;border-radius:20px;padding:4px 9px;font-size:10px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;">${label}</button>`
+            ).join('')}
           </div>
         </div>
         <div style="display:flex;gap:10px;">
@@ -2074,7 +2152,6 @@ body {
           <!-- Identity -->
           <div class="prof-name-v2" id="prof-name">—</div>
           <div class="prof-handle-v2" id="prof-handle" onclick="copyProfileUsername()" title="Copy username" style="cursor:pointer;">@— · California 🌊</div>
-          <div id="prof-streak-badge" style="display:none;margin-top:6px;"></div>
           <div id="prof-otw-badge" style="display:none;justify-content:center;margin-top:6px;">
             <div style="display:inline-flex;align-items:center;gap:5px;background:#dcfce7;border-radius:20px;padding:5px 12px;border:1.5px solid #bbf7d0;">
               <span style="width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;box-shadow:0 0 6px rgba(34,197,94,0.6);animation:pulse 1.5s infinite;"></span>
@@ -2135,22 +2212,22 @@ body {
           </div>
 
           <!-- Follow / own-profile action -->
-          <div style="display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;">
+          <div id="prof-action-row" style="display:flex;gap:7px;align-items:center;justify-content:center;flex-wrap:wrap;padding:0 8px;">
             <button class="follow-btn follow-btn-v2" id="follow-btn" onclick="toggleFollow()">+ Follow</button>
             <button class="edit-profile-shortcut" id="edit-profile-shortcut" onclick="openEditProfile()" style="display:none;">Edit Profile</button>
-            <button class="edit-profile-shortcut" id="share-profile-btn" onclick="shareProfile()" style="display:none;background:#f0f2f5;color:#111;border-color:rgba(0,0,0,0.1);">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="margin-right:4px;vertical-align:middle;"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Share
+            <button class="edit-profile-shortcut" id="share-profile-btn" onclick="shareProfile()" style="display:none;background:#f0f2f5;color:#555;border-color:rgba(0,0,0,0.08);gap:4px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Share
             </button>
-            <button id="on-the-water-btn" onclick="toggleOnTheWater()" style="display:none;border:none;border-radius:20px;padding:9px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;display:none;align-items:center;gap:5px;transition:all 0.2s;">
-              <span id="otw-dot" style="width:8px;height:8px;border-radius:50%;background:#aaa;display:inline-block;"></span>
+            <button id="on-the-water-btn" onclick="toggleOnTheWater()" style="display:none;border:none;border-radius:20px;padding:8px 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;align-items:center;gap:5px;transition:all 0.2s;">
+              <span id="otw-dot" style="width:7px;height:7px;border-radius:50%;background:#aaa;display:inline-block;flex-shrink:0;"></span>
               <span id="otw-label">Set Status</span>
             </button>
-            <button id="tight-lines-btn" style="display:none;border:none;border-radius:20px;padding:9px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;background:linear-gradient(135deg,#dcfce7,#bbf7d0);color:#15803d;border:1.5px solid #bbf7d0;" onclick="sendTightLines()">
+            <button id="tight-lines-btn" style="display:none;border:1.5px solid #bbf7d0;border-radius:20px;padding:8px 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;background:linear-gradient(135deg,#dcfce7,#f0fdf4);color:#15803d;" onclick="sendTightLines()">
               🎣 Tight Lines!
             </button>
-            <button id="species-goal-btn" onclick="openSpeciesGoalModal()" style="display:none;border:1.5px solid rgba(99,102,241,0.3);background:rgba(99,102,241,0.06);color:#6366f1;border-radius:20px;padding:9px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">🐟 Set Goal</button>
+            <button id="species-goal-btn" onclick="openSpeciesGoalModal()" style="display:none;border:1.5px solid rgba(99,102,241,0.25);background:rgba(99,102,241,0.06);color:#6366f1;border-radius:20px;padding:8px 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">🐟 Goal</button>
             <button class="dm-profile-btn" id="profile-dm-btn" style="display:none;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
               Message
             </button>
           </div>
@@ -2372,7 +2449,7 @@ body {
           <div id="explore-challenge" style="display:none;padding:0 16px;margin-bottom:4px;"></div>
           <!-- Hot Takes -->
           <div class="explore-sec-hd" id="explore-hot-hd" style="display:none;">Hot Takes 🌶️</div>
-          <div id="explore-hot" style="display:none;padding:0 16px 4px;overflow-x:auto;scrollbar-width:none;display:none;gap:8px;"></div>
+          <div id="explore-hot" style="display:none;padding:0 16px 4px;overflow-x:auto;scrollbar-width:none;gap:8px;"></div>
           <div class="explore-sec-hd">Trending This Week 🔥</div>
           <div id="explore-trending" class="explore-trending-grid">
             <div class="explore-placeholder">Loading…</div>
@@ -2383,11 +2460,11 @@ body {
           <div id="explore-buddies" style="display:none;"></div>
           <div class="explore-sec-hd">Who to Follow 🎣</div>
           <div id="explore-who-to-follow"></div>
+          <!-- Trending Hashtags -->
+          <div class="explore-sec-hd" id="explore-hashtags-hd" style="display:none;">Trending Tags 🏷️</div>
+          <div id="explore-hashtags" style="display:none;padding:0 16px 8px;"></div>
           <div class="explore-sec-hd">Fish Encyclopedia 📖</div>
-          <div style="display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 8px;">
-            ${Object.keys(SPECIES_DB||{}).map ? '' : ''}
-            <div id="explore-encyclopedia" style="display:flex;flex-wrap:wrap;gap:6px;width:100%;"></div>
-          </div>
+          <div id="explore-encyclopedia" style="display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 8px;"></div>
           <div class="explore-sec-hd" id="explore-spots-hd" style="display:none;">Hot Spots 📍</div>
           <div id="explore-spots" style="display:none;padding:0 16px 8px;"></div>
           <div class="explore-sec-hd" id="explore-near-hd" style="display:none;">Near You 📍</div>
@@ -2912,6 +2989,29 @@ function showScreen(name, back = false) {
   updateTabBar(name);
 
   if (name === 'scan') startCamera();
+  if (name === 'log') {
+    // If opened directly (no active scan), show clean "manual log" state
+    if (!identifiedFish && !capturedB64) {
+      currentSpot = null;
+      setEl('log-species-title', 'Unknown Fish');
+      setEl('log-spot-name', 'Detecting location…');
+      const logHero = document.getElementById('log-hero');
+      const logIco  = document.getElementById('log-fish-ico');
+      if (logHero) logHero.style.backgroundImage = '';
+      if (logIco)  logIco.style.display = 'block';
+      // Attach weather, moon, and GPS even in manual mode
+      setTimeout(() => {
+        attachWeatherToLog();
+        const moon = getMoonPhase();
+        setEl('moon-phase-icon', moon.icon);
+        setEl('moon-phase-text', `${moon.name} · ${moon.tip}`);
+        navigator.geolocation?.getCurrentPosition(
+          pos => matchOrNameSpot(pos.coords.latitude, pos.coords.longitude),
+          () => setEl('log-spot-name', 'Unknown Spot')
+        );
+      }, 300);
+    }
+  }
   if (name === 'feed') { loadFeed(); loadStoriesRow(); loadFeedQuickStats(); loadOnThisDay(); loadFeedTip(); showFishingForecast(); loadOTWStrip(); }
   if (name === 'leaderboard') loadLeaderboard();
   if (name === 'explore') loadExplore();
@@ -3205,8 +3305,11 @@ async function loadProfileScreen() {
     }
 
     // Stats + grid in parallel
+    // Own profile: include private catches in stats; other profile: public only
+    const isOwnProfile = !viewingUserId || uid === currentUser?.id;
+    const catchQuery = sb.from('catches').select('id, species, weight_lbs, photo_url, caption, lure_used, created_at, is_public').eq('user_id', uid).eq('post_type', 'catch').order('created_at', { ascending: false });
     const [fishRes, postsRes, follRes, followingRes] = await Promise.all([
-      sb.from('catches').select('id, species, weight_lbs, photo_url, caption, lure_used, created_at').eq('user_id', uid).eq('is_public', true).eq('post_type', 'catch').order('created_at', { ascending: false }),
+      isOwnProfile ? catchQuery : catchQuery.eq('is_public', true),
       sb.from('catches').select('id, caption, photo_url, created_at').eq('user_id', uid).eq('is_public', true).eq('post_type', 'post').order('created_at', { ascending: false }),
       sb.from('follows').select('*', { count: 'exact', head: true }).eq('following_id', uid),
       sb.from('follows').select('*', { count: 'exact', head: true }).eq('follower_id', uid),
@@ -3221,7 +3324,7 @@ async function loadProfileScreen() {
 
     setEl('prof-catches',      catchList.length || 0);
     setEl('prof-species',      species || 0);
-    setEl('prof-best',         best > 0 ? `${best} lb` : '—');
+    setEl('prof-best',         best > 0 ? `${best.toFixed(1)} lb` : '—');
     setEl('prof-followers',    follRes.count ?? 0);
     setEl('prof-following',    followingRes.count ?? 0);
     setEl('prof-total-weight', totalLbs > 0 ? `${totalLbs.toFixed(1)} lbs total` : '');
@@ -3238,25 +3341,6 @@ async function loadProfileScreen() {
       }
     }
 
-    // Streak badge (own profile only)
-    const streakBadgeEl = document.getElementById('prof-streak-badge');
-    if (streakBadgeEl) {
-      if (!viewingUserId) {
-        const streak = parseInt(STORE.get('streak', '0')) || 0;
-        if (streak >= 3) {
-          streakBadgeEl.style.display = 'flex';
-          streakBadgeEl.style.cssText = 'display:flex;justify-content:center;margin-top:6px;';
-          streakBadgeEl.innerHTML = `<div style="display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,rgba(245,158,11,0.15),rgba(245,158,11,0.08));border:1px solid rgba(245,158,11,0.3);border-radius:20px;padding:4px 12px;cursor:pointer;" onclick="showCatchStreak()">
-            <span style="font-size:14px;">🔥</span>
-            <span style="font-size:11px;font-weight:800;color:#d97706;letter-spacing:-0.2px;">${streak} day streak</span>
-          </div>`;
-        } else {
-          streakBadgeEl.style.display = 'none';
-        }
-      } else {
-        streakBadgeEl.style.display = 'none';
-      }
-    }
 
     // Trophy row: top 3 catches by weight
     const trophyRow = document.getElementById('prof-trophy-row');
@@ -3307,7 +3391,6 @@ async function loadProfileScreen() {
     // Follow button
     const editShortcut = document.getElementById('edit-profile-shortcut');
     const followBtn = document.getElementById('follow-btn');
-    const isOwnProfile = !viewingUserId || uid === currentUser?.id;
     if (editShortcut) editShortcut.style.display = isOwnProfile ? 'block' : 'none';
     const shareProfileBtn = document.getElementById('share-profile-btn');
     if (shareProfileBtn) shareProfileBtn.style.display = isOwnProfile ? 'inline-flex' : 'none';
@@ -3415,7 +3498,7 @@ async function loadProfileScreen() {
 // ══════════════════════════════════════════
 //  CATCH STREAK
 // ══════════════════════════════════════════
-function computeCatchStreak(catchList) {
+function computeCatchStreakSync(catchList) {
   if (!catchList?.length) return 0;
   const dateSet = new Set(catchList.map(c => c.created_at ? c.created_at.substring(0, 10) : null).filter(Boolean));
   const sorted = [...dateSet].sort().reverse();
@@ -3439,20 +3522,24 @@ function computeCatchStreak(catchList) {
 function renderStreakBadge(catchList, isOwnProfile) {
   const wrap = document.getElementById('prof-streak-wrap');
   if (!wrap) return;
-  const streak = computeCatchStreak(catchList);
-  if (streak >= 2 || isOwnProfile) {
-    const badge = document.getElementById('prof-streak-badge');
-    if (badge) {
-      badge.textContent = streak >= 2 ? `🔥 ${streak} day streak` : (streak === 1 ? '🔥 1 day streak' : '');
-      badge.style.display = streak >= 1 ? 'inline-flex' : 'none';
+  const streak = computeCatchStreakSync(catchList);
+  const streakBadge = document.getElementById('prof-streak-badge');
+  if (streakBadge) {
+    if (streak >= 1) {
+      streakBadge.textContent = `🔥 ${streak}-day streak`;
+      streakBadge.style.display = 'inline-flex';
+    } else {
+      streakBadge.style.display = 'none';
     }
-    if (streak >= 1) wrap.style.display = 'flex';
   }
   // Species goal badge
+  let goalVisible = false;
   if (isOwnProfile) {
     const goalBadge = document.getElementById('prof-species-goal-badge');
     renderSpeciesGoalBadge(catchList, goalBadge);
+    goalVisible = goalBadge && goalBadge.style.display !== 'none';
   }
+  wrap.style.display = (streak >= 1 || goalVisible) ? 'flex' : 'none';
 }
 
 // ══════════════════════════════════════════
@@ -3671,29 +3758,46 @@ function renderProfileStats(catchList, el) {
       ${bestDay >= 0 && dayCounts[bestDay] > 0 ? `<div style="font-size:11px;color:#0ea5e9;font-weight:600;margin-top:4px;">Your best day: ${dayNames[bestDay]}s 🎣</div>` : ''}
     </div>
 
-    <!-- Fun facts row -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-      <div style="background:#fff;border-radius:12px;padding:12px;">
-        <div style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">Fav Lure</div>
-        <div style="font-size:13px;color:#111;font-weight:700;line-height:1.3;">${topLure ? esc(topLure[0]) : '—'}</div>
-        ${topLure ? `<div style="font-size:10px;color:var(--gray);margin-top:2px;">Used ${topLure[1]} time${topLure[1]!==1?'s':''}</div>` : ''}
-      </div>
-      <div style="background:#fff;border-radius:12px;padding:12px;">
-        <div style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">Fav Spot</div>
-        <div style="font-size:13px;color:#111;font-weight:700;line-height:1.3;">${topSpot ? esc(topSpot[0]) : '—'}</div>
-        ${topSpot ? `<div style="font-size:10px;color:var(--gray);margin-top:2px;">${topSpot[1]} catch${topSpot[1]!==1?'es':''}</div>` : ''}
-      </div>
-      <div style="background:#fff;border-radius:12px;padding:12px;">
-        <div style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">Avg Weight</div>
-        <div style="font-size:13px;color:#111;font-weight:700;">${avgWeight > 0 ? avgWeight.toFixed(2) + ' lbs' : '—'}</div>
-        ${weighedCatches.length ? `<div style="font-size:10px;color:var(--gray);margin-top:2px;">From ${weighedCatches.length} weighed</div>` : ''}
-      </div>
-      <div style="background:#fff;border-radius:12px;padding:12px;">
-        <div style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">This Month</div>
-        <div style="font-size:13px;color:#111;font-weight:700;">${thisMonth} catch${thisMonth!==1?'es':''}</div>
-        <div style="font-size:10px;color:${thisMonth >= (thisWeek > 0 ? thisWeek * 3 : 1) ? '#34c759' : 'var(--gray)'};margin-top:2px;">${thisWeek} this week</div>
-      </div>
-    </div>
+    <!-- Fun facts grid -->
+    ${(() => {
+      const uniqueDays = new Set(catchList.map(c => c.created_at ? c.created_at.substring(0,10) : null).filter(Boolean)).size;
+      const catchPerSession = uniqueDays > 0 ? (catchList.length / uniqueDays).toFixed(1) : '—';
+      const firstCatch = catchList.length ? new Date(catchList[catchList.length - 1].created_at) : null;
+      const daysSinceFirst = firstCatch ? Math.max(1, Math.round((Date.now() - firstCatch.getTime()) / 86400000)) : 1;
+      const weeklyRate = (catchList.length / daysSinceFirst * 7).toFixed(1);
+      return `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div style="background:#fff;border-radius:12px;padding:12px;">
+          <div style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">Fav Lure</div>
+          <div style="font-size:12px;color:#111;font-weight:700;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${topLure ? esc(topLure[0]) : '—'}</div>
+          ${topLure ? `<div style="font-size:10px;color:var(--gray);margin-top:2px;">Used ${topLure[1]}×</div>` : ''}
+        </div>
+        <div style="background:#fff;border-radius:12px;padding:12px;">
+          <div style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">Fav Spot</div>
+          <div style="font-size:12px;color:#111;font-weight:700;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${topSpot ? esc(topSpot[0]) : '—'}</div>
+          ${topSpot ? `<div style="font-size:10px;color:var(--gray);margin-top:2px;">${topSpot[1]} catch${topSpot[1]!==1?'es':''}</div>` : ''}
+        </div>
+        <div style="background:#fff;border-radius:12px;padding:12px;">
+          <div style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">Avg Weight</div>
+          <div style="font-size:13px;color:#111;font-weight:700;">${avgWeight > 0 ? avgWeight.toFixed(2) + ' lbs' : '—'}</div>
+          ${weighedCatches.length ? `<div style="font-size:10px;color:var(--gray);margin-top:2px;">From ${weighedCatches.length} weighed</div>` : ''}
+        </div>
+        <div style="background:#fff;border-radius:12px;padding:12px;">
+          <div style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">Catch Rate</div>
+          <div style="font-size:13px;color:#111;font-weight:700;">${weeklyRate}/wk</div>
+          <div style="font-size:10px;color:var(--gray);margin-top:2px;">${catchPerSession} avg per outing</div>
+        </div>
+        <div style="background:#fff;border-radius:12px;padding:12px;">
+          <div style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">Sessions</div>
+          <div style="font-size:13px;color:#111;font-weight:700;">${uniqueDays} day${uniqueDays!==1?'s':''}</div>
+          <div style="font-size:10px;color:var(--gray);margin-top:2px;">${catchList.length} total catches</div>
+        </div>
+        <div style="background:#fff;border-radius:12px;padding:12px;">
+          <div style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">This Month</div>
+          <div style="font-size:13px;color:#111;font-weight:700;">${thisMonth} catch${thisMonth!==1?'es':''}</div>
+          <div style="font-size:10px;color:${thisMonth >= (thisWeek > 0 ? thisWeek * 3 : 1) ? '#34c759' : 'var(--gray)'};margin-top:2px;">${thisWeek} this week</div>
+        </div>
+      </div>`;
+    })()}
 
     <!-- Week vs Last Week comparison -->
     ${(() => {
@@ -3704,7 +3808,7 @@ function renderProfileStats(catchList, el) {
       const diff = thisWeek - lastWeekCatches;
       const arrow = diff > 0 ? '↑' : diff < 0 ? '↓' : '→';
       const color = diff > 0 ? '#34c759' : diff < 0 ? '#ff375f' : 'var(--gray)';
-      const streak = computeCatchStreak(catchList);
+      const streak = computeCatchStreakSync(catchList);
       return thisWeek > 0 || lastWeekCatches > 0 ? `
       <div style="margin-top:10px;background:linear-gradient(135deg,rgba(14,165,233,0.07),rgba(27,46,75,0.04));border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:12px;">
         <div style="font-size:28px;">📊</div>
@@ -3783,11 +3887,12 @@ function renderCatchGrid(catchList) {
     const w = parseFloat(c.weight_lbs) || 0;
     const isPB = w > 0 && w === speciesBest[c.species];
     const pbBadge = isPB ? `<div class="catch-pb-badge">PB</div>` : '';
-    const wLabel = w > 0 ? `<div class="catch-weight-badge">${w} lb</div>` : '';
+    const wLabel = w > 0 ? `<div class="catch-weight-badge">${w.toFixed(1)} lb</div>` : '';
     const isPinned = STORE.get('pinned_catch', '') === c.id;
+    const privateLock = c.is_public === false ? `<div style="position:absolute;top:5px;right:5px;background:rgba(0,0,0,0.55);border-radius:6px;padding:2px 5px;font-size:9px;color:#fff;line-height:1.4;">🔒</div>` : '';
     return `<div class="catch-thumb${isPinned ? ' pinned' : ''}" style="${bg}" onclick="openComments('${c.id}')">
       ${c.photo_url ? '' : fishSvg}
-      ${pbBadge}${wLabel}
+      ${pbBadge}${wLabel}${privateLock}
       <div class="catch-label">${esc(c.species)}</div>
     </div>`;
   }).join('');
@@ -3964,10 +4069,7 @@ async function loadLureSuggestions(species) {
 
   if (!suggestions.length) { el.style.display = 'none'; return; }
   chips.innerHTML = suggestions.map(s =>
-    `<button onclick="selectLure('${esc(s.lure)}');document.getElementById('lure-suggestions').style.display='none';" style="border:1.5px solid rgba(14,165,233,0.2);background:rgba(14,165,233,0.06);color:#0ea5e9;border-radius:20px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;gap:1px;text-align:left;">
-      🪝 ${esc(s.lure)}
-      <span style="font-size:9px;opacity:0.7;">${esc(s.src)}</span>
-    </button>`
+    `<button onclick="selectLure('${esc(s.lure)}');document.getElementById('lure-suggestions').style.display='none';" style="border:1.5px solid rgba(14,165,233,0.2);background:rgba(14,165,233,0.06);color:#0ea5e9;border-radius:20px;padding:5px 11px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">🪝 ${esc(s.lure)}</button>`
   ).join('');
   el.style.display = 'block';
 }
@@ -4223,6 +4325,85 @@ function goToLog() {
     // Auto-attach weather
     attachWeatherToLog();
   }, 250);
+}
+
+// ── SPECIES EDIT ON LOG SCREEN ──
+const ALL_SPECIES = [
+  'Largemouth Bass','Smallmouth Bass','Striped Bass','White Bass',
+  'Rainbow Trout','Brown Trout','Brook Trout','Lake Trout',
+  'Walleye','Sauger','Northern Pike','Muskellunge','Tiger Musky',
+  'Channel Catfish','Blue Catfish','Flathead Catfish','Bullhead',
+  'Bluegill','Pumpkinseed','Redear Sunfish','Warmouth',
+  'Crappie','Black Crappie','White Crappie',
+  'Carp','Buffalo','Drum','Freshwater Drum',
+  'Salmon','Chinook Salmon','Coho Salmon','Sockeye Salmon',
+  'Steelhead','Atlantic Salmon',
+  'Redfish','Red Drum','Black Drum','Speckled Trout','Flounder',
+  'Snook','Tarpon','Permit','Bonefish','Cobia',
+  'Striped Bass','Bluefish','Weakfish','Croaker',
+  'Mahi-Mahi','Yellowfin Tuna','Bluefin Tuna','Wahoo','Sailfish',
+  'Halibut','Lingcod','Rockfish','Yellowtail',
+  'Perch','Yellow Perch','White Perch',
+  'Gar','Bowfin','Shad','Whitefish',
+  'Unknown','Other',
+];
+
+function openSpeciesEdit() {
+  const dropdown = document.getElementById('log-species-dropdown');
+  const list = document.getElementById('log-species-list');
+  const search = document.getElementById('log-species-search');
+  if (!dropdown || !list) return;
+  // Populate all species
+  renderSpeciesList(ALL_SPECIES);
+  dropdown.style.display = 'block';
+  if (search) { search.value = ''; search.focus(); }
+  // Close on outside click
+  setTimeout(() => {
+    document.addEventListener('click', closeSpeciesDropdownHandler, { once: true });
+  }, 50);
+}
+
+function closeSpeciesDropdownHandler(e) {
+  const dd = document.getElementById('log-species-dropdown');
+  if (dd && !dd.contains(e.target)) dd.style.display = 'none';
+}
+
+function filterSpeciesDropdown(value) {
+  const filtered = value.trim()
+    ? ALL_SPECIES.filter(s => s.toLowerCase().includes(value.toLowerCase()))
+    : ALL_SPECIES;
+  renderSpeciesList(filtered);
+}
+
+function renderSpeciesList(species) {
+  const list = document.getElementById('log-species-list');
+  if (!list) return;
+  list.innerHTML = species.slice(0, 30).map(s =>
+    `<div onclick="selectLogSpecies('${esc(s)}')" style="padding:10px 14px;font-size:13px;font-weight:600;color:#111;cursor:pointer;border-bottom:0.5px solid rgba(0,0,0,0.05);" onmouseenter="this.style.background='#f5f7fa'" onmouseleave="this.style.background=''">${esc(s)}</div>`
+  ).join('') || '<div style="padding:12px 14px;font-size:13px;color:var(--gray);">No matches</div>';
+}
+
+function selectLogSpecies(species) {
+  const title = document.getElementById('log-species-title');
+  if (title) title.textContent = species;
+  const dropdown = document.getElementById('log-species-dropdown');
+  if (dropdown) dropdown.style.display = 'none';
+  // Update identifiedFish species so it saves correctly
+  if (typeof identifiedFish !== 'undefined' && identifiedFish) {
+    identifiedFish.species = species;
+  } else {
+    window.identifiedFish = { species };
+  }
+  // Reload lure suggestions for new species
+  loadLureSuggestions(species);
+  // Update placeholder tip
+  if (SPECIES_DB[species]) {
+    const capEl = document.getElementById('catch-caption-input');
+    if (capEl && !capEl.value) {
+      capEl.placeholder = `Try: "${SPECIES_DB[species].tip.slice(0, 60)}…"`;
+    }
+  }
+  showToast(`Species updated to ${species} ✏️`);
 }
 
 function selectManualWeather(cond, btn) {
@@ -4799,7 +4980,7 @@ function editSpotName() {
 
 async function matchOrNameSpot(lat, lng) {
   if (sb) {
-    const { data: spots } = await sb.from('spots').select('*');
+    const { data: spots } = await sb.from('spots').select('id,name,lat,lng').limit(300);
     for (const s of (spots || [])) {
       if (haversine(lat, lng, s.lat, s.lng) < 0.5) {
         currentSpot = s;
@@ -5017,25 +5198,43 @@ async function postCatch(isPublic = true) {
 
     await checkAndAwardBadges();
     await checkCatchMilestone();
-    // Check milestone achievements
+    // Check milestone achievements and personal best
+    let isPersonalBest = false;
     try {
-      const { data: userCatches } = await sb.from('catches').select('weight_lbs,created_at').eq('user_id', currentUser.id);
+      const { data: userCatches } = await sb.from('catches').select('weight_lbs,created_at,species').eq('user_id', currentUser.id);
       if (userCatches) {
         const total = userCatches.length;
         const heaviest = Math.max(0, ...userCatches.map(x => parseFloat(x.weight_lbs) || 0));
         const streak = parseInt(STORE.get('streak', '0')) || 0;
         checkAchievements({ total, heaviest, streak });
+        // Personal best check for this species
+        if (weight && newCatch?.species) {
+          const speciesCatches = userCatches.filter(x => x.species === newCatch.species && x.id !== newCatch.id);
+          const prevBest = Math.max(0, ...speciesCatches.map(x => parseFloat(x.weight_lbs) || 0));
+          if (weight > prevBest && weight > 0) {
+            isPersonalBest = true;
+            const msg = prevBest > 0
+              ? `🏆 New PB! ${weight.toFixed(1)} lbs ${newCatch.species} beats your old ${prevBest.toFixed(1)} lb record!`
+              : `🏆 First ${newCatch.species} on record — ${weight.toFixed(1)} lbs!`;
+            setTimeout(() => triggerConfetti(msg), 400);
+          }
+        }
       }
     } catch {}
 
-    capturedB64 = null;
+    capturedB64 = null; capturedMime = null;
     fishMeasurement = null;
     aiLength = null; aiWeight = null;
-    const captEl = document.getElementById('catch-caption-input');
-    if (captEl) captEl.value = '';
+    identifiedFish = null;
+    // Reset log hero to placeholder
+    const logHero = document.getElementById('log-hero');
+    const logIco  = document.getElementById('log-fish-ico');
+    if (logHero) logHero.style.backgroundImage = '';
+    if (logIco)  logIco.style.display = 'block';
+    setEl('log-species-title', 'Unknown Fish');
     clearLogDraft();
     if (spotName && spotName !== 'Unknown Spot') STORE.set('last_spot', spotName);
-    showToast(isPublic ? 'Catch posted! 🎣' : 'Catch logged! 📋');
+    if (!isPersonalBest) showToast(isPublic ? 'Catch posted! 🎣' : 'Catch logged! 📋');
     showScreen(isPublic ? 'feed' : 'profile');
   } catch (err) {
     showToast('Failed to save: ' + err.message);
@@ -5057,6 +5256,14 @@ function updateCaptionCount(el) {
     counter.style.color = left < 30 ? '#ff375f' : left < 60 ? '#f59e0b' : 'var(--gray)';
   }
   saveLogDraft();
+}
+
+function insertCaption(text) {
+  const el = document.getElementById('catch-caption-input');
+  if (!el) return;
+  el.value = text;
+  updateCaptionCount(el);
+  el.focus();
 }
 
 function saveLogDraft() {
@@ -5088,6 +5295,17 @@ function restoreLogDraft() {
 
 function clearLogDraft() {
   STORE.set('log_draft', '');
+  // Clear form inputs
+  const weightEl  = document.getElementById('weight-input');
+  const lengthEl  = document.getElementById('length-input');
+  const lureEl    = document.getElementById('lure-input');
+  const captEl    = document.getElementById('catch-caption-input');
+  const waterEl   = document.getElementById('water-temp-input');
+  if (weightEl) weightEl.value = '';
+  if (lengthEl) lengthEl.value = '';
+  if (lureEl)   lureEl.value   = '';
+  if (waterEl)  waterEl.value  = '';
+  if (captEl)   { captEl.value = ''; updateCaptionCount(captEl); }
   // Reset manual weather picker
   document.querySelectorAll('.log-weather-btn').forEach(b => {
     b.classList.remove('selected');
@@ -5104,11 +5322,15 @@ function clearLogDraft() {
 // ══════════════════════════════════════════
 //  CATCH VIEW COUNTER (local)
 // ══════════════════════════════════════════
+const _sessionViewed = new Set();
 function trackCardView(catchId) {
   const key = `views_${catchId}`;
-  const count = parseInt(STORE.get(key, '0')) + 1;
-  STORE.set(key, String(count));
-  return count;
+  const count = parseInt(STORE.get(key, '0'));
+  if (_sessionViewed.has(catchId)) return count;
+  _sessionViewed.add(catchId);
+  const next = count + 1;
+  STORE.set(key, String(next));
+  return next;
 }
 
 
@@ -5412,15 +5634,21 @@ async function loadFeed(append = false) {
     displayCatches.forEach(c => {
       const cReacts = reactMap[c.id] || {};
       const myR = myReacts[c.id] || new Set();
+      let hasAnyReaction = false;
       REACT_TYPES.forEach(t => {
         const cnt = cReacts[t] || 0;
         const countEl = document.querySelector(`.rc-${c.id}-${t}`);
-        if (countEl) countEl.textContent = cnt;
+        if (countEl) countEl.textContent = cnt > 0 ? cnt : '';
         const btn = document.getElementById(`rb-${t}-${c.id}`);
-        if (btn && myR.has(t)) btn.classList.add('reacted');
-        // Hide zero-count buttons that user hasn't reacted to
-        if (btn && cnt === 0 && !myR.has(t)) btn.style.display = 'none';
+        if (btn) {
+          if (myR.has(t)) { btn.classList.add('reacted'); btn.style.display = ''; hasAnyReaction = true; }
+          else if (cnt > 0) { btn.style.display = ''; hasAnyReaction = true; }
+          else { btn.style.display = 'none'; }
+        }
       });
+      // Show bar only if there are reactions
+      const bar = document.getElementById(`reacts-${c.id}`);
+      if (bar) bar.style.display = hasAnyReaction ? 'flex' : 'none';
     });
 
     if (!feedAllLoaded) {
@@ -5805,10 +6033,10 @@ function catchCard(c, likes, liked, cmtCount = 0) {
       return meta.length ? `<div style="display:flex;flex-wrap:wrap;gap:4px;padding:4px 14px 6px;">${meta.join('')}</div>` : '';
     })()}
     ${cmtCount > 0 ? `<div style="padding:2px 14px 8px;font-size:11px;color:var(--gray);cursor:pointer;" onclick="event.stopPropagation();openComments('${c.id}')">View all ${cmtCount} comment${cmtCount!==1?'s':''}</div>` : ''}
-    <div class="react-bar" id="reacts-${c.id}">
+    <div class="react-bar" id="reacts-${c.id}" style="display:none;">
       ${['🔥','😮','🏆','👏','🐟'].map((emoji, i) => {
         const types = ['fire','wow','trophy','clap','fish'];
-        return `<button class="react-btn" id="rb-${types[i]}-${c.id}" onclick="event.stopPropagation();toggleReaction('${c.id}','${types[i]}',this)">${emoji} <span class="rc-${c.id}-${types[i]}">0</span></button>`;
+        return `<button class="react-btn" id="rb-${types[i]}-${c.id}" onclick="event.stopPropagation();toggleReaction('${c.id}','${types[i]}',this)">${emoji} <span class="rc-${c.id}-${types[i]}"></span></button>`;
       }).join('')}
     </div>
   </div>`;
@@ -5819,7 +6047,7 @@ async function toggleLikeDb(catchId) {
   if (!btn) return;
   const countEl = btn.querySelector('.like-count');
   const liked = btn.classList.toggle('liked');
-  if (countEl) countEl.textContent = parseInt(countEl.textContent) + (liked ? 1 : -1);
+  if (countEl) countEl.textContent = Math.max(0, parseInt(countEl.textContent) + (liked ? 1 : -1));
   if (!sb || !currentUser) return;
   try {
     if (liked) {
@@ -5835,7 +6063,7 @@ async function toggleLikeDb(catchId) {
     }
   } catch {
     btn.classList.toggle('liked');
-    if (countEl) countEl.textContent = parseInt(countEl.textContent) + (liked ? -1 : 1);
+    if (countEl) countEl.textContent = Math.max(0, parseInt(countEl.textContent) + (liked ? -1 : 1));
   }
 }
 
@@ -6115,6 +6343,8 @@ function toggleLike(id) {
 // ── COMMENTS ──
 const COMMENTS = {};
 let activePostId = null;
+let activePostOwnerId = null;
+let activePostSpecies = '';
 
 // ══════════════════════════════════════════
 //  PERSISTENCE (localStorage)
@@ -6541,6 +6771,10 @@ async function openComments(postId) {
       const { data: catchData } = await sb.from('catches')
         .select('id, species, weight_lbs, photo_url, user_id, lat, lng, spot_name, profiles!catches_user_id_fkey(username, avatar_url)')
         .eq('id', postId).single();
+      if (catchData) {
+        activePostOwnerId = catchData.user_id || null;
+        activePostSpecies = catchData.species || '';
+      }
       if (catchData && preview) {
         const photoEl = document.getElementById('cs-post-photo');
         const speciesEl = document.getElementById('cs-post-species');
@@ -6616,7 +6850,7 @@ async function loadSameSpotCatches(spotName, excludeId) {
         <div style="width:64px;height:64px;border-radius:12px;background:${bg};margin-bottom:3px;position:relative;overflow:hidden;">
           ${!c.photo_url ? `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:22px;">🐟</div>` : ''}
         </div>
-        <div style="font-size:9px;font-weight:700;color:#111;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(c.species || '?')}</div>
+        <div style="font-size:9px;font-weight:700;color:var(--text-primary,#111);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(c.species || '?')}</div>
         ${wt ? `<div style="font-size:9px;color:var(--gray);text-align:center;">${wt}</div>` : ''}
       </div>`;
     }).join('');
@@ -6646,7 +6880,7 @@ async function loadNearbySpotCatches(lat, lng, excludeId) {
         <div style="width:64px;height:64px;border-radius:12px;background:${bg};margin-bottom:3px;position:relative;overflow:hidden;">
           ${!c.photo_url ? `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:22px;">🐟</div>` : ''}
         </div>
-        <div style="font-size:9px;font-weight:700;color:#111;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(c.species || '?')}</div>
+        <div style="font-size:9px;font-weight:700;color:var(--text-primary,#111);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(c.species || '?')}</div>
       </div>`;
     }).join('');
     wrap.style.display = 'block';
@@ -6733,6 +6967,8 @@ function closeComments() {
   const sameSpot = document.getElementById('cs-same-spot');
   if (sameSpot) sameSpot.style.display = 'none';
   activePostId = null;
+  activePostOwnerId = null;
+  activePostSpecies = '';
   if (_cmtRealtimeSub && sb) { sb.removeChannel(_cmtRealtimeSub); _cmtRealtimeSub = null; }
 }
 
@@ -6757,11 +6993,9 @@ async function sendComment() {
       // Bump comment count in feed card
       const cmtSpanEl = document.querySelector(`.cmt-count-${activePostId}`);
       if (cmtSpanEl) cmtSpanEl.textContent = parseInt(cmtSpanEl.textContent || 0) + 1;
-      // Notify post owner
-      const cardEl = document.getElementById(`like-db-${activePostId}`)?.closest('[data-owner]');
-      const ownerId = cardEl?.dataset.owner;
-      if (ownerId && ownerId !== currentUser.id) {
-        createNotification(ownerId, 'comment', activePostId, cardEl?.dataset.species || '');
+      // Notify post owner (use stored owner from when comments were opened)
+      if (activePostOwnerId && activePostOwnerId !== currentUser.id) {
+        createNotification(activePostOwnerId, 'comment', activePostId, activePostSpecies);
       }
     } catch { showToast('Could not post comment'); input.value = text; }
     finally { if (sendBtn) sendBtn.disabled = false; }
@@ -7169,8 +7403,9 @@ async function loadFeedQuickStats() {
   const el = document.getElementById('feed-quick-stats');
   if (!el || !sb || !currentUser) return;
   try {
-    const [catchRes, follRes, streakDays] = await Promise.all([
-      sb.from('catches').select('id, weight_lbs, created_at').eq('user_id', currentUser.id).eq('post_type', 'catch').order('created_at', { ascending: false }),
+    const since365 = new Date(Date.now() - 365 * 86400000).toISOString();
+    const [catchRes, follRes] = await Promise.all([
+      sb.from('catches').select('id, weight_lbs, created_at').eq('user_id', currentUser.id).eq('post_type', 'catch').gte('created_at', since365).order('created_at', { ascending: false }),
       sb.from('follows').select('*', { count: 'exact', head: true }).eq('follower_id', currentUser.id),
     ]);
     const catches = catchRes.data || [];
@@ -7234,7 +7469,6 @@ async function loadOTWStrip() {
       const avStyle = u.avatar_url
         ? `background:url(${esc(u.avatar_url)}) center/cover;font-size:0;`
         : '';
-      const sinceText = u.fishing_since ? timeAgo(u.fishing_since) : '';
       return `<div class="otw-strip-item" onclick="openUserProfile('${u.id}')">
         <div class="otw-strip-av" style="${avStyle}">${u.avatar_url ? '' : initials}<div class="otw-strip-dot"></div></div>
         <div class="otw-strip-name">@${esc(u.username)}</div>
@@ -7257,7 +7491,8 @@ async function loadOnThisDay() {
     const { data } = await sb.from('catches')
       .select('id, species, weight_lbs, photo_url, created_at')
       .eq('user_id', currentUser.id)
-      .eq('post_type', 'catch');
+      .eq('post_type', 'catch')
+      .limit(500);
 
     if (!data?.length) return;
     // Filter to same month/day but past years
@@ -7320,6 +7555,39 @@ async function loadExplore() {
   loadExploreHotTakes();
   loadExploreHotSpots();
   loadExploreNearYou();
+  loadExploreTrendingHashtags();
+}
+
+// ── TRENDING HASHTAGS ──
+async function loadExploreTrendingHashtags() {
+  const el = document.getElementById('explore-hashtags');
+  const hd = document.getElementById('explore-hashtags-hd');
+  if (!el || !hd || !sb) return;
+  try {
+    const since = new Date(Date.now() - 72 * 3600000).toISOString();
+    const { data } = await sb.from('catches')
+      .select('caption')
+      .eq('is_public', true)
+      .gte('created_at', since)
+      .not('caption', 'is', null)
+      .limit(200);
+    if (!data?.length) return;
+    const tagCounts = {};
+    data.forEach(c => {
+      if (!c.caption) return;
+      const tags = c.caption.match(/#\w+/g) || [];
+      tags.forEach(t => { const tag = t.toLowerCase(); tagCounts[tag] = (tagCounts[tag] || 0) + 1; });
+    });
+    const sorted = Object.entries(tagCounts).sort((a,b) => b[1]-a[1]).slice(0, 10);
+    if (!sorted.length) return;
+    hd.style.display = '';
+    el.style.display = 'block';
+    el.innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:6px;">${sorted.map(([tag, cnt]) =>
+      `<button onclick="onExploreSearch('${esc(tag)}')" style="border:1.5px solid rgba(14,165,233,0.25);background:rgba(14,165,233,0.06);color:#0ea5e9;border-radius:20px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">
+        ${esc(tag)} <span style="font-size:10px;opacity:0.7;">${cnt}</span>
+      </button>`
+    ).join('')}</div>`;
+  } catch {}
 }
 
 function loadFishingWindowsCard() {
@@ -7913,7 +8181,7 @@ async function loadNotifications() {
     const icons = { like: '❤️', comment: '💬', follow: '👤', message: '💬', tight_lines: '🎣' };
     const msgs = {
       like: (n) => `<b>@${esc(n.actor_username || 'Someone')}</b> liked your ${n.catch_species ? esc(n.catch_species) + ' catch' : 'post'} ❤️`,
-      comment: (n) => `<b>@${esc(n.actor_username || 'Someone')}</b> commented: "${n.catch_species ? esc(n.catch_species) : 'your post'}"`,
+      comment: (n) => `<b>@${esc(n.actor_username || 'Someone')}</b> commented on your ${n.catch_species ? esc(n.catch_species) + ' catch' : 'post'} 💬`,
       follow: (n) => `<b>@${esc(n.actor_username || 'Someone')}</b> started following you 🎣`,
       tight_lines: (n) => `<b>@${esc(n.actor_username || 'Someone')}</b> sent you Tight Lines! 🎣 Go catch a big one!`,
     };
@@ -10081,7 +10349,7 @@ init();
     </div>
     <div class="ep-field">
       <label class="ep-label" style="display:flex;align-items:center;gap:5px;">🔒 Private Notes <span style="font-size:10px;font-weight:500;color:var(--gray);">(only you can see this)</span></label>
-      <textarea class="ep-input" id="edit-catch-notes" placeholder="Water conditions, secret spot details, rigging notes…" rows="3" style="resize:none;font-style:italic;"></textarea>
+      <textarea class="ep-input" id="edit-catch-notes" placeholder="Water conditions, secret spot details, rigging notes…" rows="3" style="resize:none;"></textarea>
     </div>
     <button class="ep-save-btn" onclick="saveEditCatch()">Save Changes</button>
     <button onclick="deleteCatch(document.getElementById('edit-catch-id').value)" style="display:block;width:100%;margin-top:10px;padding:13px;background:none;color:#ff375f;font-size:14px;font-weight:700;border:1.5px solid rgba(255,55,95,0.2);border-radius:16px;cursor:pointer;font-family:inherit;letter-spacing:-0.3px;">Delete Catch</button>
