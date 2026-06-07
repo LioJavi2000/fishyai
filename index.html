@@ -9521,7 +9521,7 @@ function updateStreak() {
 let _sessionStart = null;
 let _sessionInterval = null;
 
-function toggleSessionTimer() {
+async function toggleSessionTimer() {
   const btn = document.getElementById('session-timer-btn');
   const label = document.getElementById('session-timer-label');
   if (!_sessionStart) {
