@@ -35,6 +35,7 @@
   --action-blue: #0095f6;
   --shimmer-from: #f0f2f5;
   --shimmer-to: #e4e8ec;
+  --surface: #f4f5f7;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 
@@ -1448,6 +1449,111 @@ body {
 .dark-mode .report-sheet{background:#1c1c1e;}
 .dark-mode .report-hd-title,.dark-mode .report-option-title{color:#fff;}
 .dark-mode .report-option:active{background:#2c2c2e;}
+
+/* ══════════════════════════════════════════
+   WAVE 16 — DESIGN POLISH
+   Goal: Apple / Instagram minimal — breathe, don't cram
+══════════════════════════════════════════ */
+
+/* ── Softer card shadows ── */
+:root { --card-shadow: 0 1px 8px rgba(0,0,0,0.06), 0 0.5px 2px rgba(0,0,0,0.03); }
+.card { box-shadow: var(--card-shadow); border-radius: 18px; }
+
+/* ── Post card cleanup ── */
+.post-hd { padding: 12px 14px 10px; }
+.post-photo { height: 256px; }
+.post-actions { padding: 8px 6px 4px; }
+.post-likes { padding: 0 14px 2px; font-size: 12.5px; }
+.post-stats { padding: 2px 14px 12px; font-size: 12px; }
+
+/* ── Story row: more breathing room ── */
+.story-row { padding: 12px 14px 10px; gap: 14px; }
+.s-ring { width: 60px; height: 60px; box-shadow: none; border: 2px solid rgba(14,165,233,0.5); }
+.s-gap { padding: 2px; }
+.s-add-ring { width: 60px; height: 60px; }
+.story > span { font-size: 10px; }
+
+/* ── Feed composer: lighter ── */
+.feed-composer-card { box-shadow: none; border-radius: 0; margin: 0; border-bottom: 0.5px solid rgba(0,0,0,0.06); }
+.feed-composer-top { padding: 10px 14px; }
+
+/* ── Profile: hero number tighter ── */
+.prof-hero-v2 { padding: 14px 16px 12px; }
+.prof-hero-num-v2 { font-size: 52px; letter-spacing: -3px; }
+.prof-hero-lbl-v2 { letter-spacing: 0.8px; margin-top: 4px; }
+.prof-hero-sub-v2 { font-size: 12px; margin-top: 2px; }
+
+/* ── Profile stat cells: borderless, cleaner ── */
+.prof-stat-row-v2 { gap: 0; padding: 10px 16px 0; }
+.prof-stat-v2 { background: transparent; border-radius: 0; padding: 10px 4px; position: relative; }
+.prof-stat-v2:not(:last-child)::after { content: ''; position: absolute; right: 0; top: 25%; bottom: 25%; width: 0.5px; background: rgba(0,0,0,0.08); }
+.prof-stat-icon-v2 { width: 28px; height: 28px; margin-bottom: 1px; }
+.prof-stat-num-v2 { font-size: 16px; }
+.prof-stat-lbl-v2 { font-size: 9px; }
+
+/* 4-stat override */
+.prof-stat-row-4 { grid-template-columns: repeat(4,1fr) !important; }
+.prof-stat-row-4 .prof-stat-num-v2 { font-size: 14px; }
+
+/* ── Profile action row: tighter ── */
+#prof-action-row { gap: 6px; padding: 4px 12px 0; flex-wrap: wrap; }
+.follow-btn-v2 { width: calc(100% - 24px); margin: 12px 12px 0; padding: 12px; font-size: 14px; border-radius: 14px; }
+.edit-profile-shortcut { padding: 8px 20px; font-size: 12.5px; margin-top: 2px; }
+.dm-profile-btn { padding: 8px 16px; font-size: 12.5px; }
+
+/* Tight lines button: subtle */
+#tight-lines-btn { background: #f0fdf4 !important; }
+
+/* ── Badges: cleaner spacing ── */
+.sec-hd-v2 { margin: 18px 16px 8px; font-size: 14px; }
+.badge-grid { gap: 10px; }
+.badge-item { border-radius: 14px; }
+.badge-nm { font-size: 10px; }
+
+/* ── Profile tabs: cleaner ── */
+.prof-tabs { margin: 14px 16px 8px; }
+.prof-tab { font-size: 12.5px; padding: 6px 0; }
+
+/* ── Leaderboard: less header padding ── */
+.lb-hd { padding: 18px 16px 36px; }
+.lb-list { margin: -20px 10px 16px; }
+.lb-item { padding: 11px 14px; margin-bottom: 6px; border-radius: 16px; }
+.lb-item { box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+
+/* ── Settings: cleaner ── */
+.settings-group { box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+.settings-row { padding: 13px 16px; }
+
+/* ── Comments / sheet handles: uniform ── */
+.cs-handle, .map-sheet-handle { background: rgba(0,0,0,0.1); }
+
+/* ── Map sheet: slightly tighter ── */
+.map-sheet-body { padding: 0 16px; }
+.map-sheet-name { font-size: 17px; letter-spacing: -0.5px; }
+
+/* ── Bottom nav: cleaner active state ── */
+.nav-item.active .nav-icon { background: transparent; }
+.nav-item.active > span { font-weight: 700; }
+
+/* ── Feed filter tabs: better alignment ── */
+.feed-filter-tabs { padding: 0 6px; }
+.feed-ftab { font-size: 12.5px; padding: 9px 10px 7px; }
+
+/* ── Notification items: tighter ── */
+.notif-item { padding: 12px 16px; }
+
+/* ── Log catch card: cleaner ── */
+.log-card { border-radius: 18px; box-shadow: 0 2px 12px rgba(0,0,0,0.07), 0 0.5px 2px rgba(0,0,0,0.04); }
+.toggle-card { border-radius: 18px; box-shadow: 0 2px 12px rgba(0,0,0,0.07), 0 0.5px 2px rgba(0,0,0,0.04); }
+
+/* ── Profile completion: tighter ── */
+#prof-completion { margin: 6px 16px 0; }
+
+/* ── My stats panel: cleaner ── */
+#prof-stats-panel { background: #f8f9fa; border-radius: 14px; padding: 12px; box-shadow: none; }
+
+/* ── Offline banner ── */
+#offline-banner { font-size: 12px; font-weight: 600; letter-spacing: -0.1px; }
 </style>
 </head>
 <body>
@@ -1575,11 +1681,14 @@ body {
     <div class="screen" id="screen-feed">
       <div class="feed-wrap">
         <div class="feed-hd">
-          <span class="feed-title">Feed</span>
-          <div style="display:flex;align-items:center;gap:4px;">
-            <div id="session-timer-btn" onclick="toggleSessionTimer()" style="display:flex;align-items:center;gap:4px;padding:4px 10px;border-radius:100px;background:rgba(27,46,75,0.06);cursor:pointer;-webkit-tap-highlight-color:transparent;" title="Fishing Session Timer">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              <span id="session-timer-label" style="font-size:12px;font-weight:700;color:#555;letter-spacing:-0.2px;">Start</span>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="feed-title">Feed</span>
+            <span id="feed-streak-chip" style="display:none;font-size:11px;font-weight:700;color:#ff6b35;background:rgba(255,107,53,0.1);border-radius:20px;padding:3px 8px;letter-spacing:-0.1px;cursor:pointer;" onclick="showCatchStreak()"></span>
+          </div>
+          <div style="display:flex;align-items:center;gap:2px;">
+            <div id="session-timer-btn" onclick="toggleSessionTimer()" style="display:none;align-items:center;gap:4px;padding:4px 10px;border-radius:100px;background:rgba(52,199,89,0.12);cursor:pointer;-webkit-tap-highlight-color:transparent;margin-right:2px;" title="Fishing Session Timer">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#34c759" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span id="session-timer-label" style="font-size:12px;font-weight:700;color:#34c759;letter-spacing:-0.2px;">0:00</span>
             </div>
             <div class="feed-dm-btn" onclick="showScreen('messages')">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -1588,9 +1697,6 @@ body {
             <div class="notif-bell-wrap" id="notif-bell-btn" onclick="showScreen('notifications')">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
               <div class="notif-badge" id="notif-badge" style="display:none;">0</div>
-            </div>
-            <div class="feed-hd-ico" onclick="showRandomCatch()" title="Random catch" style="cursor:pointer;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>
             </div>
             <div class="feed-hd-ico" onclick="openSettings()" style="cursor:pointer;">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="#111"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
@@ -1602,15 +1708,6 @@ body {
             <div class="s-add-ring" id="my-story-ring"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
             <span>Your story</span>
           </div>
-        </div>
-        <!-- STREAK BANNER -->
-        <div id="feed-streak-banner" class="streak-banner" style="display:none;" onclick="showCatchStreak()">
-          <div class="streak-fire">🔥</div>
-          <div style="flex:1;min-width:0;">
-            <div class="streak-txt" id="feed-streak-txt">2-week streak</div>
-            <div class="streak-sub" id="feed-streak-sub">Keep it up! Fish this week to extend it</div>
-          </div>
-          <div class="streak-chevron">›</div>
         </div>
         <!-- FEED POST COMPOSER -->
         <div class="feed-composer-card" id="feed-composer-collapsed">
@@ -1645,33 +1742,11 @@ body {
             <button class="fce-share-btn" id="fce-share-btn" onclick="shareFeedPost()" disabled>Post</button>
           </div>
         </div>
-        <!-- My Quick Stats Bar -->
-        <div id="feed-quick-stats" style="display:none;"></div>
-        <!-- On This Day -->
-        <div id="feed-on-this-day" style="display:none;"></div>
-        <!-- Daily fishing tip (dismissible) -->
-        <div id="feed-tip-banner" style="display:none;margin:4px 10px;background:linear-gradient(135deg,rgba(14,165,233,0.1),rgba(14,165,233,0.04));border:1px solid rgba(14,165,233,0.15);border-radius:14px;padding:10px 12px;position:relative;">
-          <div style="font-size:10px;font-weight:800;color:#0ea5e9;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:3px;" id="feed-tip-icon">🎣 Tip of the Day</div>
-          <div style="font-size:12px;color:#111;line-height:1.5;letter-spacing:-0.1px;" id="feed-tip-text"></div>
-          <button onclick="document.getElementById('feed-tip-banner').style.display='none';STORE.set('tip_dismissed',String(Math.floor(Date.now()/86400000)))" style="position:absolute;top:8px;right:10px;background:none;border:none;font-size:14px;color:var(--gray);cursor:pointer;padding:2px;">✕</button>
-        </div>
-        <!-- Fishing Forecast -->
-        <div id="feed-forecast-card" style="display:none;margin:4px 10px;background:#fff;border-radius:16px;border:1.5px solid rgba(0,0,0,0.07);overflow:hidden;"></div>
-        <!-- Catch of the Day -->
-        <div id="cotd-banner" style="display:none;"></div>
         <!-- Feed filter tabs -->
         <div class="feed-filter-tabs" id="feed-filter-tabs">
           <button class="feed-ftab active" id="fft-foryou" onclick="setFeedFilter('foryou')">For You</button>
           <button class="feed-ftab" id="fft-following" onclick="setFeedFilter('following')">Following</button>
           <button class="feed-ftab" id="fft-top" onclick="setFeedFilter('top')">Top</button>
-        </div>
-        <!-- On The Water users strip -->
-        <div id="otw-strip-wrap">
-          <div class="otw-strip-hd">
-            <div class="otw-strip-hd-left">🎣 On The Water</div>
-            <div class="otw-strip-hd-right">currently fishing</div>
-          </div>
-          <div id="otw-strip-list" style="display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;padding-bottom:4px;"></div>
         </div>
         <div id="feed-ptr" class="feed-ptr" style="display:none;">↓ Pull to refresh</div>
         <div id="new-posts-banner">
@@ -2190,7 +2265,7 @@ body {
           </div>
           <!-- Streak badge -->
           <div id="prof-streak-wrap" style="display:none;justify-content:center;margin-top:6px;gap:8px;flex-wrap:wrap;align-items:center;">
-            <span id="prof-streak-badge" class="streak-badge">🔥 0 day streak</span>
+            <span id="prof-streak-badge" class="streak-badge">🔥 0-week streak</span>
             <span id="prof-species-goal-badge" style="display:none;font-size:11px;background:rgba(99,102,241,0.1);color:#6366f1;border-radius:20px;padding:4px 10px;font-weight:700;"></span>
           </div>
           <!-- Profile completion meter (own profile only) -->
@@ -2248,7 +2323,7 @@ body {
               <span id="otw-dot" style="width:7px;height:7px;border-radius:50%;background:#aaa;display:inline-block;flex-shrink:0;"></span>
               <span id="otw-label">Set Status</span>
             </button>
-            <button id="tight-lines-btn" style="display:none;border:1.5px solid #bbf7d0;border-radius:20px;padding:8px 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;background:linear-gradient(135deg,#dcfce7,#f0fdf4);color:#15803d;" onclick="sendTightLines()">
+            <button id="tight-lines-btn" style="display:none;border:1.5px solid #bbf7d0;border-radius:20px;padding:8px 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;background:#f0fdf4;color:#15803d;" onclick="sendTightLines()">
               🎣 Tight Lines!
             </button>
             <button id="species-goal-btn" onclick="openSpeciesGoalModal()" style="display:none;border:1.5px solid rgba(99,102,241,0.25);background:rgba(99,102,241,0.06);color:#6366f1;border-radius:20px;padding:8px 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">🐟 Goal</button>
@@ -2259,7 +2334,7 @@ body {
           </div>
 
           <!-- Badges -->
-          <div class="sec-hd-v2">Badges</div>
+          <div class="sec-hd-v2" style="font-weight:700;">Badges</div>
           <div class="badge-grid" id="badge-list">
             <div class="badge-item locked" id="badge-first-catch" onclick="showBadgeDetail('first_catch')">
               <img class="badge-img" src="https://d8j0ntlcm91z4.cloudfront.net/user_3D0ucdmP2KL2H9O9w7raXgBsuOC/hf_20260513_012942_037722db-7811-406c-9019-9dbd2921e546_min.webp" loading="lazy">
@@ -2280,10 +2355,10 @@ body {
           </div>
 
           <!-- My Stats mini-analytics (own profile only) -->
-          <div id="prof-stats-panel" style="display:none;margin:16px 16px 0;padding:14px;background:var(--surface);border-radius:16px;">
+          <div id="prof-stats-panel" style="display:none;margin:14px 16px 0;padding:12px 14px;background:#f8f9fa;border-radius:14px;">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-              <div style="font-size:13px;font-weight:800;color:#111;letter-spacing:-0.3px;">📊 My Stats</div>
-              <button onclick="showCatchGoalModal()" style="font-size:11px;font-weight:700;color:var(--navy);background:rgba(27,46,75,0.08);border:none;border-radius:10px;padding:4px 10px;cursor:pointer;font-family:inherit;">🎯 Set Goal</button>
+              <div style="font-size:13px;font-weight:700;color:#111;letter-spacing:-0.3px;">My Stats</div>
+              <button onclick="showCatchGoalModal()" style="font-size:11px;font-weight:700;color:var(--navy);background:rgba(27,46,75,0.08);border:none;border-radius:10px;padding:4px 10px;cursor:pointer;font-family:inherit;">Set Goal</button>
             </div>
             <div id="prof-catch-goal" style="display:none;margin-bottom:12px;"></div>
             <div id="prof-stats-content"></div>
@@ -2291,7 +2366,7 @@ body {
 
           <!-- Achievements strip (own profile only) -->
           <div id="prof-achievements-row" style="display:none;padding:0 16px 4px;">
-            <div style="font-size:13px;font-weight:800;color:#111;letter-spacing:-0.3px;margin:12px 0 8px;">🏅 Achievements</div>
+            <div style="font-size:13px;font-weight:700;color:#111;letter-spacing:-0.3px;margin:14px 0 8px;">Achievements</div>
             <div id="prof-achievements-list" style="display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;"></div>
             <div id="prof-achievements-empty" style="display:none;font-size:12px;color:var(--gray);padding:4px 0;">Log catches to unlock achievements!</div>
           </div>
@@ -2299,7 +2374,7 @@ body {
           <!-- Profile Tabs -->
           <!-- Trophy row: top 3 catches -->
           <div id="prof-trophy-row" style="display:none;padding:0 16px 8px;">
-            <div style="font-size:10px;font-weight:800;color:#f59e0b;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:8px;padding-top:4px;">🏆 Trophy Catches</div>
+            <div style="font-size:10px;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:8px;padding-top:4px;">Trophy Catches</div>
             <div id="prof-trophy-cards" style="display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;"></div>
           </div>
           <div class="prof-tabs" id="prof-tabs-row">
@@ -2891,8 +2966,6 @@ async function init() {
       showScreen('feed');
       loadFeed();
       loadStoriesRow();
-      loadCatchOfTheDay();
-      showFishingForecast();
       loadNotifCount();
       loadDMUnreadCount();
       setInterval(() => { if (currentUser && sb) { loadNotifCount(); loadDMUnreadCount(); } }, 60000);
@@ -3040,7 +3113,7 @@ function showScreen(name, back = false) {
       }, 300);
     }
   }
-  if (name === 'feed') { loadFeed(); loadStoriesRow(); loadFeedQuickStats(); loadOnThisDay(); loadFeedTip(); showFishingForecast(); loadOTWStrip(); }
+  if (name === 'feed') { loadFeed(); loadStoriesRow(); }
   if (name === 'leaderboard') loadLeaderboard();
   if (name === 'explore') loadExplore();
   if (name === 'profile') loadProfileScreen();
@@ -9546,15 +9619,13 @@ async function toggleSessionTimer() {
     // Start timer
     _sessionStart = Date.now();
     STORE.set('session_start', String(_sessionStart));
-    if (btn) btn.style.background = 'rgba(52,199,89,0.15)';
-    if (btn) btn.querySelector('svg').setAttribute('stroke', '#34c759');
+    if (btn) { btn.style.display = 'flex'; }
     _sessionInterval = setInterval(() => {
       const elapsed = Date.now() - _sessionStart;
       const h = Math.floor(elapsed / 3600000);
       const m = Math.floor((elapsed % 3600000) / 60000);
       const s = Math.floor((elapsed % 60000) / 1000);
       if (label) label.textContent = h > 0 ? `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}` : `${m}:${String(s).padStart(2,'0')}`;
-      if (label) label.style.color = '#34c759';
     }, 1000);
     showToast('🎣 Fishing session started!');
   } else {
@@ -9567,9 +9638,7 @@ async function toggleSessionTimer() {
     _sessionInterval = null;
     _sessionStart = null;
     STORE.set('session_start', '');
-    if (btn) btn.style.background = 'rgba(27,46,75,0.06)';
-    if (btn) btn.querySelector('svg').setAttribute('stroke', '#555');
-    if (label) { label.textContent = 'Start'; label.style.color = '#555'; }
+    if (btn) btn.style.display = 'none';
     // Save trip to DB
     if (sb && currentUser) {
       try {
@@ -9642,8 +9711,7 @@ function resumeSessionTimer() {
   if (savedStart && Date.now() - savedStart < 12 * 3600000) {
     _sessionStart = savedStart;
     const btn = document.getElementById('session-timer-btn');
-    if (btn) btn.style.background = 'rgba(52,199,89,0.15)';
-    if (btn) btn.querySelector('svg').setAttribute('stroke', '#34c759');
+    if (btn) btn.style.display = 'flex';
     const label = document.getElementById('session-timer-label');
     _sessionInterval = setInterval(() => {
       const elapsed = Date.now() - _sessionStart;
@@ -9651,7 +9719,6 @@ function resumeSessionTimer() {
       const m = Math.floor((elapsed % 3600000) / 60000);
       const s = Math.floor((elapsed % 60000) / 1000);
       if (label) label.textContent = h > 0 ? `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}` : `${m}:${String(s).padStart(2,'0')}`;
-      if (label) label.style.color = '#34c759';
     }, 1000);
   }
 }
@@ -9817,24 +9884,14 @@ async function updateStreakSub() {
 }
 
 async function updateFeedStreakBanner(streakVal) {
-  const banner = document.getElementById('feed-streak-banner');
-  const txt = document.getElementById('feed-streak-txt');
-  const sub = document.getElementById('feed-streak-sub');
-  if (!banner) return;
+  const chip = document.getElementById('feed-streak-chip');
+  if (!chip) return;
   const streak = streakVal !== undefined ? streakVal : await computeCatchStreak();
   if (streak > 0) {
-    if (txt) txt.textContent = `${streak}-week fishing streak 🔥`;
-    if (sub) {
-      const thisWeek = getWeekMonday(new Date());
-      const catches = parseInt(STORE.get('streak_this_week', '0')) || 0;
-      sub.textContent = streak >= 10 ? 'Fishing legend! Keep the streak alive'
-        : streak >= 4 ? 'Incredible dedication — fish again next week!'
-        : streak >= 2 ? 'You\'re on a roll! Fish again next week to extend it'
-        : 'Fish again next week to keep your streak going!';
-    }
-    banner.style.display = '';
+    chip.textContent = `🔥 ${streak}w`;
+    chip.style.display = '';
   } else {
-    banner.style.display = 'none';
+    chip.style.display = 'none';
   }
 }
 
