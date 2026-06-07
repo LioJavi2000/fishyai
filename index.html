@@ -1149,10 +1149,12 @@ body {
 .edit-catch-hd{padding:16px 20px 0;display:flex;align-items:center;justify-content:space-between;}
 .edit-catch-title{font-size:17px;font-weight:800;color:#111;letter-spacing:-0.5px;}
 /* ── STREAK BANNER ── */
-.streak-banner{margin:8px 16px 4px;padding:10px 14px;background:linear-gradient(135deg,#ff6b35,#f7c59f);border-radius:14px;display:flex;align-items:center;gap:10px;}
-.streak-fire{font-size:20px;flex-shrink:0;}
-.streak-txt{font-size:13px;font-weight:700;color:#fff;letter-spacing:-0.2px;}
-.streak-sub{font-size:11px;color:rgba(255,255,255,0.8);}
+.streak-banner{margin:8px 16px 4px;padding:12px 16px;background:linear-gradient(135deg,#ff6b35 0%,#ff375f 100%);border-radius:16px;display:flex;align-items:center;gap:12px;cursor:pointer;-webkit-tap-highlight-color:transparent;box-shadow:0 4px 20px rgba(255,107,53,0.3);}
+.streak-banner:active{transform:scale(0.98);}
+.streak-fire{font-size:26px;flex-shrink:0;}
+.streak-txt{font-size:14px;font-weight:800;color:#fff;letter-spacing:-0.3px;}
+.streak-sub{font-size:11px;color:rgba(255,255,255,0.85);margin-top:1px;}
+.streak-chevron{font-size:18px;color:rgba(255,255,255,0.6);margin-left:auto;flex-shrink:0;}
 /* ── DM NAV ICON ── */
 .feed-dm-btn{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;-webkit-tap-highlight-color:transparent;}
 .feed-dm-unread{position:absolute;top:1px;right:1px;background:#ff375f;border-radius:50%;width:9px;height:9px;border:1.5px solid #fff;display:none;}
@@ -1600,6 +1602,15 @@ body {
             <div class="s-add-ring" id="my-story-ring"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
             <span>Your story</span>
           </div>
+        </div>
+        <!-- STREAK BANNER -->
+        <div id="feed-streak-banner" class="streak-banner" style="display:none;" onclick="showCatchStreak()">
+          <div class="streak-fire">🔥</div>
+          <div style="flex:1;min-width:0;">
+            <div class="streak-txt" id="feed-streak-txt">2-week streak</div>
+            <div class="streak-sub" id="feed-streak-sub">Keep it up! Fish this week to extend it</div>
+          </div>
+          <div class="streak-chevron">›</div>
         </div>
         <!-- FEED POST COMPOSER -->
         <div class="feed-composer-card" id="feed-composer-collapsed">
@@ -2892,7 +2903,7 @@ async function init() {
       setTimeout(resumeSessionTimer, 500);
       setTimeout(requestNotificationPermission, 3000);
       setTimeout(updateStreakSub, 1000);
-      setTimeout(() => computeCatchStreak().then(s => { if (s>0) STORE.set('streak',String(s)); }), 5000);
+      setTimeout(() => computeCatchStreak().then(s => { if (s>=0) updateFeedStreakBanner(s); }), 3000);
       // Realtime new feed posts
       if (sb) {
         let _newPostCount = 0;
@@ -3513,22 +3524,29 @@ async function loadProfileScreen() {
 // ══════════════════════════════════════════
 //  CATCH STREAK
 // ══════════════════════════════════════════
+function getWeekMonday(date) {
+  // All dates are treated as UTC to match Supabase ISO timestamps
+  const ms = date instanceof Date ? date.getTime() : new Date(date).getTime();
+  const d = new Date(ms);
+  const day = d.getUTCDay(); // 0=Sun
+  const offset = day === 0 ? 6 : day - 1; // days since Monday
+  return new Date(ms - offset * 86400000).toISOString().substring(0, 10);
+}
+
 function computeCatchStreakSync(catchList) {
   if (!catchList?.length) return 0;
-  const dateSet = new Set(catchList.map(c => c.created_at ? c.created_at.substring(0, 10) : null).filter(Boolean));
-  const sorted = [...dateSet].sort().reverse();
-  if (!sorted.length) return 0;
-  const today = new Date().toISOString().substring(0, 10);
-  const yesterday = new Date(Date.now() - 86400000).toISOString().substring(0, 10);
-  if (sorted[0] !== today && sorted[0] !== yesterday) return 0;
+  const weeks = new Set(catchList.map(c => c.created_at ? getWeekMonday(c.created_at) : null).filter(Boolean));
+  const thisWeek = getWeekMonday(new Date());
+  const lastWeek = getWeekMonday(new Date(Date.now() - 7 * 86400000));
+  if (!weeks.has(thisWeek) && !weeks.has(lastWeek)) return 0;
+  const sorted = [...weeks].sort().reverse();
   let streak = 0;
   let cur = sorted[0];
-  for (const d of sorted) {
-    if (d === cur) {
+  for (const w of sorted) {
+    if (w === cur) {
       streak++;
-      const dt = new Date(cur);
-      dt.setDate(dt.getDate() - 1);
-      cur = dt.toISOString().substring(0, 10);
+      // Step back exactly 7 days in UTC
+      cur = new Date(new Date(cur + 'T00:00:00Z').getTime() - 7 * 86400000).toISOString().substring(0, 10);
     } else break;
   }
   return streak;
@@ -3541,7 +3559,7 @@ function renderStreakBadge(catchList, isOwnProfile) {
   const streakBadge = document.getElementById('prof-streak-badge');
   if (streakBadge) {
     if (streak >= 1) {
-      streakBadge.textContent = `🔥 ${streak}-day streak`;
+      streakBadge.textContent = `🔥 ${streak}-week streak`;
       streakBadge.style.display = 'inline-flex';
     } else {
       streakBadge.style.display = 'none';
@@ -3830,7 +3848,7 @@ function renderProfileStats(catchList, el) {
         <div>
           <div style="font-size:12px;font-weight:700;color:#111;">This week vs last week</div>
           <div style="font-size:11px;color:var(--gray);margin-top:2px;">${thisWeek} catches <span style="color:${color};font-weight:700;">${arrow} ${Math.abs(diff)}</span> from last week's ${lastWeekCatches}</div>
-          ${streak >= 2 ? `<div style="font-size:11px;color:#ff6b35;font-weight:700;margin-top:2px;">🔥 ${streak}-day active streak</div>` : ''}
+          ${streak >= 2 ? `<div style="font-size:11px;color:#ff6b35;font-weight:700;margin-top:2px;">🔥 ${streak}-week active streak</div>` : ''}
         </div>
       </div>` : '';
     })()}
@@ -9767,38 +9785,57 @@ async function computeCatchStreak() {
   try {
     const { data } = await sb.from('catches')
       .select('created_at').eq('user_id', currentUser.id)
-      .order('created_at', { ascending: false }).limit(200);
+      .order('created_at', { ascending: false }).limit(400);
     if (!data?.length) return 0;
-    const days = new Set(data.map(c => new Date(c.created_at).toDateString()));
-    let streak = 0;
-    const today = new Date();
-    for (let i = 0; i <= 365; i++) {
-      const d = new Date(today.getTime() - i * 86400000);
-      if (days.has(d.toDateString())) streak++;
-      else if (i > 0) break;
-    }
+    const streak = computeCatchStreakSync(data);
     STORE.set('streak', String(streak));
     return streak;
   } catch { return parseInt(STORE.get('streak', '0')) || 0; }
 }
 
+function streakSubText(streak) {
+  if (streak === 0) return 'No active streak — go fish! 🎣';
+  if (streak === 1) return '🔥 1-week streak! Fish again next week to keep it going';
+  if (streak < 4) return `🔥 ${streak}-week streak! You're on a roll!`;
+  if (streak < 10) return `🔥 ${streak}-week streak! Incredible dedication!`;
+  return `🔥 ${streak}-week streak! You're a fishing legend!`;
+}
+
 async function showCatchStreak() {
   const streak = await computeCatchStreak();
   const sub = document.getElementById('settings-streak-sub');
-  if (sub) sub.textContent = streak > 0 ? `🔥 ${streak} day${streak!==1?'s':''} in a row!` : 'No active streak — go fish! 🎣';
-  const msg = streak >= 7
-    ? `🔥 ${streak}-day streak!\n\nAmazing consistency — you're on fire!`
-    : streak > 0
-    ? `🎣 ${streak}-day streak!\n\nKeep it up — catch fish ${7-streak} more day${7-streak!==1?'s':''} to hit 7!`
-    : 'No active streak.\n\nLog a catch today to start your streak! 🎣';
-  showToast(streak > 0 ? `🔥 ${streak}-day streak!` : 'Start your streak today!');
+  if (sub) sub.textContent = streak > 0 ? `🔥 ${streak} week${streak!==1?'s':''} in a row!` : 'No active streak — go fish! 🎣';
+  updateFeedStreakBanner(streak);
+  showToast(streak > 0 ? `🔥 ${streak}-week streak!` : 'Log a catch to start your streak! 🎣');
 }
 
 // Update streak sub on settings open
 async function updateStreakSub() {
   const cached = parseInt(STORE.get('streak','0'))||0;
   const sub = document.getElementById('settings-streak-sub');
-  if (sub && cached > 0) sub.textContent = `🔥 ${cached} day${cached!==1?'s':''} streak`;
+  if (sub && cached > 0) sub.textContent = `🔥 ${cached} week${cached!==1?'s':''} streak`;
+}
+
+async function updateFeedStreakBanner(streakVal) {
+  const banner = document.getElementById('feed-streak-banner');
+  const txt = document.getElementById('feed-streak-txt');
+  const sub = document.getElementById('feed-streak-sub');
+  if (!banner) return;
+  const streak = streakVal !== undefined ? streakVal : await computeCatchStreak();
+  if (streak > 0) {
+    if (txt) txt.textContent = `${streak}-week fishing streak 🔥`;
+    if (sub) {
+      const thisWeek = getWeekMonday(new Date());
+      const catches = parseInt(STORE.get('streak_this_week', '0')) || 0;
+      sub.textContent = streak >= 10 ? 'Fishing legend! Keep the streak alive'
+        : streak >= 4 ? 'Incredible dedication — fish again next week!'
+        : streak >= 2 ? 'You\'re on a roll! Fish again next week to extend it'
+        : 'Fish again next week to keep your streak going!';
+    }
+    banner.style.display = '';
+  } else {
+    banner.style.display = 'none';
+  }
 }
 
 // ══════════════════════════════════════════
