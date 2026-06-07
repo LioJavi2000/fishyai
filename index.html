@@ -555,6 +555,15 @@ body {
 .map-sheet-val{font-size:11px;color:var(--gray);margin-top:1px;letter-spacing:-0.2px;}
 .map-sheet-close{position:absolute;top:14px;right:16px;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--gray);cursor:pointer;transition:background 0.15s;}
 .map-sheet-close:active{background:rgba(0,0,0,0.12);}
+@keyframes pinDrop{0%{transform:translateY(-56px);opacity:0;}55%{transform:translateY(5px);opacity:1;}75%{transform:translateY(-3px);}100%{transform:translateY(0);opacity:1;}}
+.mc-chips-row{display:flex;gap:7px;overflow-x:auto;padding:10px 0 4px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.mc-chips-row::-webkit-scrollbar{display:none;}
+.mc-species-chip{display:inline-flex;align-items:center;gap:4px;padding:6px 11px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:-0.2px;border:1.5px solid rgba(0,0,0,0.1);background:#f2f2f7;color:#333;white-space:nowrap;transition:transform 0.12s,box-shadow 0.12s;-webkit-tap-highlight-color:transparent;}
+.mc-species-chip-known{cursor:pointer;}
+.mc-species-chip-known:active{transform:scale(0.94);box-shadow:0 2px 8px rgba(0,0,0,0.12);}
+.mc-recent-strip{display:none;flex-direction:column;margin-top:4px;padding-bottom:4px;}
+.mc-catch-stats{margin:0 18px;}
+.map-sheet-type-catch{background:rgba(245,158,11,0.12);color:#d97706;}
 .map-locate-btn{position:absolute;bottom:18px;right:14px;width:44px;height:44px;border-radius:50%;background:#fff;box-shadow:0 2px 16px rgba(0,0,0,0.2),0 1px 4px rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;z-index:999;-webkit-tap-highlight-color:transparent;transition:transform 0.15s,box-shadow 0.2s;}
 .map-locate-btn:active{transform:scale(0.9);box-shadow:0 1px 6px rgba(0,0,0,0.15);}
 
@@ -2067,25 +2076,31 @@ body {
           <div class="map-sheet-close" onclick="closeMapCard()">✕</div>
           <div class="map-sheet-handle"></div>
           <div class="map-sheet-body">
-            <div class="map-sheet-name" id="mc-title"></div>
-            <div class="map-sheet-species" id="mc-sub"></div>
-            <div id="mc-type-badge" class="map-sheet-type-badge map-sheet-type-lake"></div>
-            <div class="map-sheet-divider"></div>
-            <div class="map-sheet-row">
-              <div class="map-sheet-ico">🎣</div>
-              <div><div class="map-sheet-lbl" id="mc-stat1"></div><div class="map-sheet-val">Common species at this spot</div></div>
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
+              <div class="map-sheet-name" id="mc-title"></div>
+              <div id="mc-type-badge" class="map-sheet-type-badge map-sheet-type-lake" style="flex-shrink:0;margin-top:3px;"></div>
             </div>
-            <div class="map-sheet-row">
+            <!-- Species chips row -->
+            <div class="mc-chips-row" id="mc-species-chips"></div>
+            <div class="map-sheet-divider"></div>
+            <!-- Real catch stats (filled async) -->
+            <div class="mc-catch-stats" id="mc-catch-stats" style="padding:0;margin:0 0 10px;"></div>
+            <div class="map-sheet-row" style="margin-bottom:6px;">
               <div class="map-sheet-ico">📍</div>
               <div><div class="map-sheet-lbl" id="mc-coords"></div><div class="map-sheet-val">GPS coordinates</div></div>
             </div>
-            <div class="map-sheet-row" id="mc-dist-row" style="display:none;">
+            <div class="map-sheet-row" id="mc-dist-row" style="display:none;margin-bottom:6px;">
               <div class="map-sheet-ico">🚗</div>
               <div><div class="map-sheet-lbl" id="mc-dist"></div><div class="map-sheet-val">From your location</div></div>
             </div>
           </div>
+          <!-- Recent catches photo strip (filled async) -->
+          <div class="mc-recent-strip" id="mc-recent-strip"></div>
           <div id="mc-view-post-row" style="display:none;padding:4px 16px 12px;">
             <button style="width:100%;padding:11px;background:var(--navy);color:#fff;border:none;border-radius:14px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">View Post 🐟</button>
+          </div>
+          <div id="mc-log-btn-row" style="padding:0 16px 12px;">
+            <button onclick="quickLogAtLocation()" style="width:100%;padding:11px;background:#f7f8fa;color:var(--navy);border:1.5px solid rgba(27,46,75,0.15);border-radius:14px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;">🎣 Log a catch here</button>
           </div>
         </div>
       </div>
@@ -7177,35 +7192,36 @@ function initMap() {
   L.control.attribution({ prefix: false, position: 'bottomleft' }).addTo(leafletMap);
   L.control.zoom({ position: 'bottomright' }).addTo(leafletMap);
 
-  function makeSpotIcon(type) {
+  function makeSpotIcon(type, idx) {
     const colors = { lake:'#0ea5e9', pier:'#8b5cf6', ocean:'#06b6d4' };
     const c = colors[type] || '#0ea5e9';
+    const delay = Math.min((idx || 0) * 35, 1400);
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 40" width="32" height="40">
       <defs>
-        <radialGradient id="pg${type}" cx="40%" cy="35%" r="65%">
+        <radialGradient id="pg${type}${idx}" cx="40%" cy="35%" r="65%">
           <stop offset="0%" stop-color="${c}" stop-opacity="1"/>
           <stop offset="100%" stop-color="${c}" stop-opacity="0.75"/>
         </radialGradient>
-        <filter id="ps" x="-30%" y="-10%" width="160%" height="140%">
+        <filter id="ps${idx}" x="-30%" y="-10%" width="160%" height="140%">
           <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="${c}" flood-opacity="0.5"/>
         </filter>
       </defs>
       <path d="M16 2C9.37 2 4 7.37 4 14c0 8.5 12 24 12 24s12-15.5 12-24C28 7.37 22.63 2 16 2z"
-        fill="url(#pg${type})" filter="url(#ps)" stroke="rgba(255,255,255,0.8)" stroke-width="1.5"/>
+        fill="url(#pg${type}${idx})" filter="url(#ps${idx})" stroke="rgba(255,255,255,0.8)" stroke-width="1.5"/>
       <circle cx="16" cy="14" r="5.5" fill="rgba(255,255,255,0.95)"/>
       <path d="M13 14.5c1.5-2 3.5-2 4.5-0.5M17.5 14c-0.5 1.5-1.5 2-3 2" stroke="${c}" stroke-width="1.6" stroke-linecap="round" fill="none"/>
       <circle cx="19" cy="12.5" r="1" fill="${c}"/>
     </svg>`;
     return L.divIcon({
       className: '',
-      html: `<div class="lf-spot" style="width:32px;height:40px;">${svg}</div>`,
+      html: `<div class="lf-spot" style="width:32px;height:40px;"><div style="animation:pinDrop 0.55s cubic-bezier(0.34,1.56,0.64,1) ${delay}ms both;">${svg}</div></div>`,
       iconSize: [32, 40],
       iconAnchor: [16, 40],
     });
   }
 
-  SPOTS.forEach(spot => {
-    L.marker([spot.lat, spot.lng], { icon: makeSpotIcon(spot.type || 'lake') })
+  SPOTS.forEach((spot, idx) => {
+    L.marker([spot.lat, spot.lng], { icon: makeSpotIcon(spot.type || 'lake', idx) })
       .addTo(leafletMap)
       .on('click', e => { L.DomEvent.stopPropagation(e); showMapCard(spot); });
   });
@@ -7295,17 +7311,41 @@ async function loadMapCatches() {
 
 function showMapCard(spot) {
   setEl('mc-title', spot.name);
-  setEl('mc-sub', spot.sub || 'Fishing spot');
-  setEl('mc-stat1', spot.sub || '—');
   setEl('mc-coords', `${spot.lat.toFixed(4)}, ${spot.lng.toFixed(4)}`);
+
   const typeBadge = document.getElementById('mc-type-badge');
   if (typeBadge) {
-    const labels = { lake:'🏞 Lake', pier:'🎣 Pier', ocean:'🌊 Ocean' };
+    const labels = { lake:'🏞 Lake', pier:'🎣 Pier', ocean:'🌊 Ocean', catch:'🐟 Catch' };
     typeBadge.textContent = labels[spot.type] || '📍 Spot';
     typeBadge.className = `map-sheet-type-badge map-sheet-type-${spot.type || 'lake'}`;
   }
 
-  // Show distance if we have user location
+  // Species chips
+  const chipsEl = document.getElementById('mc-species-chips');
+  if (chipsEl) {
+    if (spot.type === 'catch') {
+      const s = spot.name;
+      const db = SPECIES_DB[s];
+      chipsEl.innerHTML = db
+        ? `<div class="mc-species-chip mc-species-chip-known" onclick="openSpeciesDetail('${esc(s)}')" style="border-color:${db.color}44;background:${db.color}18;color:${db.color};">${db.emoji} ${esc(s)} <span style="font-size:9px;opacity:0.65;">ⓘ</span></div>`
+        : `<div class="mc-species-chip">${esc(s)}</div>`;
+    } else {
+      const speciesArr = (spot.sub || '').split(' · ').map(s => s.trim()).filter(Boolean);
+      chipsEl.innerHTML = speciesArr.map(s => {
+        const db = SPECIES_DB[s];
+        if (db) return `<div class="mc-species-chip mc-species-chip-known" onclick="openSpeciesDetail('${esc(s)}')" style="border-color:${db.color}44;background:${db.color}18;color:${db.color};">${db.emoji} ${esc(s)} <span style="font-size:9px;opacity:0.65;">ⓘ</span></div>`;
+        return `<div class="mc-species-chip">🐟 ${esc(s)}</div>`;
+      }).join('');
+    }
+  }
+
+  // Clear dynamic sections before async load
+  const statsEl = document.getElementById('mc-catch-stats');
+  if (statsEl) statsEl.innerHTML = '';
+  const recentEl = document.getElementById('mc-recent-strip');
+  if (recentEl) { recentEl.innerHTML = ''; recentEl.style.display = 'none'; }
+
+  // Distance
   if (userMarker) {
     const ul = userMarker.getLatLng();
     const d = haversine(ul.lat, ul.lng, spot.lat, spot.lng);
@@ -7317,16 +7357,86 @@ function showMapCard(spot) {
 
   // View post button for catch pins
   const viewRow = document.getElementById('mc-view-post-row');
+  const logRow = document.getElementById('mc-log-btn-row');
   if (viewRow) {
     if (spot.catchId) {
       viewRow.style.display = 'block';
       viewRow.onclick = () => { closeMapCard(); openComments(spot.catchId); };
+      if (logRow) logRow.style.display = 'none';
     } else {
       viewRow.style.display = 'none';
+      if (logRow) logRow.style.display = 'block';
     }
   }
 
   document.getElementById('map-card')?.classList.add('visible');
+
+  // Load live Supabase catch data for spot pins (async)
+  if (sb && spot.type !== 'catch') loadSpotCatchData(spot);
+}
+
+async function loadSpotCatchData(spot) {
+  try {
+    const R = 0.013; // ~1.4 km bounding box half-side
+    const { data } = await sb.from('catches')
+      .select('id,species,weight_lbs,photo_url,created_at,user_id,profiles!catches_user_id_fkey(username)')
+      .eq('is_public', true).eq('post_type', 'catch')
+      .gte('lat', spot.lat - R).lte('lat', spot.lat + R)
+      .gte('lng', spot.lng - R).lte('lng', spot.lng + R)
+      .order('created_at', { ascending: false }).limit(30);
+
+    if (!data?.length) return;
+
+    const total = data.length;
+    const best = data.reduce((b, c) => (parseFloat(c.weight_lbs) || 0) > (parseFloat(b?.weight_lbs) || 0) ? c : b, null);
+
+    // Tally species
+    const tally = {};
+    data.forEach(c => { if (c.species) tally[c.species] = (tally[c.species] || 0) + 1; });
+    const topSpecies = Object.entries(tally).sort((a, b) => b[1] - a[1]).slice(0, 3);
+
+    const statsEl = document.getElementById('mc-catch-stats');
+    if (statsEl) {
+      statsEl.innerHTML = `
+        <div style="display:flex;gap:8px;padding:10px 0 8px;">
+          <div style="flex:1;background:#f7f8fa;border-radius:12px;padding:10px 8px;text-align:center;">
+            <div style="font-size:20px;font-weight:900;color:var(--navy);letter-spacing:-1px;">${total}${total === 30 ? '+' : ''}</div>
+            <div style="font-size:9px;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-top:1px;">Logged Here</div>
+          </div>
+          <div style="flex:1;background:#f7f8fa;border-radius:12px;padding:10px 8px;text-align:center;">
+            <div style="font-size:20px;font-weight:900;color:var(--navy);letter-spacing:-1px;">${best?.weight_lbs ? parseFloat(best.weight_lbs).toFixed(1) : '—'}</div>
+            <div style="font-size:9px;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-top:1px;">${best?.weight_lbs ? 'Best lbs' : 'No wt logged'}</div>
+          </div>
+          ${topSpecies[0] ? `<div style="flex:1.3;background:#f7f8fa;border-radius:12px;padding:10px 8px;text-align:center;">
+            <div style="font-size:13px;font-weight:800;color:var(--navy);line-height:1.2;">${esc(topSpecies[0][0].split(' ')[0])}</div>
+            <div style="font-size:9px;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-top:1px;">#1 species</div>
+          </div>` : ''}
+        </div>
+        ${topSpecies.length > 1 ? `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">${topSpecies.map(([s, n]) => {
+          const db = SPECIES_DB[s];
+          return `<div onclick="openSpeciesDetail('${esc(s)}')" style="background:${db ? db.color + '18' : 'rgba(14,165,233,0.09)'};border:1px solid ${db ? db.color + '44' : 'rgba(14,165,233,0.2)'};border-radius:8px;padding:4px 9px;font-size:11px;color:${db ? db.color : '#0ea5e9'};font-weight:700;cursor:pointer;">${db ? db.emoji + ' ' : ''}${esc(s)} <span style="opacity:0.6;">(${n})</span></div>`;
+        }).join('')}</div>` : ''}
+      `;
+    }
+
+    // Photo strip
+    const photoCatches = data.filter(c => c.photo_url);
+    const recentEl = document.getElementById('mc-recent-strip');
+    if (recentEl && photoCatches.length > 0) {
+      recentEl.style.display = 'flex';
+      recentEl.innerHTML = `
+        <div style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;padding:0 18px;margin-bottom:6px;">Recent catches nearby</div>
+        <div style="display:flex;gap:8px;overflow-x:auto;padding:0 18px 4px;-webkit-overflow-scrolling:touch;scrollbar-width:none;">
+          ${photoCatches.slice(0, 10).map(c => `
+            <div onclick="closeMapCard();openComments('${c.id}')" style="flex:0 0 72px;cursor:pointer;">
+              <img src="${esc(c.photo_url)}" loading="lazy" style="width:72px;height:72px;object-fit:cover;border-radius:12px;display:block;background:#e0e0e8;" onerror="this.parentElement.style.display='none'">
+              <div style="font-size:9px;color:#555;font-weight:600;margin-top:3px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:72px;">${esc(c.species || '?')}</div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+  } catch(e) { console.warn('loadSpotCatchData:', e.message); }
 }
 
 function closeMapCard() {
