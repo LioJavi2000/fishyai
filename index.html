@@ -3113,7 +3113,12 @@ function showScreen(name, back = false) {
       }, 300);
     }
   }
-  if (name === 'feed') { loadFeed(); loadStoriesRow(); }
+  if (name === 'feed') {
+    const fc = document.getElementById('feed-content');
+    const hasContent = fc && fc.children.length > 0 && !fc.querySelector('.skel-card');
+    if (!hasContent) { loadFeed(); loadStoriesRow(); }
+    else loadStoriesRow();
+  }
   if (name === 'leaderboard') loadLeaderboard();
   if (name === 'explore') loadExplore();
   if (name === 'profile') loadProfileScreen();
@@ -5343,6 +5348,11 @@ async function postCatch(isPublic = true) {
     clearLogDraft();
     if (spotName && spotName !== 'Unknown Spot') STORE.set('last_spot', spotName);
     if (!isPersonalBest) showToast(isPublic ? 'Catch posted! 🎣' : 'Catch logged! 📋');
+    if (isPublic) {
+      const fc = document.getElementById('feed-content');
+      if (fc) fc.innerHTML = '';
+      feedPage = 0; feedAllLoaded = false;
+    }
     showScreen(isPublic ? 'feed' : 'profile');
   } catch (err) {
     showToast('Failed to save: ' + err.message);
@@ -9996,7 +10006,8 @@ const ACHIEVEMENTS = [
   { id: 'fifty_catches', icon: '🦈', title: 'Legend Status', badge: 'LEGEND', sub: '50 catches. Absolute fishing legend!', check: (stats) => stats.total >= 50 },
   { id: 'big_fish', icon: '⚖️', title: 'Big Fish Energy', badge: 'TROPHY', sub: 'You logged a catch over 5 lbs. Nice weight!', check: (stats) => stats.heaviest >= 5 },
   { id: 'monster_fish', icon: '🦕', title: 'Monster Catch', badge: 'MONSTER', sub: 'A catch over 10 lbs?! You\'re a beast.', check: (stats) => stats.heaviest >= 10 },
-  { id: 'week_streak', icon: '🔥', title: 'Week Warrior', badge: 'STREAK', sub: '7 days in a row catching fish. Unstoppable!', check: (stats) => stats.streak >= 7 },
+  { id: 'week_streak', icon: '🔥', title: 'Week Warrior', badge: 'STREAK', sub: 'Caught fish 3 weeks in a row. Consistent angler!', check: (stats) => stats.streak >= 3 },
+  { id: 'month_streak', icon: '🌊', title: 'Month Warrior', badge: 'RELENTLESS', sub: 'Caught fish for 4 straight weeks. You live to fish!', check: (stats) => stats.streak >= 4 },
 ];
 
 function checkAchievements(stats) {
