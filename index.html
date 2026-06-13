@@ -4935,30 +4935,52 @@ function initPostEditor(b64, mime) {
   showScreen('post-editor');
 }
 
-function sharePost() {
+async function sharePost() {
   const caption = document.getElementById('pe-caption').value.trim();
-  if (!caption) { showToast('Add a caption first'); return; }
-  const username = STORE.get('username', 'You');
-  const isPublic = document.getElementById('pe-public-tog')?.classList.contains('on');
-  const post = {
-    id: Date.now().toString(),
-    username,
-    caption,
-    photo_b64: capturedB64,
-    mime: capturedMime,
-    spot_name: document.getElementById('pe-location')?.textContent || 'Unknown',
-    is_public: isPublic,
-    created_at: new Date().toISOString(),
-    likes: 0,
-    liked: false,
-  };
-  const posts = STORE.get('posts', []);
-  posts.unshift(post);
-  STORE.set('posts', posts.slice(0, 50));
-  injectPostIntoFeed(post);
-  showToast('Post shared!');
-  capturedB64 = null;
-  showScreen('feed');
+  if (!caption && !capturedB64) { showToast('Add a caption or photo first'); return; }
+  const isPublic = document.getElementById('pe-public-tog')?.classList.contains('on') ?? true;
+  const spotName = document.getElementById('pe-location')?.textContent || currentSpot?.name || 'Unknown Spot';
+  const shareBtn = document.querySelector('#screen-post-editor .btn');
+  if (shareBtn) { shareBtn.textContent = 'Sharing…'; shareBtn.disabled = true; }
+
+  try {
+    let photoUrl = null;
+    if (capturedB64 && sb && currentUser) {
+      const blob = b64Blob(capturedB64, capturedMime || 'image/jpeg');
+      const path = `${currentUser.id}/${Date.now()}.jpg`;
+      const { data: up } = await sb.storage.from('catches').upload(path, blob, { contentType: capturedMime || 'image/jpeg', upsert: true });
+      if (up) {
+        const { data: urlData } = sb.storage.from('catches').getPublicUrl(path);
+        photoUrl = urlData?.publicUrl ?? null;
+      }
+    }
+    if (sb && currentUser) {
+      const { error } = await sb.from('catches').insert({
+        user_id:   currentUser.id,
+        species:   'Post',
+        caption:   caption || null,
+        photo_url: photoUrl,
+        spot_name: spotName,
+        is_public: isPublic,
+        post_type: 'catch',
+        lat:       currentSpot?.lat ?? null,
+        lng:       currentSpot?.lng ?? null,
+      });
+      if (error) throw error;
+    }
+    capturedB64 = null; capturedMime = 'image/jpeg';
+    showToast(isPublic ? 'Post shared! 🎣' : 'Post saved!');
+    if (isPublic) {
+      const fc = document.getElementById('feed-content');
+      if (fc) fc.innerHTML = '';
+      feedPage = 0; feedAllLoaded = false;
+    }
+    showScreen(isPublic ? 'feed' : 'profile');
+  } catch (e) {
+    showToast('Could not share: ' + (e.message || 'try again'));
+  } finally {
+    if (shareBtn) { shareBtn.textContent = 'Share'; shareBtn.disabled = false; }
+  }
 }
 
 function injectPostIntoFeed(post) {

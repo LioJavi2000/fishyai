@@ -110,6 +110,55 @@ Always respond with ONLY a valid JSON object — no markdown, no code fences, no
     return;
   }
 
+  // ── POST /api/measure ── (Anthropic Vision: estimate fish length & weight)
+  if (req.method === 'POST' && url === '/api/measure') {
+    try {
+      const { imageBase64, mimeType = 'image/jpeg', species = 'fish' } = JSON.parse(await readBody(req));
+      const r = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'x-api-key': ANTHROPIC_KEY,
+          'anthropic-version': '2023-06-01',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 400,
+          system: `You are an expert fisheries biologist. Estimate fish measurements from photos using body proportions, known species averages, and any reference objects visible. Always respond with ONLY valid JSON — no markdown, no explanation.`,
+          messages: [{
+            role: 'user',
+            content: [
+              { type: 'image', source: { type: 'base64', media_type: mimeType, data: imageBase64 } },
+              { type: 'text', text: `This is a ${species}. Estimate its length and weight from the photo. Return ONLY this JSON:
+
+{
+  "estimated_length_inches": 14.5,
+  "length_confidence": "medium",
+  "estimated_weight_lbs": 2.1,
+  "weight_confidence": "low",
+  "measurement_note": "Brief 1-sentence explanation of how you estimated (e.g. body proportions, reference objects)."
+}
+
+Confidence must be "high", "medium", or "low". Use "high" only if a clear reference object (hand, ruler, rod) is visible.` }
+            ]
+          }]
+        })
+      });
+      const data = await r.json();
+      if (!r.ok || data.type === 'error' || data.error) {
+        return json(res, { error: data.error?.message || `Anthropic error ${r.status}` }, 502);
+      }
+      const text = (data.content?.[0]?.text || '').trim();
+      if (!text) return json(res, { error: 'Empty response' }, 502);
+      const match = text.match(/\{[\s\S]*\}/);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(match ? match[0] : text);
+    } catch (err) {
+      json(res, { error: err.message }, 500);
+    }
+    return;
+  }
+
   // ── POST /api/name-spot ── (Anthropic text proxy)
   if (req.method === 'POST' && url === '/api/name-spot') {
     try {
