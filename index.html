@@ -2155,9 +2155,12 @@ body {
             </div>
           </div>
         </div>
-        <div style="margin-top:16px;padding:0 12px 12px;">
-          <button class="btn" onclick="goToLog()" style="width:100%;">Continue
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="margin-left:6px;vertical-align:middle;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        <div style="margin-top:16px;padding:0 12px 12px;display:flex;flex-direction:column;gap:8px;">
+          <button class="btn" onclick="goToLog()" style="width:100%;font-size:15px;padding:15px;">
+            Log This Catch 🎣
+          </button>
+          <button onclick="showScreen('scan')" style="width:100%;background:none;border:none;color:var(--gray);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;padding:4px;-webkit-tap-highlight-color:transparent;">
+            Scan again
           </button>
         </div>
       </div>
@@ -2551,8 +2554,11 @@ body {
           </div>
           <!-- Catches grid -->
           <div class="catch-grid" id="catch-grid">
-            <div id="catch-grid-empty" style="grid-column:1/-1;text-align:center;padding:32px 16px;color:var(--gray);font-size:13px;line-height:1.6;letter-spacing:-0.2px;">
-              No catches yet.<br>Use the 🎣 tab to log your first one!
+            <div id="catch-grid-empty" style="grid-column:1/-1;text-align:center;padding:40px 16px;display:flex;flex-direction:column;align-items:center;gap:10px;">
+              <div style="font-size:52px;filter:drop-shadow(0 4px 12px rgba(14,165,233,0.2));">🎣</div>
+              <div style="font-size:15px;font-weight:800;color:#111;letter-spacing:-0.4px;">Your trophy wall awaits</div>
+              <div style="font-size:13px;color:var(--gray);letter-spacing:-0.2px;line-height:1.55;max-width:200px;">Scan a fish to log your first catch and start filling this wall!</div>
+              <button onclick="showScreen('scan')" style="margin-top:4px;background:var(--navy);color:#fff;border:none;border-radius:20px;padding:11px 24px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">Scan a Fish</button>
             </div>
           </div>
 
@@ -3590,13 +3596,33 @@ async function loadProfileScreen() {
     setEl('prof-following',    followingRes.count ?? 0);
     setEl('prof-total-weight', totalLbs > 0 ? `${totalLbs.toFixed(1)} lbs total` : '');
 
-    // Animate profile stats in with bounce
+        // Animate profile stats in with bounce + counter
     document.querySelectorAll('.prof-stat-row-4 .prof-stat-v2').forEach((el, i) => {
       el.classList.remove('prof-stat-anim-in');
-      void el.offsetWidth; // force reflow to restart animation
+      void el.offsetWidth;
       el.classList.add('prof-stat-anim-in');
       el.style.animationDelay = `${i * 0.08}s`;
     });
+    const animateCountUp = (el, target) => {
+      if (!el || isNaN(target) || target <= 0) return;
+      let start = 0;
+      const dur = 600;
+      const startTime = performance.now();
+      const tick = (now) => {
+        const p = Math.min(1, (now - startTime) / dur);
+        const ease = 1 - Math.pow(1 - p, 3); // cubic ease-out
+        el.textContent = Math.round(start + (target - start) * ease);
+        if (p < 1) requestAnimationFrame(tick);
+        else el.textContent = target;
+      };
+      requestAnimationFrame(tick);
+    };
+    setTimeout(() => {
+      animateCountUp(document.getElementById('prof-catches'), catchList.length);
+      animateCountUp(document.getElementById('prof-species'), species);
+      animateCountUp(document.getElementById('prof-followers'), follRes.count ?? 0);
+      animateCountUp(document.getElementById('prof-following'), followingRes.count ?? 0);
+    }, 200);
 
     // Angler level badge
     const lvlRow = document.getElementById('angler-lvl-row');
