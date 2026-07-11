@@ -163,7 +163,9 @@ body {
 .nav-active-dot{position:absolute;bottom:-3px;width:4px;height:4px;border-radius:50%;background:var(--navy);opacity:0;transition:opacity 0.2s,transform 0.2s var(--spring);transform:scale(0);}
 .nav-item.active .nav-active-dot{opacity:1;transform:scale(1);}
 .nav-scan{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;flex:1;-webkit-tap-highlight-color:transparent;}
-.scan-pill{width:54px;height:36px;background:#0ea5e9;border-radius:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(27,46,75,0.4),0 1px 4px rgba(14,165,233,0.3);transition:transform 0.18s var(--spring),box-shadow 0.2s;}
+.scan-pill{width:54px;height:36px;background:linear-gradient(135deg,#0ea5e9,#667eea);border-radius:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(14,165,233,0.45),0 1px 4px rgba(14,165,233,0.3);transition:transform 0.18s var(--spring),box-shadow 0.2s;position:relative;}
+.scan-pill::after{content:'';position:absolute;inset:-3px;border-radius:19px;background:linear-gradient(135deg,rgba(14,165,233,0.3),rgba(102,126,234,0.2));animation:scan-pill-glow 2.5s ease-in-out infinite;}
+@keyframes scan-pill-glow{0%,100%{opacity:0.5;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
 .nav-scan:active .scan-pill{transform:scale(0.86);box-shadow:0 2px 8px rgba(27,46,75,0.25);}
 .scan-pill svg{width:20px;height:20px;}
 .scan-pill svg *{stroke:#fff;}
@@ -364,7 +366,9 @@ body {
 .scan-controls{display:flex;align-items:center;justify-content:center;width:100%;padding:0 36px;position:relative;}
 .gallery-btn{width:40px;height:40px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.35);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:transform 0.15s var(--spring),background 0.2s;-webkit-tap-highlight-color:transparent;position:absolute;left:36px;background:rgba(255,255,255,0.06);backdrop-filter:blur(8px);}
 .gallery-btn:active{transform:scale(0.88);background:rgba(255,255,255,0.12);}
-.shutter{width:76px;height:76px;border-radius:50%;background:#fff;border:5px solid rgba(255,255,255,0.35);cursor:pointer;transition:transform 0.18s var(--spring),box-shadow 0.2s;box-shadow:0 4px 24px rgba(0,0,0,0.4),0 0 0 1px rgba(255,255,255,0.15),inset 0 1px 2px rgba(255,255,255,0.8);}
+.shutter{width:76px;height:76px;border-radius:50%;background:#fff;border:5px solid rgba(255,255,255,0.35);cursor:pointer;transition:transform 0.18s var(--spring),box-shadow 0.2s;box-shadow:0 4px 24px rgba(0,0,0,0.4),0 0 0 1px rgba(255,255,255,0.15),inset 0 1px 2px rgba(255,255,255,0.8);position:relative;}
+.shutter::before{content:'';position:absolute;inset:-8px;border-radius:50%;border:2px solid rgba(255,255,255,0.25);animation:shutter-pulse 2s ease-in-out infinite;}
+@keyframes shutter-pulse{0%,100%{opacity:0.6;transform:scale(1)}50%{opacity:0.25;transform:scale(1.12)}}
 .shutter:active{transform:scale(0.84);box-shadow:0 2px 8px rgba(0,0,0,0.3);}
 .flip-btn{position:absolute;right:36px;width:40px;height:40px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.35);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:transform 0.15s var(--spring);-webkit-tap-highlight-color:transparent;background:rgba(255,255,255,0.06);backdrop-filter:blur(8px);}
 .flip-btn:active{transform:scale(0.88);}
@@ -5600,7 +5604,10 @@ async function postCatch(isPublic = true) {
     setEl('log-species-title', 'Unknown Fish');
     clearLogDraft();
     if (spotName && spotName !== 'Unknown Spot') STORE.set('last_spot', spotName);
-    if (!isPersonalBest) showToast(isPublic ? 'Catch posted! 🎣' : 'Catch logged! 📋');
+    if (!isPersonalBest) {
+      const xp = 10 + (weight ? Math.round(weight * 2) : 0) + (photoUrl ? 5 : 0);
+      showToast(isPublic ? `Catch posted! +${xp} XP 🎣` : `Catch logged! +${xp} XP 📋`);
+    }
     if (isPublic) {
       const fc = document.getElementById('feed-content');
       if (fc) fc.innerHTML = '';
@@ -5997,7 +6004,7 @@ async function loadFeed(append = false) {
       (mbRes.data || []).forEach(b => myBookmarks.add(b.catch_id));
     }
 
-    const html = displayCatches.map(c => catchCard(c, likeMap[c.id] || 0, myLikes.has(c.id), cmtMap[c.id] || 0)).join('');
+    const html = displayCatches.map((c, i) => catchCard(c, likeMap[c.id] || 0, myLikes.has(c.id), cmtMap[c.id] || 0, append ? 0 : i)).join('');
     if (!append) {
       fc.innerHTML = html;
     } else {
@@ -6338,7 +6345,7 @@ const BM_SVG   = `<svg class="bm-svg" width="22" height="22" viewBox="0 0 24 24"
 const PIN_SVG  = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
 const PH_SVG   = `<svg class="ph-fish" viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg"><path d="M5 25 Q25 5 62 18 Q74 10 95 25 Q74 40 62 32 Q25 45 5 25Z" fill="white"/><circle cx="74" cy="22" r="2.5" fill="white"/></svg>`;
 
-function catchCard(c, likes, liked, cmtCount = 0) {
+function catchCard(c, likes, liked, cmtCount = 0, cardIndex = 0) {
   const u    = c.profiles?.username || 'angler';
   const avUrl = c.profiles?.avatar_url;
   const avHtml = avUrl
@@ -6385,7 +6392,7 @@ function catchCard(c, likes, liked, cmtCount = 0) {
     <svg width="16" height="16" viewBox="0 0 24 24" fill="#999"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
   </button>`;
 
-  return `<div class="card" data-id="${c.id}" data-owner="${c.user_id}" data-species="${esc(c.species||'')}" style="margin-top:8px;animation:card-rise 0.4s var(--ease) both;">
+  return `<div class="card" data-id="${c.id}" data-owner="${c.user_id}" data-species="${esc(c.species||'')}" style="margin-top:8px;animation:card-rise 0.4s ${(cardIndex * 0.07).toFixed(2)}s var(--ease) both;">
     <div class="post-hd" style="cursor:pointer;" onclick="openUserProfile('${c.user_id}')">
       ${avHtml}
       <div style="flex:1;min-width:0;"><div class="post-name">${nameHtml}</div>${spotHtml}</div>
@@ -10293,7 +10300,11 @@ function showAchievement(ach) {
   setEl('ach-badge', ach.badge);
   setEl('ach-sub', ach.sub);
   const backdrop = document.getElementById('achievement-backdrop');
-  if (backdrop) backdrop.classList.add('show');
+  if (backdrop) {
+    backdrop.classList.add('show');
+    setTimeout(confettiBurst, 200);
+    setTimeout(confettiBurst, 600);
+  }
 }
 
 function closeAchievement() {
