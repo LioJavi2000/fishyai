@@ -3093,6 +3093,7 @@ function showScreen(name, back = false) {
   if (name === 'log') {
     // If opened directly (no active scan), show clean "manual log" state
     if (!identifiedFish && !capturedB64) {
+      setKept(false);
       currentSpot = null;
       setEl('log-species-title', 'Unknown Fish');
       setEl('log-spot-name', 'Detecting location…');
@@ -3416,7 +3417,9 @@ async function loadProfileScreen() {
     const catchQuery = sb.from('catches').select('id, species, weight_lbs, photo_url, caption, lure_used, created_at, is_public').eq('user_id', uid).eq('post_type', 'catch').order('created_at', { ascending: false });
     const [fishRes, postsRes, follRes, followingRes] = await Promise.all([
       isOwnProfile ? catchQuery : catchQuery.eq('is_public', true),
-      sb.from('catches').select('id, caption, photo_url, created_at').eq('user_id', uid).eq('is_public', true).eq('post_type', 'post').order('created_at', { ascending: false }),
+      isOwnProfile
+        ? sb.from('catches').select('id, caption, photo_url, created_at').eq('user_id', uid).eq('post_type', 'post').order('created_at', { ascending: false })
+        : sb.from('catches').select('id, caption, photo_url, created_at').eq('user_id', uid).eq('is_public', true).eq('post_type', 'post').order('created_at', { ascending: false }),
       sb.from('follows').select('*', { count: 'exact', head: true }).eq('following_id', uid),
       sb.from('follows').select('*', { count: 'exact', head: true }).eq('follower_id', uid),
     ]);
@@ -4957,12 +4960,12 @@ async function sharePost() {
     if (sb && currentUser) {
       const { error } = await sb.from('catches').insert({
         user_id:   currentUser.id,
-        species:   'Post',
+        species:   '',
         caption:   caption || null,
         photo_url: photoUrl,
         spot_name: spotName,
         is_public: isPublic,
-        post_type: 'catch',
+        post_type: 'post',
         lat:       currentSpot?.lat ?? null,
         lng:       currentSpot?.lng ?? null,
       });
@@ -6125,9 +6128,10 @@ function catchCard(c, likes, liked, cmtCount = 0) {
   const dtHeart = `<div class="double-tap-heart" id="dth-${c.id}"><svg width="80" height="80" viewBox="0 0 24 24" fill="#ff375f" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>`;
 
   const photoOwner = `${u}${c.weight_lbs ? ' · ' + parseFloat(c.weight_lbs).toFixed(1) + ' lbs' : ''}${c.length_in ? ' · ' + parseFloat(c.length_in).toFixed(0) + '"' : ''}`;
+  const fishTag = c.species ? `<div class="post-fish-over"><span class="fish-tag">${esc(c.species)}</span></div>` : '';
   const photo = c.photo_url
-    ? `<div class="post-photo" ondblclick="doubleTapLike('${c.id}')" ontouchend="handlePhotoTouch(event,'${c.id}')" onclick="openPhotoViewer('${esc(c.photo_url)}','${esc(c.species||'')}','${esc(photoOwner)}')"><img src="${esc(c.photo_url)}" alt="${esc(c.species||'')}" loading="lazy">${dtHeart}<div class="post-fish-over"><span class="fish-tag">${esc(c.species||'')}</span></div></div>`
-    : `<div class="post-photo ph-ocean" ondblclick="doubleTapLike('${c.id}')" ontouchend="handlePhotoTouch(event,'${c.id}')">${PH_SVG}${dtHeart}<div class="post-fish-over"><span class="fish-tag">${esc(c.species||'')}</span></div></div>`;
+    ? `<div class="post-photo" ondblclick="doubleTapLike('${c.id}')" ontouchend="handlePhotoTouch(event,'${c.id}')" onclick="openPhotoViewer('${esc(c.photo_url)}','${esc(c.species||'')}','${esc(photoOwner)}')"><img src="${esc(c.photo_url)}" alt="${esc(c.species||'')}" loading="lazy">${dtHeart}${fishTag}</div>`
+    : `<div class="post-photo ph-ocean" ondblclick="doubleTapLike('${c.id}')" ontouchend="handlePhotoTouch(event,'${c.id}')">${PH_SVG}${dtHeart}${fishTag}</div>`;
 
   const captionHtml = c.caption
     ? (() => {
@@ -9375,9 +9379,9 @@ async function saveEditCatch() {
   const length = parseFloat(document.getElementById('edit-catch-length').value) || null;
   const caption = document.getElementById('edit-catch-caption').value.trim() || null;
   const privateNotes = document.getElementById('edit-catch-notes')?.value.trim() || null;
-  if (!id || !species) { showToast('Species is required'); return; }
+  if (!id) { showToast('Could not save — missing ID'); return; }
   try {
-    const { error } = await sb.from('catches').update({ species, weight_lbs: weight, length_in: length, caption, private_notes: privateNotes }).eq('id', id).eq('user_id', currentUser.id);
+    const { error } = await sb.from('catches').update({ species: species || '', weight_lbs: weight, length_in: length, caption, private_notes: privateNotes }).eq('id', id).eq('user_id', currentUser.id);
     if (error) throw error;
     closeEditCatch();
     showToast('Catch updated! ✅');
