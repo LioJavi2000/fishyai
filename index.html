@@ -3200,7 +3200,7 @@ async function handleAuth() {
   if (!sb) { showToast('Service starting up, try again.'); return; }
   const email    = (document.getElementById('auth-email')?.value || '').trim();
   const password =  document.getElementById('auth-password')?.value || '';
-  const username = (document.getElementById('auth-username')?.value || email.split('@')[0]).trim();
+  const username = (document.getElementById('auth-username')?.value || email.split('@')[0]).trim().toLowerCase().replace(/[^a-z0-9_]/g, '_');
   const btn      =  document.getElementById('auth-submit-btn');
 
   if (!email || !password) { showAuthMsg('Email and password are required.'); return; }
@@ -5343,7 +5343,8 @@ async function postCatch(isPublic = true) {
       if (userCatches) {
         const total = userCatches.length;
         const heaviest = Math.max(0, ...userCatches.map(x => parseFloat(x.weight_lbs) || 0));
-        const streak = parseInt(STORE.get('streak', '0')) || 0;
+        const streak = computeCatchStreakSync(userCatches);
+        STORE.set('streak', String(streak));
         checkAchievements({ total, heaviest, streak });
         // Personal best check for this species
         if (weight && newCatch?.species) {
