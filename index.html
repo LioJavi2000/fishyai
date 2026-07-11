@@ -502,8 +502,12 @@ body {
 
 /* ── AI RESULT ── */
 .res-wrap{background:var(--bg);min-height:100%;padding-bottom:20px;}
-.res-hero{width:100%;height:220px;background:#1a3a5c;display:flex;align-items:center;justify-content:center;position:relative;background-size:cover;background-position:center;overflow:hidden;}
-.res-hero::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,0.35);pointer-events:none;}
+.res-hero{width:100%;height:268px;background:#1a3a5c;display:flex;align-items:center;justify-content:center;position:relative;background-size:cover;background-position:center;overflow:hidden;}
+.res-hero::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.18) 0%,rgba(0,0,0,0.1) 40%,rgba(0,0,0,0.55) 100%);pointer-events:none;}
+.res-hero-species-tag{position:absolute;bottom:12px;left:12px;z-index:2;display:flex;align-items:center;gap:7px;background:rgba(0,0,0,0.42);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:20px;padding:6px 12px 6px 8px;border:1px solid rgba(255,255,255,0.18);opacity:0;transform:translateY(6px);transition:opacity 0.4s 0.3s,transform 0.4s 0.3s;}
+.res-hero-species-tag.show{opacity:1;transform:translateY(0);}
+.res-hero-species-emoji{font-size:20px;line-height:1;}
+.res-hero-species-label{font-size:11px;font-weight:700;color:#fff;letter-spacing:-0.2px;line-height:1.2;}
 .res-conf-pill{position:absolute;top:14px;right:14px;background:rgba(0,0,0,0.5);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:20px;padding:6px 12px;display:flex;align-items:center;gap:5px;animation:badge-pop 0.4s 0.2s var(--spring) both;z-index:2;border:0.5px solid rgba(255,255,255,0.15);}
 .res-card{background:#fff;border-radius:24px;margin:-18px 10px 0;padding:18px;box-shadow:0 4px 28px rgba(0,0,0,0.12),0 1px 4px rgba(0,0,0,0.06);animation:card-rise 0.45s 0.08s var(--ease) both;position:relative;z-index:1;}
 .res-section{margin-bottom:16px;padding-bottom:16px;border-bottom:0.5px solid var(--bg);}
@@ -544,6 +548,21 @@ body {
 .res-hero-reveal{animation:hero-reveal 0.5s var(--ease) both;}
 .confetti-burst{position:fixed;top:0;left:50%;transform:translateX(-50%);pointer-events:none;z-index:9999;overflow:visible;}
 .cp{position:absolute;width:7px;height:7px;border-radius:2px;animation:confetti-drop 1.2s ease-in both;}
+
+/* ── CATCH CELEBRATION OVERLAY ── */
+.catch-celebrate-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:9990;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.catch-celebrate-overlay.show{opacity:1;pointer-events:all;}
+.catch-celebrate-card{background:#fff;border-radius:28px;padding:32px 24px 28px;text-align:center;width:min(290px,84vw);transform:scale(0.7) translateY(24px);transition:transform 0.42s var(--spring);box-shadow:0 24px 64px rgba(0,0,0,0.35),0 4px 16px rgba(0,0,0,0.12);}
+.catch-celebrate-overlay.show .catch-celebrate-card{transform:scale(1) translateY(0);}
+@keyframes cel-fish-bounce{0%{transform:scale(0) rotate(-15deg)}55%{transform:scale(1.18) rotate(6deg)}75%{transform:scale(0.95) rotate(-3deg)}100%{transform:scale(1) rotate(0deg)}}
+.catch-cel-emoji{font-size:68px;line-height:1;margin-bottom:10px;display:block;animation:cel-fish-bounce 0.7s var(--spring) 0.15s both;filter:drop-shadow(0 4px 16px rgba(14,165,233,0.3));}
+.catch-cel-title{font-size:23px;font-weight:900;color:#111;letter-spacing:-0.6px;margin-bottom:4px;}
+.catch-cel-species{font-size:13px;color:var(--gray);font-weight:600;margin-bottom:16px;letter-spacing:-0.2px;}
+@keyframes xp-pop{0%{transform:scale(0) translateY(6px);opacity:0}60%{transform:scale(1.18) translateY(-2px)}100%{transform:scale(1) translateY(0);opacity:1}}
+.catch-cel-xp{display:inline-block;background:linear-gradient(135deg,#0ea5e9,#667eea);color:#fff;font-size:16px;font-weight:900;border-radius:22px;padding:8px 22px;letter-spacing:-0.4px;animation:xp-pop 0.5s var(--spring) 0.45s both;box-shadow:0 4px 16px rgba(14,165,233,0.35);}
+.catch-cel-weight{font-size:13px;color:var(--gray);margin-top:10px;font-weight:600;}
+.catch-cel-pb{margin-top:12px;background:rgba(245,158,11,0.1);border:1.5px solid rgba(245,158,11,0.3);border-radius:14px;padding:9px 16px;font-size:13px;color:#b45309;font-weight:700;letter-spacing:-0.2px;}
+.catch-cel-sub{font-size:11px;color:rgba(150,150,150,0.8);margin-top:12px;letter-spacing:-0.1px;}
 
 /* ── SPECIES COLLECTION ── */
 .coll-wrap{background:var(--bg);min-height:100%;padding-bottom:24px;}
@@ -2091,6 +2110,11 @@ body {
           <div class="res-conf-pill" id="res-conf-pill">
             <div id="res-conf-dot" style="width:8px;height:8px;border-radius:50%;background:#34c759;flex-shrink:0;"></div>
             <div id="res-conf-pct" style="font-size:12px;font-weight:600;color:#fff;letter-spacing:-0.2px;">98%</div>
+          </div>
+          <!-- Species tag overlay — bottom left -->
+          <div class="res-hero-species-tag" id="res-hero-species-tag">
+            <span class="res-hero-species-emoji" id="res-hero-species-emoji">🐟</span>
+            <span class="res-hero-species-label" id="res-hero-species-label">Largemouth Bass</span>
           </div>
         </div>
         <div class="res-card">
@@ -5367,10 +5391,14 @@ function renderResult() {
   // Hero photo with entrance animation
   const hero = document.getElementById('res-photo');
   const ph   = document.getElementById('res-photo-placeholder');
+  const prevTag = document.getElementById('res-hero-species-tag');
+  if (prevTag) prevTag.classList.remove('show');
   if (hero && capturedB64) {
     hero.style.backgroundImage    = `url(data:${capturedMime};base64,${capturedB64})`;
     hero.style.backgroundSize     = 'cover';
     hero.style.backgroundPosition = 'center';
+    hero.classList.remove('res-hero-reveal');
+    void hero.offsetWidth;
     hero.classList.add('res-hero-reveal');
     if (ph) ph.style.display = 'none';
   } else if (ph) {
@@ -5379,14 +5407,23 @@ function renderResult() {
 
   // Species name — typewriter with dramatic reveal
   const nameEl = document.getElementById('res-species-name');
+  const speciesText = f.species || 'Unknown Fish';
   if (nameEl) {
     nameEl.classList.add('res-species-reveal');
-    const speciesText = f.species || 'Unknown Fish';
     if (speciesText.length < 25) {
       typewriterEffect(nameEl, speciesText, 40);
     } else {
       nameEl.textContent = speciesText;
     }
+  }
+  // Hero species tag overlay
+  const heroTag = document.getElementById('res-hero-species-tag');
+  const heroEmoji = document.getElementById('res-hero-species-emoji');
+  const heroLabel = document.getElementById('res-hero-species-label');
+  if (heroTag && heroEmoji && heroLabel) {
+    heroEmoji.textContent = SPECIES_DB[speciesText]?.emoji || '🐟';
+    heroLabel.textContent = speciesText;
+    setTimeout(() => heroTag.classList.add('show'), 450);
   }
   const sciEl = document.getElementById('res-scientific-name');
   if (sciEl) { sciEl.textContent = f.scientific || ''; sciEl.style.opacity = '0'; setTimeout(() => { sciEl.style.transition = 'opacity 0.6s'; sciEl.style.opacity = '1'; }, 600); }
@@ -5630,16 +5667,22 @@ async function postCatch(isPublic = true) {
     setEl('log-species-title', 'Unknown Fish');
     clearLogDraft();
     if (spotName && spotName !== 'Unknown Spot') STORE.set('last_spot', spotName);
-    if (!isPersonalBest) {
-      const xp = 10 + (weight ? Math.round(weight * 2) : 0) + (photoUrl ? 5 : 0);
-      showToast(isPublic ? `Catch posted! +${xp} XP 🎣` : `Catch logged! +${xp} XP 📋`);
-    }
-    if (isPublic) {
-      const fc = document.getElementById('feed-content');
-      if (fc) fc.innerHTML = '';
-      feedPage = 0; feedAllLoaded = false;
-    }
-    showScreen(isPublic ? 'feed' : 'profile');
+    const xp = 10 + (weight ? Math.round(weight * 2) : 0) + (photoUrl ? 5 : 0);
+    if (isPublic) { feedPage = 0; feedAllLoaded = false; }
+    showCatchCelebration({
+      species: newCatch?.species || identifiedFish?.species || 'Unknown',
+      weight,
+      isPublic,
+      isPersonalBest,
+      xp,
+      onDone: () => {
+        if (isPublic) {
+          const fc = document.getElementById('feed-content');
+          if (fc) fc.innerHTML = '';
+        }
+        showScreen(isPublic ? 'feed' : 'profile');
+      }
+    });
   } catch (err) {
     showToast('Failed to save: ' + err.message);
   } finally {
@@ -9677,16 +9720,31 @@ async function deleteCatch(catchId) {
 //  SPECIES DETAIL SHEET
 // ══════════════════════════════════════════
 const SPECIES_DB = {
-  'Largemouth Bass': { emoji: '🐠', sci: 'Micropterus salmoides', habitat: 'Lakes, ponds, slow rivers with vegetation', diet: 'Bluegill, crawfish, frogs, mice', record: '22 lbs 4 oz — Georgia, 1932', tip: 'Target structure at dawn and dusk. Use plastic worms in summer, jerkbaits in spring.', color: '#2d7a3a' },
-  'Smallmouth Bass': { emoji: '🐟', sci: 'Micropterus dolomieu', habitat: 'Clear rocky streams, rivers, and lakes', diet: 'Crawfish, insects, small fish', record: '11 lbs 15 oz — Dale Hollow, TN, 1955', tip: 'Natural presentations win — tube jigs and finesse worms in cold clear water.', color: '#7d5a1e' },
-  'Rainbow Trout': { emoji: '🌈', sci: 'Oncorhynchus mykiss', habitat: 'Cold, clear streams and lakes', diet: 'Insects, small fish, eggs', record: '48 lbs — Great Bear Lake, Canada, 2009', tip: 'Match the hatch with dry flies in evening. In lakes, use PowerBait near stocked areas.', color: '#c45a6b' },
-  'Walleye': { emoji: '👁️', sci: 'Sander vitreus', habitat: 'Large lakes and rivers with low-light areas', diet: 'Yellow perch, shad, crawfish', record: '25 lbs — Old Hickory Lake, TN, 1960', tip: 'Walleye have sensitive eyes — fish at night or in low-light. Jigs tipped with minnows work year-round.', color: '#c4a232' },
-  'Channel Catfish': { emoji: '🐈', sci: 'Ictalurus punctatus', habitat: 'Rivers, lakes, ponds', diet: 'Shad, crawfish, insects, carrion', record: '58 lbs — Santee-Cooper Reservoir, SC, 1964', tip: 'Use stink baits or chicken liver on the bottom in deep holes after dark.', color: '#5a7a8a' },
-  'Northern Pike': { emoji: '🐊', sci: 'Esox lucius', habitat: 'Weedy lakes and slow rivers', diet: 'Fish, frogs, ducks, muskrats', record: '55 lbs 1 oz — Germany, 1986', tip: 'Large flashy spoons and swimbaits trigger predatory strikes. Target weed edges.', color: '#3a6a3a' },
-  'Bluegill': { emoji: '💙', sci: 'Lepomis macrochirus', habitat: 'Ponds, lakes, slow streams', diet: 'Insects, worms, small fish', record: '4 lbs 12 oz — Ketona Lake, AL, 1950', tip: 'Live worms under a bobber. Fish near brush piles and dock edges.', color: '#1a5a8a' },
-  'Crappie': { emoji: '🎭', sci: 'Pomoxis sp.', habitat: 'Lakes, reservoirs, ponds', diet: 'Small fish, insects', record: '5 lbs 3 oz — Enid Dam, MS, 1957', tip: 'Fish vertically with small tube jigs near brush piles, especially in spring.', color: '#7a3a6a' },
-  'Striped Bass': { emoji: '🦓', sci: 'Morone saxatilis', habitat: 'Coastal waters, large rivers', diet: 'Shad, anchovies, eels', record: '81 lbs 14 oz — Atlantic City, NJ, 2011', tip: 'Surface poppers at dawn during the fall run. Follow diving birds to find feeding schools.', color: '#2a4a7a' },
-  'Salmon': { emoji: '🍣', sci: 'Oncorhynchus / Salmo sp.', habitat: 'Ocean, large rivers', diet: 'Shrimp, herring, smelt', record: 'Chinook — 97 lbs 4 oz — Alaska, 1985', tip: 'During spawning runs, drift eggs or flies through holding pools. Check current regulations.', color: '#c46a3a' },
+  'Largemouth Bass':    { emoji: '🐠', sci: 'Micropterus salmoides', habitat: 'Lakes, ponds, slow rivers with vegetation', diet: 'Bluegill, crawfish, frogs, mice', record: '22 lbs 4 oz — Georgia, 1932', tip: 'Target structure at dawn and dusk. Use plastic worms in summer, jerkbaits in spring.', color: '#2d7a3a' },
+  'Smallmouth Bass':    { emoji: '🐟', sci: 'Micropterus dolomieu', habitat: 'Clear rocky streams, rivers, and lakes', diet: 'Crawfish, insects, small fish', record: '11 lbs 15 oz — Dale Hollow, TN, 1955', tip: 'Natural presentations win — tube jigs and finesse worms in cold clear water.', color: '#7d5a1e' },
+  'Spotted Bass':       { emoji: '🔵', sci: 'Micropterus punctulatus', habitat: 'Moving rivers and reservoirs with rock structure', diet: 'Crawfish, shad, insects', record: '10 lbs 4 oz — Pine Flat Lake, CA, 2001', tip: 'Hit current seams with drop shots and finesse rigs. Spots prefer colder, clearer water than largemouth.', color: '#1a4a6a' },
+  'Rainbow Trout':      { emoji: '🌈', sci: 'Oncorhynchus mykiss', habitat: 'Cold, clear streams and lakes', diet: 'Insects, small fish, eggs', record: '48 lbs — Great Bear Lake, Canada, 2009', tip: 'Match the hatch with dry flies in evening. In lakes, use PowerBait near stocked areas.', color: '#c45a6b' },
+  'Brown Trout':        { emoji: '🍂', sci: 'Salmo trutta', habitat: 'Cold streams and lakes', diet: 'Insects, crayfish, small fish', record: '44 lbs 5 oz — Manistee River, MI, 2009', tip: 'Large browns are nocturnal and piscivorous — big streamers and minnow imitations at night.', color: '#8b6914' },
+  'Brook Trout':        { emoji: '💎', sci: 'Salvelinus fontinalis', habitat: 'Very cold, pristine mountain streams', diet: 'Insects, worms, small fish', record: '14 lbs 8 oz — Nipigon River, Canada, 1915', tip: 'Small dry flies, wet flies, and worms. Brookies love undercut banks in shadowed pools.', color: '#e07040' },
+  'Lake Trout':         { emoji: '🏔️', sci: 'Salvelinus namaycush', habitat: 'Deep cold lakes', diet: 'Ciscoes, smelt, other fish', record: '102 lbs — Northwest Territories, 1995', tip: 'Jig deep with tube jigs or spoons in winter. In summer they drop to 50-100 ft.', color: '#3a6a8a' },
+  'Walleye':            { emoji: '👁️', sci: 'Sander vitreus', habitat: 'Large lakes and rivers with low-light areas', diet: 'Yellow perch, shad, crawfish', record: '25 lbs — Old Hickory Lake, TN, 1960', tip: 'Walleye have sensitive eyes — fish at night or in low-light. Jigs tipped with minnows work year-round.', color: '#c4a232' },
+  'Yellow Perch':       { emoji: '🌻', sci: 'Perca flavescens', habitat: 'Lakes and ponds with vegetation', diet: 'Insects, small fish, crustaceans', record: '4 lbs 3 oz — Bordentown, NJ, 1865', tip: 'Small jigs and minnows below bobbers. Find perch schools using electronics and work vertically.', color: '#daa520' },
+  'Channel Catfish':    { emoji: '🐈', sci: 'Ictalurus punctatus', habitat: 'Rivers, lakes, ponds', diet: 'Shad, crawfish, insects, carrion', record: '58 lbs — Santee-Cooper Reservoir, SC, 1964', tip: 'Use stink baits or chicken liver on the bottom in deep holes after dark.', color: '#5a7a8a' },
+  'Flathead Catfish':   { emoji: '🌊', sci: 'Pylodictis olivaris', habitat: 'Large rivers and reservoirs', diet: 'Live fish almost exclusively', record: '123 lbs — Elk City Reservoir, KS, 1998', tip: 'Use large live baitfish under a cork in deep river holes. Night fishing near structure is key.', color: '#4a5a3a' },
+  'Northern Pike':      { emoji: '🐊', sci: 'Esox lucius', habitat: 'Weedy lakes and slow rivers', diet: 'Fish, frogs, ducks, muskrats', record: '55 lbs 1 oz — Germany, 1986', tip: 'Large flashy spoons and swimbaits trigger predatory strikes. Target weed edges.', color: '#3a6a3a' },
+  'Muskellunge':        { emoji: '⚡', sci: 'Esox masquinongy', habitat: 'Large weedy lakes and rivers', diet: 'Fish, frogs, waterfowl', record: '67 lbs 8 oz — Lake Court Oreilles, WI, 1949', tip: '"Muskie is the fish of 10,000 casts." Use large figure-8 presentations at boatside for follows.', color: '#6a4a2a' },
+  'Bluegill':           { emoji: '💙', sci: 'Lepomis macrochirus', habitat: 'Ponds, lakes, slow streams', diet: 'Insects, worms, small fish', record: '4 lbs 12 oz — Ketona Lake, AL, 1950', tip: 'Live worms under a bobber. Fish near brush piles and dock edges.', color: '#1a5a8a' },
+  'Crappie':            { emoji: '🎭', sci: 'Pomoxis sp.', habitat: 'Lakes, reservoirs, ponds', diet: 'Small fish, insects', record: '5 lbs 3 oz — Enid Dam, MS, 1957', tip: 'Fish vertically with small tube jigs near brush piles, especially in spring.', color: '#7a3a6a' },
+  'Striped Bass':       { emoji: '🦓', sci: 'Morone saxatilis', habitat: 'Coastal waters, large rivers', diet: 'Shad, anchovies, eels', record: '81 lbs 14 oz — Atlantic City, NJ, 2011', tip: 'Surface poppers at dawn during the fall run. Follow diving birds to find feeding schools.', color: '#2a4a7a' },
+  'Salmon':             { emoji: '🍣', sci: 'Oncorhynchus / Salmo sp.', habitat: 'Ocean, large rivers', diet: 'Shrimp, herring, smelt', record: 'Chinook — 97 lbs 4 oz — Alaska, 1985', tip: 'During spawning runs, drift eggs or flies through holding pools. Check current regulations.', color: '#c46a3a' },
+  'Red Drum':           { emoji: '🔴', sci: 'Sciaenops ocellatus', habitat: 'Coastal flats, estuaries, surf zone', diet: 'Shrimp, crabs, mullet', record: '94 lbs 2 oz — Avon, NC, 1984', tip: 'Look for tailing reds on shallow grass flats. Gold spoons, DOA shrimp, and live bait in the surf.', color: '#c4503a' },
+  'Snook':              { emoji: '🌴', sci: 'Centropomus undecimalis', habitat: 'Tropical coastal waters, mangroves, bridges', diet: 'Mullet, shrimp, crabs', record: '53 lbs 10 oz — Parismina Ranch, Costa Rica, 1978', tip: 'Cast lures under lighted docks and bridges at night. Snook hold on current seams near structure.', color: '#3a7a5a' },
+  'Flounder':           { emoji: '🫓', sci: 'Paralichthys sp.', habitat: 'Coastal bays, inlets, sandy bottoms', diet: 'Minnows, shrimp, crabs', record: 'Summer — 22 lbs 7 oz — Nags Head, NC, 1975', tip: 'Drift live finger mullet or mud minnows slowly across sandy bottom near structure transitions.', color: '#5a5a3a' },
+  'Carp':               { emoji: '🪨', sci: 'Cyprinus carpio', habitat: 'Warm rivers, lakes, and ponds', diet: 'Algae, insects, mollusks, plant material', record: '105 lbs 14 oz — France, 1987', tip: 'Carp are incredibly smart — use hair rigs with boilies or corn. Minimal disturbance on the bank.', color: '#8a7a3a' },
+  'White Bass':         { emoji: '⚪', sci: 'Morone chrysops', habitat: 'Open-water lakes and rivers', diet: 'Shad, insects, small fish', record: '6 lbs 13 oz — Colorado, 1989', tip: 'Follow seagulls to find white bass busting shad on the surface. Cast small spoons into the melee.', color: '#7a8a9a' },
+  'Redfish':            { emoji: '🌅', sci: 'Sciaenops ocellatus', habitat: 'Saltwater flats, marshes, estuaries', diet: 'Crabs, shrimp, mullet', record: '94 lbs 2 oz — Avon, NC, 1984', tip: 'Sight-cast to tailing reds in skinny water with weedless gold spoons or soft plastics.', color: '#c46020' },
+  'Peacock Bass':       { emoji: '🦚', sci: 'Cichla ocellaris', habitat: 'South Florida canals and tropical reservoirs', diet: 'Small fish, frogs', record: '12 lbs 9 oz — Brazil, 1994', tip: 'Topwater lures at dawn in South Florida canals. Peacocks are aggressive and strike hard.', color: '#2a8a5a' },
+  'Tarpon':             { emoji: '🪝', sci: 'Megalops atlanticus', habitat: 'Coastal waters, bays, estuaries', diet: 'Mullet, crabs, shrimp', record: '286 lbs 9 oz — Guinea-Bissau, 2003', tip: 'Roll fish in deep passes or along beaches in May. Present live crabs or large streamers on a dead-drift.', color: '#8a9a7a' },
 };
 
 function openSpeciesDetail(species) {
@@ -10903,6 +10961,39 @@ function renderFeedWidgets() {
   }
 }
 
+// ══════════════════════════════════════════
+//  CATCH CELEBRATION OVERLAY
+// ══════════════════════════════════════════
+function showCatchCelebration({ species, weight, isPublic, isPersonalBest, xp, onDone }) {
+  const overlay = document.getElementById('catch-celebrate-overlay');
+  if (!overlay) { onDone?.(); return; }
+  const emoji = (SPECIES_DB[species]?.emoji) || '🐟';
+  setEl('catch-cel-emoji', emoji);
+  setEl('catch-cel-title', isPublic ? 'Catch Posted! 🎣' : 'Catch Logged! 📋');
+  setEl('catch-cel-species', species || 'Nice catch!');
+  setEl('catch-cel-xp', `+${xp} XP`);
+  const weightEl = document.getElementById('catch-cel-weight');
+  if (weightEl) {
+    if (weight) { weightEl.textContent = `${weight.toFixed(1)} lbs · ${isPublic ? 'Now on the feed' : 'Saved privately'}`; weightEl.style.display = ''; }
+    else { weightEl.textContent = isPublic ? 'Now on the feed' : 'Saved privately'; weightEl.style.display = ''; }
+  }
+  const pbEl = document.getElementById('catch-cel-pb');
+  if (pbEl) pbEl.style.display = isPersonalBest ? '' : 'none';
+  overlay.classList.add('show');
+  confettiBurst();
+  if (isPersonalBest) setTimeout(confettiBurst, 600);
+  let dismissed = false;
+  const dismiss = () => {
+    if (dismissed) return;
+    dismissed = true;
+    overlay.removeEventListener('click', dismiss);
+    overlay.classList.remove('show');
+    setTimeout(() => { onDone?.(); }, 320);
+  };
+  overlay.addEventListener('click', dismiss);
+  setTimeout(dismiss, 2400);
+}
+
 // Collection screen loader
 async function loadCollectionScreen() {
   const grid = document.getElementById('coll-grid');
@@ -11085,6 +11176,19 @@ init();
     <div class="achievement-popup-badge" id="ach-badge">NEW BADGE</div>
     <div class="achievement-popup-sub" id="ach-sub">Keep fishing to unlock more achievements.</div>
     <button class="achievement-popup-btn" onclick="closeAchievement()">Awesome! 🎉</button>
+  </div>
+</div>
+
+<!-- ══════ CATCH CELEBRATION ══════ -->
+<div class="catch-celebrate-overlay" id="catch-celebrate-overlay">
+  <div class="catch-celebrate-card">
+    <span class="catch-cel-emoji" id="catch-cel-emoji">🐟</span>
+    <div class="catch-cel-title" id="catch-cel-title">Catch Logged!</div>
+    <div class="catch-cel-species" id="catch-cel-species">Nice catch!</div>
+    <div class="catch-cel-xp" id="catch-cel-xp">+10 XP</div>
+    <div class="catch-cel-weight" id="catch-cel-weight" style="display:none;"></div>
+    <div class="catch-cel-pb" id="catch-cel-pb" style="display:none;">🏆 New Personal Best!</div>
+    <div class="catch-cel-sub">Tap anywhere to continue</div>
   </div>
 </div>
 
