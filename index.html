@@ -8593,8 +8593,8 @@ async function loadMySpotsTab() {
 function openSpotOnMap(lat, lng, name) {
   showScreen('map');
   setTimeout(() => {
-    if (typeof fishMap !== 'undefined' && fishMap) {
-      fishMap.setView([lat, lng], 14);
+    if (leafletMap) {
+      leafletMap.setView([lat, lng], 14);
       showToast(`📍 ${name}`);
     }
   }, 300);
