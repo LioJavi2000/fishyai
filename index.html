@@ -508,6 +508,94 @@ body {
 .reg-ok{color:#147a14;font-size:14px;font-weight:700;letter-spacing:-0.3px;display:flex;align-items:center;gap:7px;}
 .lure-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
 .lure-chip{background:rgba(27,46,75,0.07);border:0.5px solid rgba(27,46,75,0.12);border-radius:14px;padding:5px 11px;font-size:11px;font-weight:600;color:var(--navy);letter-spacing:-0.1px;display:flex;align-items:center;gap:5px;}
+.res-fun-fact{background:linear-gradient(135deg,rgba(14,165,233,0.07),rgba(102,126,234,0.06));border:1.5px solid rgba(14,165,233,0.15);border-radius:14px;padding:12px 14px;margin-top:4px;}
+.res-fun-fact-label{font-size:10px;font-weight:700;color:#0ea5e9;letter-spacing:0.6px;text-transform:uppercase;margin-bottom:4px;}
+.res-fun-fact-text{font-size:12px;color:#333;line-height:1.6;}
+
+/* ── PROCESSING STEPS ── */
+.proc-steps{display:flex;flex-direction:column;gap:7px;margin-top:22px;width:228px;}
+.proc-step{display:flex;align-items:center;gap:10px;padding:8px 13px;border-radius:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);opacity:0.28;transition:opacity 0.4s var(--ease),background 0.4s var(--ease),border-color 0.4s var(--ease);}
+.proc-step.active{opacity:1;background:rgba(14,165,233,0.1);border-color:rgba(14,165,233,0.28);}
+.proc-step.done{opacity:0.65;background:rgba(52,199,89,0.08);border-color:rgba(52,199,89,0.2);}
+.proc-step-icon{font-size:15px;line-height:1;flex-shrink:0;}
+.proc-step-text{font-size:12px;font-weight:600;color:rgba(255,255,255,0.6);letter-spacing:-0.2px;flex:1;}
+.proc-step.active .proc-step-text{color:#38bdf8;}
+.proc-step.done .proc-step-text{color:#86efac;}
+.proc-step-check{font-size:12px;opacity:0;transform:scale(0) rotate(-90deg);transition:opacity 0.25s,transform 0.3s var(--spring);}
+.proc-step.done .proc-step-check{opacity:1;transform:scale(1) rotate(0deg);}
+
+/* ── RESULT REVEAL ANIMATIONS ── */
+@keyframes reveal-flash{0%{opacity:0;transform:scale(0.75) translateY(6px)}65%{transform:scale(1.04) translateY(-1px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes species-glow{0%,100%{text-shadow:none}40%{text-shadow:0 0 24px rgba(14,165,233,0.5),0 0 48px rgba(14,165,233,0.2)}}
+@keyframes section-rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes cursor-blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes conf-glow-pulse{0%{box-shadow:0 0 0 0 rgba(52,199,89,0.55)}70%{box-shadow:0 0 0 10px rgba(52,199,89,0)}100%{box-shadow:0 0 0 0 rgba(52,199,89,0)}}
+@keyframes confetti-drop{0%{transform:translateY(-10px) rotate(0deg);opacity:1}100%{transform:translateY(120px) rotate(540deg);opacity:0}}
+@keyframes hero-reveal{from{opacity:0;transform:scale(1.05)}to{opacity:1;transform:scale(1)}}
+.res-species-reveal{animation:reveal-flash 0.55s var(--spring) both;}
+.res-species-glow{animation:species-glow 2s ease-in-out 3;}
+.typewriter-cursor{display:inline-block;width:2px;height:0.85em;background:currentColor;margin-left:1px;animation:cursor-blink 0.7s step-end infinite;vertical-align:text-bottom;}
+.res-section-stagger{opacity:0;animation:section-rise 0.45s var(--ease) both;}
+.res-conf-pulse{animation:conf-glow-pulse 1s ease-out 3;}
+.res-hero-reveal{animation:hero-reveal 0.5s var(--ease) both;}
+.confetti-burst{position:fixed;top:0;left:50%;transform:translateX(-50%);pointer-events:none;z-index:9999;overflow:visible;}
+.cp{position:absolute;width:7px;height:7px;border-radius:2px;animation:confetti-drop 1.2s ease-in both;}
+
+/* ── SPECIES COLLECTION ── */
+.coll-wrap{background:var(--bg);min-height:100%;padding-bottom:24px;}
+.coll-hd{background:#fff;padding:14px 16px;border-bottom:0.5px solid var(--sep);display:flex;align-items:center;gap:10px;}
+.coll-title{font-size:18px;font-weight:800;color:#000;letter-spacing:-0.6px;}
+.coll-progress-wrap{background:#fff;margin:12px 12px 0;border-radius:18px;padding:14px 16px;box-shadow:var(--card-shadow);}
+.coll-prog-label{font-size:12px;font-weight:700;color:#000;letter-spacing:-0.3px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
+.coll-prog-pct{color:#0ea5e9;}
+.coll-prog-bg{height:6px;background:var(--bg);border-radius:3px;overflow:hidden;}
+.coll-prog-fill{height:100%;background:linear-gradient(90deg,#0ea5e9,#667eea);border-radius:3px;width:0%;transition:width 0.9s var(--ease);}
+.coll-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:12px;}
+.coll-item{background:#fff;border-radius:18px;padding:14px 12px;box-shadow:var(--card-shadow);display:flex;flex-direction:column;align-items:center;text-align:center;gap:7px;cursor:pointer;transition:transform 0.2s var(--spring);-webkit-tap-highlight-color:transparent;}
+.coll-item:active{transform:scale(0.95);}
+.coll-item.coll-caught{border:2px solid rgba(14,165,233,0.2);}
+.coll-item.coll-uncaught{filter:grayscale(1);opacity:0.45;}
+.coll-item-emoji{font-size:34px;line-height:1;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.12));}
+.coll-item-name{font-size:11px;font-weight:700;color:#111;letter-spacing:-0.2px;line-height:1.3;}
+.coll-item-stat{font-size:10px;font-weight:700;border-radius:8px;padding:2px 8px;}
+.coll-item.coll-caught .coll-item-stat{color:#0ea5e9;background:rgba(14,165,233,0.1);}
+.coll-item.coll-uncaught .coll-item-stat{color:var(--gray);background:var(--bg);}
+
+/* ── DAILY CHALLENGE ── */
+.challenge-card{background:linear-gradient(135deg,#1B2E4B 0%,#253f64 100%);border-radius:18px;padding:14px 15px;margin:10px 12px 0;display:flex;align-items:center;gap:11px;box-shadow:0 4px 20px rgba(27,46,75,0.28),0 1px 6px rgba(0,0,0,0.1);}
+.challenge-emoji{font-size:30px;line-height:1;flex-shrink:0;}
+.challenge-body{flex:1;min-width:0;}
+.challenge-label{font-size:9px;font-weight:700;color:rgba(255,255,255,0.45);letter-spacing:0.9px;text-transform:uppercase;margin-bottom:2px;}
+.challenge-text{font-size:13px;font-weight:700;color:#fff;letter-spacing:-0.3px;line-height:1.35;}
+.challenge-done{font-size:10px;font-weight:700;color:#34c759;margin-top:3px;}
+.challenge-cta{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:11px;font-weight:700;border-radius:12px;padding:8px 13px;cursor:pointer;font-family:inherit;flex-shrink:0;white-space:nowrap;-webkit-tap-highlight-color:transparent;transition:background 0.15s;}
+.challenge-cta:active{background:rgba(255,255,255,0.22);}
+
+/* ── CONDITIONS WIDGET ── */
+.conditions-card{background:#fff;border-radius:18px;padding:11px 14px;margin:8px 12px 0;box-shadow:var(--card-shadow);display:flex;align-items:center;gap:10px;}
+.conditions-icon{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.conditions-body{flex:1;}
+.conditions-title{font-size:12px;font-weight:700;color:#000;letter-spacing:-0.3px;}
+.conditions-sub{font-size:11px;color:var(--gray);letter-spacing:-0.2px;margin-top:1px;line-height:1.4;}
+.conditions-scan-btn{background:var(--navy);color:#fff;border:none;border-radius:13px;padding:9px 14px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;flex-shrink:0;-webkit-tap-highlight-color:transparent;white-space:nowrap;}
+
+/* ── ANGLER LEVEL ── */
+@keyframes stat-bounce-in{0%{opacity:0;transform:scale(0.5) translateY(10px)}70%{transform:scale(1.1) translateY(-2px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+.angler-lvl-row{display:flex;align-items:center;justify-content:center;gap:7px;margin:6px 0;padding:0 16px;}
+.angler-lvl-badge{display:inline-flex;align-items:center;gap:5px;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:-0.2px;white-space:nowrap;}
+.lvl-novice{background:rgba(142,142,147,0.1);color:#636366;border:1.5px solid rgba(142,142,147,0.18);}
+.lvl-skilled{background:rgba(52,199,89,0.1);color:#148a2f;border:1.5px solid rgba(52,199,89,0.22);}
+.lvl-expert{background:rgba(14,165,233,0.1);color:#0369a1;border:1.5px solid rgba(14,165,233,0.22);}
+.lvl-master{background:rgba(245,158,11,0.1);color:#b45309;border:1.5px solid rgba(245,158,11,0.28);}
+.prof-stat-anim-in{opacity:0;animation:stat-bounce-in 0.5s var(--spring) both;}
+
+/* ── FEED EMPTY STATE V2 ── */
+.feed-empty-v2{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:52px 24px;gap:12px;text-align:center;}
+.feed-empty-fish{font-size:60px;animation:proc-pulse 2s ease-in-out infinite;filter:drop-shadow(0 4px 16px rgba(14,165,233,0.18));}
+.feed-empty-title{font-size:17px;font-weight:800;color:#000;letter-spacing:-0.5px;}
+.feed-empty-sub{font-size:13px;color:var(--gray);letter-spacing:-0.2px;line-height:1.6;max-width:230px;}
+.feed-empty-btn{background:var(--navy);color:#fff;border:none;border-radius:20px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px;-webkit-tap-highlight-color:transparent;transition:transform 0.2s var(--spring);}
+.feed-empty-btn:active{transform:scale(0.94);}
 
 /* ── LOG CATCH ── */
 .log-wrap{background:var(--bg);min-height:100%;padding-bottom:24px;}
@@ -1916,6 +2004,29 @@ body {
       </div>
     </div>
 
+    <!-- ══════ SPECIES COLLECTION ══════ -->
+    <div class="screen" id="screen-collection">
+      <div class="coll-wrap">
+        <div class="coll-hd">
+          <button onclick="showScreen('profile')" style="background:none;border:none;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,0.06);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+          </button>
+          <div class="coll-title" style="flex:1;text-align:center;">My Collection</div>
+          <div style="width:32px;"></div>
+        </div>
+        <div class="coll-progress-wrap">
+          <div class="coll-prog-label">
+            <span id="coll-prog-text">Loading…</span>
+            <span class="coll-prog-pct" id="coll-prog-pct"></span>
+          </div>
+          <div class="coll-prog-bg"><div class="coll-prog-fill" id="coll-prog-fill"></div></div>
+        </div>
+        <div class="coll-grid" id="coll-grid">
+          <div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--gray);font-size:13px;">Loading collection…</div>
+        </div>
+      </div>
+    </div>
+
     <!-- ══════ PROCESSING ══════ -->
     <div class="screen" id="screen-processing">
       <!-- Loading state (default) -->
@@ -1928,9 +2039,30 @@ body {
           <div class="proc-dot"></div>
           <div class="proc-fish">🐟</div>
         </div>
-        <div class="proc-txt">Identifying your catch…</div>
+        <div class="proc-txt" id="proc-main-txt">Analyzing your catch</div>
         <div class="proc-bar-wrap"><div class="proc-bar"></div></div>
-        <div class="proc-sub">Analyzing species, habitat &amp; regulations</div>
+        <div class="proc-steps" id="proc-steps">
+          <div class="proc-step active" id="proc-step-0">
+            <div class="proc-step-icon">📤</div>
+            <span class="proc-step-text">Uploading photo</span>
+            <div class="proc-step-check">✓</div>
+          </div>
+          <div class="proc-step" id="proc-step-1">
+            <div class="proc-step-icon">🔬</div>
+            <span class="proc-step-text">Identifying species</span>
+            <div class="proc-step-check">✓</div>
+          </div>
+          <div class="proc-step" id="proc-step-2">
+            <div class="proc-step-icon">⚖️</div>
+            <span class="proc-step-text">Checking regulations</span>
+            <div class="proc-step-check">✓</div>
+          </div>
+          <div class="proc-step" id="proc-step-3">
+            <div class="proc-step-icon">🎣</div>
+            <span class="proc-step-text">Finding best lures</span>
+            <div class="proc-step-check">✓</div>
+          </div>
+        </div>
         <div class="claude-badge">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
           Powered by Claude AI
@@ -2009,6 +2141,13 @@ body {
               <div class="lure-chip"><svg width="10" height="13" viewBox="0 0 10 13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="5" cy="2" r="1.1" fill="currentColor" stroke="none"/><path d="M5 3.1v5.2"/><path d="M5 8.3c0 2.3 3.2 2.3 3.2 0"/><path d="M8.2 8.3l0.8 1.7"/></svg>Plastic Worms</div>
               <div class="lure-chip"><svg width="10" height="13" viewBox="0 0 10 13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="5" cy="2" r="1.1" fill="currentColor" stroke="none"/><path d="M5 3.1v5.2"/><path d="M5 8.3c0 2.3 3.2 2.3 3.2 0"/><path d="M8.2 8.3l0.8 1.7"/></svg>Crankbaits</div>
               <div class="lure-chip"><svg width="10" height="13" viewBox="0 0 10 13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="5" cy="2" r="1.1" fill="currentColor" stroke="none"/><path d="M5 3.1v5.2"/><path d="M5 8.3c0 2.3 3.2 2.3 3.2 0"/><path d="M8.2 8.3l0.8 1.7"/></svg>Spinnerbaits</div>
+            </div>
+          </div>
+          <!-- Fun Fact -->
+          <div class="res-section" id="res-fun-fact-section" style="display:none;border-bottom:none;margin-bottom:0;padding-bottom:0;">
+            <div class="res-fun-fact">
+              <div class="res-fun-fact-label">Did you know?</div>
+              <div class="res-fun-fact-text" id="res-fun-fact-text"></div>
             </div>
           </div>
         </div>
@@ -2310,6 +2449,14 @@ body {
               <div class="prof-stat-num-v2" id="prof-following">0</div>
               <div class="prof-stat-lbl-v2">Following</div>
             </div>
+          </div>
+
+          <!-- Angler Level -->
+          <div class="angler-lvl-row" id="angler-lvl-row" style="display:none;">
+            <div class="angler-lvl-badge lvl-novice" id="angler-lvl-badge">🎣 Novice Angler</div>
+            <button onclick="showScreen('collection')" id="collection-btn" style="display:none;background:rgba(14,165,233,0.08);border:1.5px solid rgba(14,165,233,0.2);color:#0ea5e9;font-size:11px;font-weight:700;border-radius:16px;padding:5px 13px;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;">
+              🏆 Collection
+            </button>
           </div>
 
           <!-- Follow / own-profile action -->
@@ -2923,7 +3070,7 @@ const BACK_MAP = {
   onboard2:'onboard1', auth:'onboard2',
   scan:'feed', processing:'scan', result:'scan',
   log:'result', map:'feed', leaderboard:'explore', explore:'feed',
-  profile:'feed', paywall:'feed',
+  profile:'feed', paywall:'feed', collection:'profile',
   'story-editor':'scan', 'post-editor':'scan',
   'story-viewer':'feed', notifications:'feed', settings:'profile',
   messages:'feed', 'dm-thread':'messages',
@@ -2934,7 +3081,7 @@ const STATUS_TITLES = {
   explore:'Explore',settings:'Settings',
   profile:'Profile',paywall:'Fishy AI','story-editor':'','post-editor':'New Post',
   'story-viewer':'', notifications:'Notifications',
-  messages:'Messages', 'dm-thread':'',
+  messages:'Messages', 'dm-thread':'', collection:'My Collection',
 };
 
 // ══════════════════════════════════════════
@@ -3127,7 +3274,8 @@ function showScreen(name, back = false) {
   if (name === 'notifications') loadNotifications();
   if (name === 'settings') loadSettingsScreen();
   if (name === 'messages') loadDMs();
-  if (name !== 'profile' && name !== 'story-viewer' && name !== 'dm-thread') viewingUserId = null;
+  if (name === 'collection') loadCollectionScreen();
+  if (name !== 'profile' && name !== 'story-viewer' && name !== 'dm-thread' && name !== 'collection') viewingUserId = null;
 }
 
 function updateStatusBar(name) {
@@ -3437,6 +3585,27 @@ async function loadProfileScreen() {
     setEl('prof-followers',    follRes.count ?? 0);
     setEl('prof-following',    followingRes.count ?? 0);
     setEl('prof-total-weight', totalLbs > 0 ? `${totalLbs.toFixed(1)} lbs total` : '');
+
+    // Animate profile stats in with bounce
+    document.querySelectorAll('.prof-stat-row-4 .prof-stat-v2').forEach((el, i) => {
+      el.classList.remove('prof-stat-anim-in');
+      void el.offsetWidth; // force reflow to restart animation
+      el.classList.add('prof-stat-anim-in');
+      el.style.animationDelay = `${i * 0.08}s`;
+    });
+
+    // Angler level badge
+    const lvlRow = document.getElementById('angler-lvl-row');
+    const lvlBadge = document.getElementById('angler-lvl-badge');
+    const collBtn = document.getElementById('collection-btn');
+    if (lvlRow && lvlBadge) {
+      const lvl = getAnglerLevel(catchList.length, species, best);
+      lvlBadge.className = `angler-lvl-badge ${lvl.tier}`;
+      lvlBadge.textContent = `${lvl.icon} Lvl ${lvl.level} · ${lvl.title}`;
+      lvlRow.style.display = 'flex';
+      if (collBtn && isOwnProfile) collBtn.style.display = '';
+      else if (collBtn) collBtn.style.display = 'none';
+    }
     // Fishing since date
     if (catchList.length > 0) {
       const oldest = new Date(catchList[catchList.length - 1].created_at);
@@ -5042,6 +5211,10 @@ function showProcError(msg) {
 function resetProcScreen() {
   document.getElementById('proc-loading').style.display = 'flex';
   document.getElementById('proc-error').style.display  = 'none';
+  for (let i = 0; i < 4; i++) {
+    const el = document.getElementById(`proc-step-${i}`);
+    if (el) el.className = i === 0 ? 'proc-step active' : 'proc-step';
+  }
 }
 function retryFromError() {
   resetProcScreen();
@@ -5062,8 +5235,13 @@ async function doIdentify() {
     ()  => setEl('log-spot-name', 'Unknown Spot')
   );
 
+  // Animate step 0: uploading
+  procStep(0);
+
   try {
     if (capturedB64) {
+      // Step 1: identifying
+      setTimeout(() => procStep(1), 400);
       const resp = await fetch('/api/identify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -5073,14 +5251,23 @@ async function doIdentify() {
       if (!resp.ok || data.error) throw new Error(data.error || `API error ${resp.status}`);
       if (!data.species) throw new Error('AI returned an unrecognized response.');
       identifiedFish = data;
+      // Steps 2 & 3: regulations → lures (short delays so user sees progress)
+      procStep(2);
+      await new Promise(r => setTimeout(r, 350));
+      procStep(3);
+      await new Promise(r => setTimeout(r, 350));
     } else {
-      // Demo mode — no camera
-      await new Promise(r => setTimeout(r, 2200));
+      // Demo mode — no camera, animate all steps
+      for (let i = 0; i < 4; i++) {
+        procStep(i);
+        await new Promise(r => setTimeout(r, 600));
+      }
       identifiedFish = {
-        species: 'Largemouth Bass', confidence: 95,
+        species: 'Largemouth Bass', scientific: 'Micropterus salmoides', confidence: 95,
         habitat: 'Found near shallow vegetation, fallen logs & rocky coves. Best in warm water during early morning and evening.',
         regulations: 'Min size: 12 in · Bag limit: 5 per day · Season: Open year-round',
-        lures: ['Plastic Worms', 'Crankbaits', 'Spinnerbaits'], legal: true
+        lures: ['Plastic Worms', 'Crankbaits', 'Spinnerbaits', 'Jigs'], legal: true,
+        funFact: 'Largemouth bass can detect prey using both vision and a lateral line that senses vibrations in the water.'
       };
     }
     // Second AI call: measurement estimation (runs concurrently with rendering)
@@ -5147,20 +5334,32 @@ function renderResult() {
   if (!identifiedFish) return;
   const f = identifiedFish;
 
-  // Hero photo
+  // Hero photo with entrance animation
   const hero = document.getElementById('res-photo');
   const ph   = document.getElementById('res-photo-placeholder');
   if (hero && capturedB64) {
     hero.style.backgroundImage    = `url(data:${capturedMime};base64,${capturedB64})`;
     hero.style.backgroundSize     = 'cover';
     hero.style.backgroundPosition = 'center';
+    hero.classList.add('res-hero-reveal');
     if (ph) ph.style.display = 'none';
   } else if (ph) {
     ph.style.display = 'block';
   }
 
-  setEl('res-species-name',   f.species  || 'Unknown Fish');
-  setEl('res-scientific-name', f.scientific || '');
+  // Species name — typewriter with dramatic reveal
+  const nameEl = document.getElementById('res-species-name');
+  if (nameEl) {
+    nameEl.classList.add('res-species-reveal');
+    const speciesText = f.species || 'Unknown Fish';
+    if (speciesText.length < 25) {
+      typewriterEffect(nameEl, speciesText, 40);
+    } else {
+      nameEl.textContent = speciesText;
+    }
+  }
+  const sciEl = document.getElementById('res-scientific-name');
+  if (sciEl) { sciEl.textContent = f.scientific || ''; sciEl.style.opacity = '0'; setTimeout(() => { sciEl.style.transition = 'opacity 0.6s'; sciEl.style.opacity = '1'; }, 600); }
   setEl('res-habitat', f.habitat || '');
 
   // Confidence dot — color by percentage
@@ -5168,8 +5367,13 @@ function renderResult() {
   const dotColor = pct >= 90 ? '#34c759' : pct >= 75 ? '#FFD60A' : pct >= 60 ? '#FF9500' : '#FF3B30';
   const dotEl = document.getElementById('res-conf-dot');
   const pctEl = document.getElementById('res-conf-pct');
+  const confPill = document.getElementById('res-conf-pill');
   if (dotEl) dotEl.style.background = dotColor;
   if (pctEl) pctEl.textContent = pct + '%';
+  if (confPill && pct >= 90) { confPill.classList.add('res-conf-pulse'); }
+
+  // Confetti burst for high-confidence identifications
+  if (pct >= 90) setTimeout(confettiBurst, 500);
 
   // Regulations
   const isLegal = f.legal !== false;
@@ -5183,6 +5387,23 @@ function renderResult() {
   const hookSvg = `<svg width="10" height="13" viewBox="0 0 10 13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="5" cy="2" r="1.1" fill="currentColor" stroke="none"/><path d="M5 3.1v5.2"/><path d="M5 8.3c0 2.3 3.2 2.3 3.2 0"/><path d="M8.2 8.3l0.8 1.7"/></svg>`;
   const lureEl = document.getElementById('res-lures');
   if (lureEl) lureEl.innerHTML = (f.lures || []).map(l => `<div class="lure-chip">${hookSvg}${esc(l)}</div>`).join('');
+
+  // Fun fact — shown only when AI provides it
+  const funFactSection = document.getElementById('res-fun-fact-section');
+  const funFactText = document.getElementById('res-fun-fact-text');
+  if (f.funFact && funFactSection && funFactText) {
+    funFactText.textContent = f.funFact;
+    funFactSection.style.display = '';
+  } else if (funFactSection) {
+    funFactSection.style.display = 'none';
+  }
+
+  // Stagger-animate each section card in
+  const sections = document.querySelectorAll('#screen-result .res-section');
+  sections.forEach((s, i) => {
+    s.classList.add('res-section-stagger');
+    s.style.animationDelay = `${0.15 + i * 0.1}s`;
+  });
 
   setEl('log-species-title', f.species || 'Unknown Fish');
   loadLureSuggestions(f.species);
@@ -5681,6 +5902,7 @@ async function loadFeed(append = false) {
   const fc = document.getElementById('feed-content');
   if (!append && fc && feedPage === 0 && currentUser) {
     fc.innerHTML = feedSkeletonHtml();
+    renderFeedWidgets();
   }
 
   try {
@@ -5721,7 +5943,12 @@ async function loadFeed(append = false) {
       feedAllLoaded = true;
       document.getElementById('feed-load-more')?.remove();
       if (feedPage === 0 && fc && currentUser) {
-        fc.innerHTML = '<div style="text-align:center;padding:48px 20px;color:var(--gray);font-size:13px;letter-spacing:-0.2px;line-height:1.7;">No posts yet.<br>Be the first to share a catch! 🎣</div>';
+        fc.innerHTML = `<div class="feed-empty-v2">
+          <div class="feed-empty-fish">🎣</div>
+          <div class="feed-empty-title">The water's wide open</div>
+          <div class="feed-empty-sub">No one has posted yet today. Be the first to share an epic catch!</div>
+          <button class="feed-empty-btn" onclick="showScreen('scan')">Scan a Fish</button>
+        </div>`;
       }
       return;
     }
@@ -9417,16 +9644,16 @@ async function deleteCatch(catchId) {
 //  SPECIES DETAIL SHEET
 // ══════════════════════════════════════════
 const SPECIES_DB = {
-  'Largemouth Bass': { emoji: '🐟', sci: 'Micropterus salmoides', habitat: 'Lakes, ponds, slow rivers with vegetation', diet: 'Bluegill, crawfish, frogs, mice', record: '22 lbs 4 oz — Georgia, 1932', tip: 'Target structure at dawn and dusk. Use plastic worms in summer, jerkbaits in spring.', color: '#2d7a3a' },
+  'Largemouth Bass': { emoji: '🐠', sci: 'Micropterus salmoides', habitat: 'Lakes, ponds, slow rivers with vegetation', diet: 'Bluegill, crawfish, frogs, mice', record: '22 lbs 4 oz — Georgia, 1932', tip: 'Target structure at dawn and dusk. Use plastic worms in summer, jerkbaits in spring.', color: '#2d7a3a' },
   'Smallmouth Bass': { emoji: '🐟', sci: 'Micropterus dolomieu', habitat: 'Clear rocky streams, rivers, and lakes', diet: 'Crawfish, insects, small fish', record: '11 lbs 15 oz — Dale Hollow, TN, 1955', tip: 'Natural presentations win — tube jigs and finesse worms in cold clear water.', color: '#7d5a1e' },
-  'Rainbow Trout': { emoji: '🐟', sci: 'Oncorhynchus mykiss', habitat: 'Cold, clear streams and lakes', diet: 'Insects, small fish, eggs', record: '48 lbs — Great Bear Lake, Canada, 2009', tip: 'Match the hatch with dry flies in evening. In lakes, use PowerBait near stocked areas.', color: '#c45a6b' },
-  'Walleye': { emoji: '🐟', sci: 'Sander vitreus', habitat: 'Large lakes and rivers with low-light areas', diet: 'Yellow perch, shad, crawfish', record: '25 lbs — Old Hickory Lake, TN, 1960', tip: 'Walleye have sensitive eyes — fish at night or in low-light. Jigs tipped with minnows work year-round.', color: '#c4a232' },
-  'Channel Catfish': { emoji: '🐟', sci: 'Ictalurus punctatus', habitat: 'Rivers, lakes, ponds', diet: 'Shad, crawfish, insects, carrion', record: '58 lbs — Santee-Cooper Reservoir, SC, 1964', tip: 'Use stink baits or chicken liver on the bottom in deep holes after dark.', color: '#5a7a8a' },
-  'Northern Pike': { emoji: '🐟', sci: 'Esox lucius', habitat: 'Weedy lakes and slow rivers', diet: 'Fish, frogs, ducks, muskrats', record: '55 lbs 1 oz — Germany, 1986', tip: 'Large flashy spoons and swimbaits trigger predatory strikes. Target weed edges.', color: '#3a6a3a' },
-  'Bluegill': { emoji: '🐟', sci: 'Lepomis macrochirus', habitat: 'Ponds, lakes, slow streams', diet: 'Insects, worms, small fish', record: '4 lbs 12 oz — Ketona Lake, AL, 1950', tip: 'Live worms under a bobber. Fish near brush piles and dock edges.', color: '#1a5a8a' },
-  'Crappie': { emoji: '🐟', sci: 'Pomoxis sp.', habitat: 'Lakes, reservoirs, ponds', diet: 'Small fish, insects', record: '5 lbs 3 oz — Enid Dam, MS, 1957', tip: 'Fish vertically with small tube jigs near brush piles, especially in spring.', color: '#7a3a6a' },
-  'Striped Bass': { emoji: '🐟', sci: 'Morone saxatilis', habitat: 'Coastal waters, large rivers', diet: 'Shad, anchovies, eels', record: '81 lbs 14 oz — Atlantic City, NJ, 2011', tip: 'Surface poppers at dawn during the fall run. Follow diving birds to find feeding schools.', color: '#2a4a7a' },
-  'Salmon': { emoji: '🐟', sci: 'Oncorhynchus / Salmo sp.', habitat: 'Ocean, large rivers', diet: 'Shrimp, herring, smelt', record: 'Chinook — 97 lbs 4 oz — Alaska, 1985', tip: 'During spawning runs, drift eggs or flies through holding pools. Check current regulations.', color: '#c46a3a' },
+  'Rainbow Trout': { emoji: '🌈', sci: 'Oncorhynchus mykiss', habitat: 'Cold, clear streams and lakes', diet: 'Insects, small fish, eggs', record: '48 lbs — Great Bear Lake, Canada, 2009', tip: 'Match the hatch with dry flies in evening. In lakes, use PowerBait near stocked areas.', color: '#c45a6b' },
+  'Walleye': { emoji: '👁️', sci: 'Sander vitreus', habitat: 'Large lakes and rivers with low-light areas', diet: 'Yellow perch, shad, crawfish', record: '25 lbs — Old Hickory Lake, TN, 1960', tip: 'Walleye have sensitive eyes — fish at night or in low-light. Jigs tipped with minnows work year-round.', color: '#c4a232' },
+  'Channel Catfish': { emoji: '🐈', sci: 'Ictalurus punctatus', habitat: 'Rivers, lakes, ponds', diet: 'Shad, crawfish, insects, carrion', record: '58 lbs — Santee-Cooper Reservoir, SC, 1964', tip: 'Use stink baits or chicken liver on the bottom in deep holes after dark.', color: '#5a7a8a' },
+  'Northern Pike': { emoji: '🐊', sci: 'Esox lucius', habitat: 'Weedy lakes and slow rivers', diet: 'Fish, frogs, ducks, muskrats', record: '55 lbs 1 oz — Germany, 1986', tip: 'Large flashy spoons and swimbaits trigger predatory strikes. Target weed edges.', color: '#3a6a3a' },
+  'Bluegill': { emoji: '💙', sci: 'Lepomis macrochirus', habitat: 'Ponds, lakes, slow streams', diet: 'Insects, worms, small fish', record: '4 lbs 12 oz — Ketona Lake, AL, 1950', tip: 'Live worms under a bobber. Fish near brush piles and dock edges.', color: '#1a5a8a' },
+  'Crappie': { emoji: '🎭', sci: 'Pomoxis sp.', habitat: 'Lakes, reservoirs, ponds', diet: 'Small fish, insects', record: '5 lbs 3 oz — Enid Dam, MS, 1957', tip: 'Fish vertically with small tube jigs near brush piles, especially in spring.', color: '#7a3a6a' },
+  'Striped Bass': { emoji: '🦓', sci: 'Morone saxatilis', habitat: 'Coastal waters, large rivers', diet: 'Shad, anchovies, eels', record: '81 lbs 14 oz — Atlantic City, NJ, 2011', tip: 'Surface poppers at dawn during the fall run. Follow diving birds to find feeding schools.', color: '#2a4a7a' },
+  'Salmon': { emoji: '🍣', sci: 'Oncorhynchus / Salmo sp.', habitat: 'Ocean, large rivers', diet: 'Shrimp, herring, smelt', record: 'Chinook — 97 lbs 4 oz — Alaska, 1985', tip: 'During spawning runs, drift eggs or flies through holding pools. Check current regulations.', color: '#c46a3a' },
 };
 
 function openSpeciesDetail(species) {
@@ -10511,6 +10738,181 @@ async function loadFollowingLeaderboard() {
       </div>`;
     }).join('');
   } catch(e) { console.warn('loadFollowingLeaderboard:', e.message); }
+}
+
+// ══════════════════════════════════════════
+//  WAVE 18 — DELIGHT ENGINE
+// ══════════════════════════════════════════
+
+// Typewriter effect: writes text character by character into el
+function typewriterEffect(el, text, delay = 38) {
+  if (!el) return;
+  el.textContent = '';
+  const cursor = document.createElement('span');
+  cursor.className = 'typewriter-cursor';
+  el.appendChild(cursor);
+  let i = 0;
+  function tick() {
+    if (i >= text.length) { cursor.remove(); return; }
+    cursor.before(text[i++]);
+    setTimeout(tick, delay + (Math.random() * 20 - 10));
+  }
+  setTimeout(tick, delay);
+}
+
+// Confetti burst from center-top of screen
+function confettiBurst() {
+  const colors = ['#0ea5e9','#667eea','#34c759','#FFD60A','#FF6B6B','#f59e0b'];
+  const count = 36;
+  const container = document.createElement('div');
+  container.className = 'confetti-burst';
+  document.body.appendChild(container);
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'cp';
+    const x = (Math.random() - 0.5) * 320;
+    const size = 5 + Math.random() * 8;
+    const dur = 0.9 + Math.random() * 0.6;
+    p.style.cssText = `background:${colors[i%colors.length]};left:calc(50% + ${x}px);top:100px;width:${size}px;height:${size}px;border-radius:${Math.random()>0.5?'50%':'2px'};animation-duration:${dur}s;animation-delay:${Math.random()*0.3}s;`;
+    container.appendChild(p);
+  }
+  setTimeout(() => container.remove(), 1800);
+}
+
+// Animate proc steps: idx 0-3
+function procStep(idx) {
+  for (let i = 0; i < 4; i++) {
+    const el = document.getElementById(`proc-step-${i}`);
+    if (!el) continue;
+    if (i < idx) { el.className = 'proc-step done'; }
+    else if (i === idx) { el.className = 'proc-step active'; }
+    else { el.className = 'proc-step'; }
+  }
+}
+
+// Angler level system
+function getAnglerLevel(catchCount, speciesCount, bestWeight) {
+  const pts = Math.floor(catchCount / 3) + speciesCount + Math.floor(bestWeight / 5);
+  if (pts >= 40) return { level: pts, title: 'Master Angler', tier: 'lvl-master', icon: '🏆' };
+  if (pts >= 20) return { level: pts, title: 'Expert Angler', tier: 'lvl-expert', icon: '🎯' };
+  if (pts >= 8)  return { level: pts, title: 'Skilled Angler', tier: 'lvl-skilled', icon: '⭐' };
+  return { level: Math.max(1, pts), title: 'Novice Angler', tier: 'lvl-novice', icon: '🎣' };
+}
+
+// Daily challenge (deterministic by date)
+const DAILY_CHALLENGES = [
+  { emoji: '📸', text: 'Log a catch with a photo today', target: 'photo' },
+  { emoji: '⚖️', text: 'Catch something over 2 lbs', target: 'weight_2' },
+  { emoji: '🗺️', text: 'Fish a new spot (add it to the map!)', target: 'new_spot' },
+  { emoji: '🌅', text: 'Log a catch before noon', target: 'early' },
+  { emoji: '🐟', text: 'Catch 2 different species', target: 'species_2' },
+  { emoji: '🎣', text: 'Share a catch publicly with the community', target: 'public' },
+  { emoji: '🏆', text: 'Beat your personal best weight', target: 'pb' },
+];
+function getDailyChallenge() {
+  const d = new Date();
+  const seed = d.getFullYear() * 1000 + d.getMonth() * 50 + d.getDate();
+  return DAILY_CHALLENGES[seed % DAILY_CHALLENGES.length];
+}
+
+// Fishing conditions based on time + month
+function getFishingConditions() {
+  const now = new Date();
+  const hr = now.getHours();
+  const mo = now.getMonth(); // 0-11
+  const season = mo <= 1 || mo === 11 ? 'winter' : mo <= 4 ? 'spring' : mo <= 7 ? 'summer' : 'fall';
+  const seasonScore = { spring: 5, fall: 5, summer: 3, winter: 2 }[season];
+  let timeAdvice, timeScore;
+  if (hr >= 5 && hr < 9)       { timeAdvice = 'Dawn bite is ON — prime feeding window'; timeScore = 5; }
+  else if (hr >= 9 && hr < 11) { timeAdvice = 'Morning feeding tapering off'; timeScore = 3; }
+  else if (hr >= 11 && hr < 15){ timeAdvice = 'Midday — fish are deep and slow'; timeScore = 2; }
+  else if (hr >= 15 && hr < 19){ timeAdvice = 'Afternoon bite picking up'; timeScore = 4; }
+  else if (hr >= 19 && hr < 21){ timeAdvice = 'Dusk feeding frenzy — go now!'; timeScore = 5; }
+  else                         { timeAdvice = 'Night fishing — try topwater lures'; timeScore = 3; }
+  const score = Math.round((seasonScore + timeScore) / 2);
+  const stars = '⭐'.repeat(score) + '☆'.repeat(5 - score);
+  const icons = { 1:'🌧️', 2:'☁️', 3:'🌤️', 4:'🌞', 5:'🔥' };
+  return { icon: icons[score], stars, timeAdvice, season: season.charAt(0).toUpperCase() + season.slice(1), score };
+}
+
+// Render the daily challenge + conditions widgets at top of feed
+function renderFeedWidgets() {
+  const fc = document.getElementById('feed-content');
+  if (!fc) return;
+  const challenge = getDailyChallenge();
+  const cond = getFishingConditions();
+  const widgets = `
+    <div class="challenge-card">
+      <div class="challenge-emoji">${challenge.emoji}</div>
+      <div class="challenge-body">
+        <div class="challenge-label">Today's Challenge</div>
+        <div class="challenge-text">${challenge.text}</div>
+      </div>
+      <button class="challenge-cta" onclick="showScreen('scan')">Go Fish!</button>
+    </div>
+    <div class="conditions-card">
+      <div class="conditions-icon" style="background:rgba(14,165,233,0.08);">${cond.icon}</div>
+      <div class="conditions-body">
+        <div class="conditions-title">${cond.stars} · ${cond.season} fishing</div>
+        <div class="conditions-sub">${cond.timeAdvice}</div>
+      </div>
+      <button class="conditions-scan-btn" onclick="showScreen('scan')">Scan</button>
+    </div>`;
+  if (!document.getElementById('feed-widgets')) {
+    const wrap = document.createElement('div');
+    wrap.id = 'feed-widgets';
+    wrap.innerHTML = widgets;
+    fc.parentNode.insertBefore(wrap, fc);
+  }
+}
+
+// Collection screen loader
+async function loadCollectionScreen() {
+  const grid = document.getElementById('coll-grid');
+  const progText = document.getElementById('coll-prog-text');
+  const progPct = document.getElementById('coll-prog-pct');
+  const progFill = document.getElementById('coll-prog-fill');
+  if (!grid) return;
+
+  const allSpecies = Object.keys(SPECIES_DB);
+  const total = allSpecies.length;
+
+  // Fetch catch data
+  let myCatches = [];
+  if (sb && currentUser) {
+    const { data } = await sb.from('catches').select('species,weight_lbs').eq('user_id', currentUser.id).eq('post_type', 'catch');
+    myCatches = data || [];
+  }
+
+  // Build per-species stats
+  const caughtMap = {};
+  myCatches.forEach(c => {
+    if (!c.species || !SPECIES_DB[c.species]) return;
+    if (!caughtMap[c.species]) caughtMap[c.species] = { count: 0, best: 0 };
+    caughtMap[c.species].count++;
+    const w = parseFloat(c.weight_lbs) || 0;
+    if (w > caughtMap[c.species].best) caughtMap[c.species].best = w;
+  });
+
+  const caughtCount = Object.keys(caughtMap).length;
+  const pct = Math.round((caughtCount / total) * 100);
+  if (progText) progText.textContent = `${caughtCount} of ${total} species caught`;
+  if (progPct) progPct.textContent = pct + '%';
+  setTimeout(() => { if (progFill) progFill.style.width = pct + '%'; }, 100);
+
+  grid.innerHTML = allSpecies.map(s => {
+    const db = SPECIES_DB[s];
+    const caught = caughtMap[s];
+    const cls = caught ? 'coll-caught' : 'coll-uncaught';
+    const stat = caught
+      ? `${caught.count} catch${caught.count !== 1 ? 'es' : ''}${caught.best > 0 ? ' · ' + caught.best.toFixed(1) + ' lb' : ''}`
+      : 'Not yet caught';
+    return `<div class="coll-item ${cls}" onclick="${caught ? `openSpeciesDetail('${s}')` : ''}">
+      <div class="coll-item-emoji">${db.emoji}</div>
+      <div class="coll-item-name">${caught ? s : '???'}</div>
+      <div class="coll-item-stat">${caught ? stat : 'Catch to reveal'}</div>
+    </div>`;
+  }).join('');
 }
 
 // ══════════════════════════════════════════
