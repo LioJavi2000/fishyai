@@ -5339,7 +5339,7 @@ async function postCatch(isPublic = true) {
     // Check milestone achievements and personal best
     let isPersonalBest = false;
     try {
-      const { data: userCatches } = await sb.from('catches').select('weight_lbs,created_at,species').eq('user_id', currentUser.id);
+      const { data: userCatches } = await sb.from('catches').select('id,weight_lbs,created_at,species').eq('user_id', currentUser.id);
       if (userCatches) {
         const total = userCatches.length;
         const heaviest = Math.max(0, ...userCatches.map(x => parseFloat(x.weight_lbs) || 0));
@@ -8459,6 +8459,10 @@ function markNotifRead(id, el, catchId, type, actorId) {
   el.querySelector('.notif-unread-dot')?.remove();
   if (type === 'message' && actorId) {
     showScreen('messages');
+    if (sb && currentUser) {
+      sb.from('profiles').select('username, display_name, avatar_url').eq('id', actorId).single()
+        .then(({ data: p }) => { if (p) startDMWith(actorId, p.username, p.display_name || p.username, p.avatar_url || ''); });
+    }
   } else if (type === 'follow' && actorId) {
     openUserProfile(actorId);
   } else if (catchId && UUID_RE.test(catchId)) {
