@@ -3503,6 +3503,12 @@ async function loadProfileScreen() {
     if (shareProfileBtn) shareProfileBtn.style.display = isOwnProfile ? 'inline-flex' : 'none';
     const speciesGoalBtn = document.getElementById('species-goal-btn');
     if (speciesGoalBtn) speciesGoalBtn.style.display = isOwnProfile ? 'inline-block' : 'none';
+    // Hide Saved and Gear tabs on other profiles (private/localStorage-only data)
+    const tabSaved = document.getElementById('tab-saved');
+    const tabGear  = document.getElementById('tab-gear');
+    if (tabSaved) tabSaved.style.display = isOwnProfile ? '' : 'none';
+    if (tabGear)  tabGear.style.display  = isOwnProfile ? '' : 'none';
+    if (!isOwnProfile) switchProfileTab('catches');
 
     // On The Water status
     const otwBadge = document.getElementById('prof-otw-badge');
