@@ -1356,8 +1356,9 @@ body {
 .dark-mode .qs-chip-val { color: #fff; }
 
 /* ── OFFLINE BANNER ── */
-#offline-banner{position:absolute;bottom:80px;left:0;right:0;background:#ff3b30;color:#fff;text-align:center;font-size:12px;font-weight:700;padding:8px 16px;z-index:999;transform:translateY(100px);transition:transform 0.3s var(--ease);letter-spacing:-0.2px;}
+#offline-banner{position:absolute;bottom:80px;left:0;right:0;background:#ff3b30;color:#fff;text-align:center;font-size:12px;font-weight:700;padding:8px 16px;z-index:999;transform:translateY(100px);transition:transform 0.3s var(--ease);letter-spacing:-0.2px;display:none !important;}
 #offline-banner.show{transform:translateY(0);}
+#screen-story-editor,#screen-story-viewer{display:none !important;}
 
 /* ── ACHIEVEMENT POPUP ── */
 .achievement-backdrop{position:absolute;inset:0;background:rgba(0,0,0,0.6);z-index:999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;}
@@ -1696,14 +1697,11 @@ body {
   <span class="tab-sep">·</span>
   <div class="tab-group">
     <button class="tab-btn" id="tab-map" onclick="showScreen('map')">Map</button>
-    <button class="tab-btn" id="tab-leaderboard" onclick="showScreen('leaderboard')">Ranks</button>
     <button class="tab-btn" id="tab-collection" onclick="showScreen('collection')">Collection</button>
   </div>
   <span class="tab-sep">·</span>
   <div class="tab-group">
-    <button class="tab-btn" id="tab-story-editor" onclick="showScreen('story-editor')">Story Ed.</button>
     <button class="tab-btn" id="tab-post-editor" onclick="showScreen('post-editor')">Post Ed.</button>
-    <button class="tab-btn" id="tab-story-viewer" onclick="showScreen('story-viewer')">Story View</button>
   </div>
   <span class="tab-sep">·</span>
   <div class="tab-group">
@@ -1832,12 +1830,6 @@ body {
             <div class="feed-hd-ico" onclick="openSettings()" style="cursor:pointer;">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="#111"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
             </div>
-          </div>
-        </div>
-        <div class="story-row">
-          <div class="story add-story" onclick="openStoryCamera()">
-            <div class="s-add-ring" id="my-story-ring"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
-            <span>Your story</span>
           </div>
         </div>
         <!-- FEED POST COMPOSER -->
@@ -2340,14 +2332,15 @@ body {
       <div class="map-wrap">
         <div id="leaflet-map"></div>
         <div class="map-locate-btn" onclick="mapLocateMe()" title="My location" style="bottom:72px;">📍</div>
+        <button id="map-add-spot-btn" onclick="startSpotCreationMode()" title="Add a fishing spot" style="position:absolute;bottom:70px;right:14px;width:44px;height:44px;border-radius:50%;background:#fff;color:var(--navy);border:2px solid rgba(27,46,75,0.15);font-size:22px;font-weight:900;cursor:pointer;box-shadow:0 2px 16px rgba(0,0,0,0.18);z-index:999;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;transition:transform 0.2s var(--spring);">+</button>
         <button onclick="quickLogAtLocation()" title="Quick log catch here" style="position:absolute;bottom:18px;right:14px;width:auto;padding:0 16px;height:44px;border-radius:22px;background:var(--navy);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 16px rgba(27,46,75,0.35);z-index:999;display:flex;align-items:center;gap:6px;-webkit-tap-highlight-color:transparent;">
           🎣 Log Here
         </button>
         <div style="position:absolute;top:8px;left:50%;transform:translateX(-50%);z-index:500;display:flex;gap:6px;">
           <button onclick="setMapLayer('all')" id="map-tab-all" style="background:var(--navy);color:#fff;border:none;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 12px rgba(0,0,0,0.18);">All</button>
-          <button onclick="setMapLayer('following')" id="map-tab-following" style="background:rgba(255,255,255,0.9);color:#111;border:none;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 12px rgba(0,0,0,0.12);backdrop-filter:blur(8px);">Friends</button>
           <button onclick="setMapLayer('mine')" id="map-tab-mine" style="background:rgba(255,255,255,0.9);color:#111;border:none;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 12px rgba(0,0,0,0.12);backdrop-filter:blur(8px);">Mine</button>
         </div>
+        <div id="map-spot-mode-banner" style="display:none;position:absolute;top:52px;left:50%;transform:translateX(-50%);z-index:600;background:var(--navy);color:#fff;border-radius:20px;padding:8px 18px;font-size:12px;font-weight:700;box-shadow:0 4px 16px rgba(0,0,0,0.3);white-space:nowrap;pointer-events:none;">📍 Tap the map to place your spot</div>
         <div class="map-sheet" id="map-card">
           <div class="map-sheet-close" onclick="closeMapCard()">✕</div>
           <div class="map-sheet-handle"></div>
@@ -2356,8 +2349,6 @@ body {
               <div class="map-sheet-name" id="mc-title"></div>
               <div id="mc-type-badge" class="map-sheet-type-badge map-sheet-type-lake" style="flex-shrink:0;margin-top:3px;"></div>
             </div>
-            <!-- Species chips row -->
-            <div class="mc-chips-row" id="mc-species-chips"></div>
             <div class="map-sheet-divider"></div>
             <!-- Real catch stats (filled async) -->
             <div class="mc-catch-stats" id="mc-catch-stats" style="padding:0;margin:0 0 10px;"></div>
@@ -2365,10 +2356,12 @@ body {
               <div class="map-sheet-ico">📍</div>
               <div><div class="map-sheet-lbl" id="mc-coords"></div><div class="map-sheet-val">GPS coordinates</div></div>
             </div>
-            <div class="map-sheet-row" id="mc-dist-row" style="display:none;margin-bottom:6px;">
+            <div class="map-sheet-row" id="mc-dist-row" style="display:none;margin-bottom:10px;">
               <div class="map-sheet-ico">🚗</div>
               <div><div class="map-sheet-lbl" id="mc-dist"></div><div class="map-sheet-val">From your location</div></div>
             </div>
+            <!-- Species list (below distance, above buttons) -->
+            <div id="mc-species-list" style="display:none;margin-bottom:10px;"></div>
           </div>
           <!-- Recent catches photo strip (filled async) -->
           <div class="mc-recent-strip" id="mc-recent-strip"></div>
@@ -2765,14 +2758,16 @@ body {
           <!-- Trending Hashtags -->
           <div class="explore-sec-hd" id="explore-hashtags-hd" style="display:none;">Trending Tags 🏷️</div>
           <div id="explore-hashtags" style="display:none;padding:0 16px 8px;"></div>
-          <div class="explore-sec-hd">Fish Encyclopedia 📖</div>
-          <div id="explore-encyclopedia" style="display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 8px;"></div>
+          <div class="explore-sec-hd" id="encyclopedia-toggle" onclick="toggleEncyclopedia()" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding-right:16px;">
+            <span>Fish Encyclopedia 📖</span>
+            <span id="encyclopedia-arrow" style="font-size:12px;color:var(--gray);transition:transform 0.25s;">▼</span>
+          </div>
+          <div id="explore-encyclopedia" style="display:none;padding:0 16px 8px;"></div>
           <div class="explore-sec-hd" id="explore-spots-hd" style="display:none;">Hot Spots 📍</div>
           <div id="explore-spots" style="display:none;padding:0 16px 8px;"></div>
           <div class="explore-sec-hd" id="explore-near-hd" style="display:none;">Near You 📍</div>
           <div id="explore-near" style="display:none;padding:0 16px 8px;"></div>
-          <div class="explore-sec-hd">Leaderboard <span style="font-weight:500;color:var(--gray);font-size:12px;">Top Catches</span></div>
-          <div id="explore-lb" style="padding-bottom:8px;"></div>
+
         </div>
       </div>
     </div>
@@ -3125,16 +3120,16 @@ const BACK_MAP = {
   scan:'feed', processing:'scan', result:'scan',
   log:'result', map:'feed', leaderboard:'explore', explore:'feed',
   profile:'feed', paywall:'feed', collection:'profile',
-  'story-editor':'scan', 'post-editor':'scan',
-  'story-viewer':'feed', notifications:'feed', settings:'profile',
+  'post-editor':'scan',
+  notifications:'feed', settings:'profile',
   messages:'feed', 'dm-thread':'messages',
 };
 const STATUS_TITLES = {
   onboard1:'',onboard2:'',auth:'',feed:'Fishy AI',scan:'',processing:'',
   result:'AI Result',log:'Log Catch',map:'Fishy AI',leaderboard:'Leaderboard',
   explore:'Explore',settings:'Settings',
-  profile:'Profile',paywall:'Fishy AI','story-editor':'','post-editor':'New Post',
-  'story-viewer':'', notifications:'Notifications',
+  profile:'Profile',paywall:'Fishy AI','post-editor':'New Post',
+  notifications:'Notifications',
   messages:'Messages', 'dm-thread':'', collection:'My Collection',
 };
 
@@ -3329,7 +3324,7 @@ function showScreen(name, back = false) {
   if (name === 'settings') loadSettingsScreen();
   if (name === 'messages') loadDMs();
   if (name === 'collection') loadCollectionScreen();
-  if (name !== 'profile' && name !== 'story-viewer' && name !== 'dm-thread' && name !== 'collection') viewingUserId = null;
+  if (name !== 'profile' && name !== 'dm-thread' && name !== 'collection') viewingUserId = null;
 }
 
 function updateStatusBar(name) {
@@ -7705,7 +7700,7 @@ let _mapLayer = 'all';
 
 function setMapLayer(layer) {
   _mapLayer = layer;
-  ['all','following','mine'].forEach(l => {
+  ['all','mine'].forEach(l => {
     const btn = document.getElementById(`map-tab-${l}`);
     if (btn) { btn.style.background = l === layer ? 'var(--navy)' : 'rgba(255,255,255,0.9)'; btn.style.color = l === layer ? '#fff' : '#111'; }
   });
@@ -7723,16 +7718,6 @@ async function loadMapCatches() {
         .select('id, species, weight_lbs, lat, lng, spot_name, photo_url, user_id, profiles!catches_user_id_fkey(username)')
         .eq('user_id', currentUser.id)
         .eq('post_type', 'catch')
-        .not('lat', 'is', null).not('lng', 'is', null)
-        .order('created_at', { ascending: false }).limit(200);
-    } else if (_mapLayer === 'following' && currentUser) {
-      const { data: follows } = await sb.from('follows').select('following_id').eq('follower_id', currentUser.id);
-      const ids = (follows || []).map(f => f.following_id);
-      if (!ids.length) { showToast('Follow some anglers to see their catches on the map!'); return; }
-      query = sb.from('catches')
-        .select('id, species, weight_lbs, lat, lng, spot_name, photo_url, user_id, profiles!catches_user_id_fkey(username)')
-        .eq('is_public', true).eq('post_type', 'catch')
-        .in('user_id', ids)
         .not('lat', 'is', null).not('lng', 'is', null)
         .order('created_at', { ascending: false }).limit(200);
     } else {
@@ -7777,22 +7762,35 @@ function showMapCard(spot) {
     typeBadge.className = `map-sheet-type-badge map-sheet-type-${spot.type || 'lake'}`;
   }
 
-  // Species chips
-  const chipsEl = document.getElementById('mc-species-chips');
-  if (chipsEl) {
+  // Species list (below distance section)
+  const speciesListEl = document.getElementById('mc-species-list');
+  if (speciesListEl) {
+    let speciesArr = [];
     if (spot.type === 'catch') {
-      const s = spot.name;
-      const db = SPECIES_DB[s];
-      chipsEl.innerHTML = db
-        ? `<div class="mc-species-chip mc-species-chip-known" onclick="openSpeciesDetail('${esc(s)}')" style="border-color:${db.color}44;background:${db.color}18;color:${db.color};">${db.emoji} ${esc(s)} <span style="font-size:9px;opacity:0.65;">ⓘ</span></div>`
-        : `<div class="mc-species-chip">${esc(s)}</div>`;
+      speciesArr = spot.name ? [spot.name] : [];
     } else {
-      const speciesArr = (spot.sub || '').split(' · ').map(s => s.trim()).filter(Boolean);
-      chipsEl.innerHTML = speciesArr.map(s => {
-        const db = SPECIES_DB[s];
-        if (db) return `<div class="mc-species-chip mc-species-chip-known" onclick="openSpeciesDetail('${esc(s)}')" style="border-color:${db.color}44;background:${db.color}18;color:${db.color};">${db.emoji} ${esc(s)} <span style="font-size:9px;opacity:0.65;">ⓘ</span></div>`;
-        return `<div class="mc-species-chip">🐟 ${esc(s)}</div>`;
-      }).join('');
+      speciesArr = (spot.sub || '').split(' · ').map(s => s.trim()).filter(Boolean);
+    }
+    if (speciesArr.length) {
+      speciesListEl.style.display = '';
+      speciesListEl.innerHTML = `
+        <div style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:7px;">Species Caught Here</div>
+        ${speciesArr.map(s => {
+          const db = SPECIES_DB[s];
+          const emoji = db?.emoji || '🐟';
+          const col = db?.color || '#0ea5e9';
+          return `<div onclick="${db ? `openSpeciesDetail('${esc(s)}')` : ''}" style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:#f7f8fa;border-radius:12px;margin-bottom:6px;cursor:${db ? 'pointer' : 'default'};transition:background 0.15s;" onmousedown="this.style.background='#eef2f7'" onmouseup="this.style.background='#f7f8fa'">
+            <div style="width:36px;height:36px;border-radius:10px;background:${col}18;border:1.5px solid ${col}33;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">${emoji}</div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:13px;font-weight:700;color:#111;letter-spacing:-0.2px;">${esc(s)}</div>
+              ${db ? `<div style="font-size:10px;color:var(--gray);font-style:italic;margin-top:1px;">${esc(db.sci)}</div>` : ''}
+            </div>
+            ${db ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${col}" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>` : ''}
+          </div>`;
+        }).join('')}
+      `;
+    } else {
+      speciesListEl.style.display = 'none';
     }
   }
 
@@ -7876,6 +7874,28 @@ async function loadSpotCatchData(spot) {
       `;
     }
 
+    // Also update species list from real catch data
+    const specListEl = document.getElementById('mc-species-list');
+    if (specListEl && topSpecies.length) {
+      specListEl.style.display = '';
+      specListEl.innerHTML = `
+        <div style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:7px;">Species Caught Here</div>
+        ${topSpecies.map(([s, n]) => {
+          const db = SPECIES_DB[s];
+          const emoji = db?.emoji || '🐟';
+          const col = db?.color || '#0ea5e9';
+          return `<div onclick="${db ? `openSpeciesDetail('${esc(s)}')` : ''}" style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:#f7f8fa;border-radius:12px;margin-bottom:6px;cursor:${db ? 'pointer' : 'default'};">
+            <div style="width:36px;height:36px;border-radius:10px;background:${col}18;border:1.5px solid ${col}33;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">${emoji}</div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:13px;font-weight:700;color:#111;letter-spacing:-0.2px;">${esc(s)}</div>
+              <div style="font-size:10px;color:var(--gray);margin-top:1px;">${n} catch${n!==1?'es':''} logged</div>
+            </div>
+            ${db ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${col}" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>` : ''}
+          </div>`;
+        }).join('')}
+      `;
+    }
+
     // Photo strip
     const photoCatches = data.filter(c => c.photo_url);
     const recentEl = document.getElementById('mc-recent-strip');
@@ -7894,6 +7914,78 @@ async function loadSpotCatchData(spot) {
       `;
     }
   } catch(e) { console.warn('loadSpotCatchData:', e.message); }
+}
+
+let _spotCreationMode = false;
+function startSpotCreationMode() {
+  if (!currentUser) { showToast('Sign in to add a spot'); return; }
+  _spotCreationMode = true;
+  const banner = document.getElementById('map-spot-mode-banner');
+  if (banner) banner.style.display = 'block';
+  const addBtn = document.getElementById('map-add-spot-btn');
+  if (addBtn) { addBtn.style.background = 'var(--navy)'; addBtn.style.color = '#fff'; addBtn.textContent = '✕'; addBtn.onclick = cancelSpotCreationMode; }
+  if (leafletMap) leafletMap.once('click', onMapSpotPlacement);
+}
+function cancelSpotCreationMode() {
+  _spotCreationMode = false;
+  const banner = document.getElementById('map-spot-mode-banner');
+  if (banner) banner.style.display = 'none';
+  const addBtn = document.getElementById('map-add-spot-btn');
+  if (addBtn) { addBtn.style.background = '#fff'; addBtn.style.color = 'var(--navy)'; addBtn.textContent = '+'; addBtn.onclick = startSpotCreationMode; }
+  if (leafletMap) leafletMap.off('click', onMapSpotPlacement);
+}
+function onMapSpotPlacement(e) {
+  cancelSpotCreationMode();
+  const lat = e.latlng.lat;
+  const lng = e.latlng.lng;
+  const modal = document.createElement('div');
+  modal.id = 'new-spot-modal';
+  modal.style.cssText = 'position:absolute;inset:0;z-index:9990;display:flex;align-items:flex-end;';
+  modal.innerHTML = `
+    <div onclick="document.getElementById('new-spot-modal')?.remove()" style="position:absolute;inset:0;background:rgba(0,0,0,0.45);backdrop-filter:blur(6px);"></div>
+    <div style="position:relative;width:100%;background:#fff;border-radius:24px 24px 0 0;padding:22px 20px 36px;z-index:1;">
+      <div style="width:36px;height:4px;background:#e0e0e8;border-radius:2px;margin:0 auto 18px;"></div>
+      <div style="font-size:17px;font-weight:800;color:#111;letter-spacing:-0.5px;margin-bottom:4px;">📍 Name This Spot</div>
+      <div style="font-size:12px;color:var(--gray);margin-bottom:14px;">This spot will be visible to everyone on the map</div>
+      <div style="background:rgba(14,165,233,0.07);border:1.5px solid rgba(14,165,233,0.18);border-radius:12px;padding:10px 13px;margin-bottom:14px;font-size:12px;color:#0369a1;font-weight:600;line-height:1.5;">
+        💡 Tip: Name it after the location or landmark — like "Lake Elsinore South Cove" or "Santa Monica Pier End"
+      </div>
+      <input id="new-spot-name-input" type="text" placeholder="e.g. South Fork Bridge, Hidden Cove…" autocomplete="off" style="width:100%;box-sizing:border-box;border:1.5px solid rgba(0,0,0,0.12);border-radius:14px;padding:13px 14px;font-size:14px;font-family:inherit;color:#111;outline:none;margin-bottom:14px;" oninput="document.getElementById('new-spot-submit-btn').disabled=!this.value.trim()">
+      <button id="new-spot-submit-btn" disabled onclick="submitNewSpot(${lat},${lng})" style="width:100%;padding:15px;background:var(--navy);color:#fff;border:none;border-radius:16px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;opacity:0.5;transition:opacity 0.2s;" onmousedown="if(!this.disabled)this.style.opacity='0.8'" onmouseup="this.style.opacity='1'">Add Spot to Map 🗺️</button>
+    </div>`;
+  // Update button opacity when input changes
+  modal.querySelector('#new-spot-submit-btn').style.opacity = '0.5';
+  document.querySelector('.phone')?.appendChild(modal);
+  setTimeout(() => modal.querySelector('input')?.focus(), 100);
+}
+async function submitNewSpot(lat, lng) {
+  const input = document.getElementById('new-spot-name-input');
+  const btn = document.getElementById('new-spot-submit-btn');
+  const name = input?.value.trim();
+  if (!name || !sb || !currentUser) return;
+  if (btn) { btn.textContent = 'Saving…'; btn.disabled = true; }
+  try {
+    const { data: ns, error } = await sb.from('spots').insert({ name, lat, lng, created_by: currentUser.id }).select().single();
+    if (error) throw error;
+    document.getElementById('new-spot-modal')?.remove();
+    // Add marker to map immediately
+    if (leafletMap && ns) {
+      const marker = L.marker([lat, lng], {
+        icon: L.divIcon({
+          className: '',
+          html: `<div style="width:32px;height:40px;"><div style="width:32px;height:40px;display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 32 40" width="32" height="40"><path d="M16 2C9.37 2 4 7.37 4 14c0 8.5 12 24 12 24s12-15.5 12-24C28 7.37 22.63 2 16 2z" fill="#34c759" stroke="rgba(255,255,255,0.8)" stroke-width="1.5"/><circle cx="16" cy="14" r="5.5" fill="rgba(255,255,255,0.95)"/><text x="16" y="18" text-anchor="middle" font-size="8">📍</text></svg></div></div>`,
+          iconSize: [32, 40], iconAnchor: [16, 40],
+        })
+      }).addTo(leafletMap).on('click', e => {
+        L.DomEvent.stopPropagation(e);
+        showMapCard({ name, lat, lng, type: 'user-spot', sub: '' });
+      });
+    }
+    showToast(`"${name}" added to the map! 🗺️`);
+  } catch (err) {
+    showToast('Failed to save spot: ' + err.message);
+    if (btn) { btn.textContent = 'Add Spot to Map 🗺️'; btn.disabled = false; }
+  }
 }
 
 function closeMapCard() {
@@ -8111,7 +8203,6 @@ async function loadExplore() {
   loadExploreSpecies();
   loadExploreWhoToFollow();
   loadExploreLb();
-  loadExploreEncyclopedia();
   loadWeeklyChallenge();
   loadExploreBuddies();
   loadExploreHotTakes();
@@ -8228,13 +8319,43 @@ async function loadWhatsBiting() {
   } catch {}
 }
 
+const ENCYCLOPEDIA_FRESHWATER = ['Largemouth Bass','Smallmouth Bass','Spotted Bass','Rainbow Trout','Brown Trout','Brook Trout','Lake Trout','Walleye','Yellow Perch','Channel Catfish','Flathead Catfish','Northern Pike','Muskellunge','Bluegill','Crappie','Common Carp','White Bass','Peacock Bass'];
+const ENCYCLOPEDIA_SALTWATER = ['Striped Bass','Salmon','Red Drum','Snook','Flounder','Tarpon'];
+
 function loadExploreEncyclopedia() {
   const el = document.getElementById('explore-encyclopedia');
   if (!el) return;
-  el.innerHTML = Object.keys(SPECIES_DB).map(s => {
-    const d = SPECIES_DB[s];
-    return `<button class="explore-species-pill" onclick="openSpeciesDetail('${esc(s)}')" style="background:#fff;box-shadow:0 1px 6px rgba(0,0,0,0.07);">${d.emoji} ${esc(s)}</button>`;
-  }).join('');
+  function renderCategory(label, emoji, speciesList) {
+    const items = speciesList.filter(s => SPECIES_DB[s]);
+    if (!items.length) return '';
+    return `
+      <div style="margin-bottom:14px;">
+        <div style="font-size:11px;font-weight:800;color:var(--gray);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:8px;">${emoji} ${label}</div>
+        ${items.map(s => {
+          const d = SPECIES_DB[s];
+          return `<div onclick="openSpeciesDetail('${esc(s)}')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:#fff;border-radius:14px;margin-bottom:6px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.06);transition:transform 0.15s var(--spring);" ontouchstart="this.style.transform='scale(0.97)'" ontouchend="this.style.transform=''">
+            <div style="width:38px;height:38px;border-radius:10px;background:${d.color}18;border:1.5px solid ${d.color}33;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">${d.emoji}</div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:13px;font-weight:700;color:#111;letter-spacing:-0.2px;">${esc(s)}</div>
+              <div style="font-size:10px;color:var(--gray);font-style:italic;margin-top:1px;">${esc(d.sci)}</div>
+            </div>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${d.color}" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>`;
+        }).join('')}
+      </div>
+    `;
+  }
+  el.innerHTML = renderCategory('Freshwater', '🏞️', ENCYCLOPEDIA_FRESHWATER) + renderCategory('Saltwater & Coastal', '🌊', ENCYCLOPEDIA_SALTWATER);
+}
+
+let _encyclopediaOpen = false;
+function toggleEncyclopedia() {
+  _encyclopediaOpen = !_encyclopediaOpen;
+  const el = document.getElementById('explore-encyclopedia');
+  const arrow = document.getElementById('encyclopedia-arrow');
+  if (el) el.style.display = _encyclopediaOpen ? '' : 'none';
+  if (arrow) arrow.style.transform = _encyclopediaOpen ? 'rotate(180deg)' : '';
+  if (_encyclopediaOpen && el && !el.innerHTML) loadExploreEncyclopedia();
 }
 
 async function loadExploreTrending() {
