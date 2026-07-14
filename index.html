@@ -3230,8 +3230,11 @@ async function init() {
       currentUser = session?.user ?? null;
       if (!currentUser) {
         currentProfile = null;
-        // Only redirect to auth if we were previously logged in (actual sign-out)
-        if (prevUser && current !== 'auth' && current !== 'onboard1' && current !== 'onboard2') {
+        // TOKEN_REFRESH_FAILED = stale token (e.g. after project pause). Clear and redirect.
+        if (event === 'TOKEN_REFRESHED' && !session) {
+          try { await sb.auth.signOut(); } catch {}
+        }
+        if (!currentUser && current !== 'auth' && current !== 'onboard1' && current !== 'onboard2') {
           showScreen('auth');
         }
         return;
