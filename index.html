@@ -7918,7 +7918,11 @@ async function loadSpotCatchData(spot) {
 }
 
 let _spotCreationMode = false;
-function startSpotCreationMode() {
+async function startSpotCreationMode() {
+  if (!currentUser && sb) {
+    const { data } = await sb.auth.getUser();
+    if (data?.user) currentUser = data.user;
+  }
   if (!currentUser) { showToast('Sign in to add a spot'); return; }
   _spotCreationMode = true;
   const banner = document.getElementById('map-spot-mode-banner');
