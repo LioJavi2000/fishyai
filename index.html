@@ -2331,11 +2331,12 @@ body {
     <div class="screen" id="screen-map">
       <div class="map-wrap">
         <div id="leaflet-map"></div>
-        <div class="map-locate-btn" onclick="mapLocateMe()" title="My location" style="bottom:72px;">📍</div>
-        <button id="map-add-spot-btn" onclick="startSpotCreationMode()" title="Add a fishing spot" style="position:absolute;bottom:70px;right:14px;width:44px;height:44px;border-radius:50%;background:#fff;color:var(--navy);border:2px solid rgba(27,46,75,0.15);font-size:22px;font-weight:900;cursor:pointer;box-shadow:0 2px 16px rgba(0,0,0,0.18);z-index:999;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;transition:transform 0.2s var(--spring);">+</button>
-        <button onclick="quickLogAtLocation()" title="Quick log catch here" style="position:absolute;bottom:18px;right:14px;width:auto;padding:0 16px;height:44px;border-radius:22px;background:var(--navy);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 16px rgba(27,46,75,0.35);z-index:999;display:flex;align-items:center;gap:6px;-webkit-tap-highlight-color:transparent;">
+        <!-- right-side button stack: Log Here → + Spot → 📍 Locate, 8px gaps -->
+        <button onclick="quickLogAtLocation()" title="Quick log catch here" style="position:absolute;bottom:14px;right:14px;width:auto;padding:0 16px;height:44px;border-radius:22px;background:var(--navy);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 16px rgba(27,46,75,0.35);z-index:999;display:flex;align-items:center;gap:6px;-webkit-tap-highlight-color:transparent;">
           🎣 Log Here
         </button>
+        <button id="map-add-spot-btn" onclick="startSpotCreationMode()" title="Add a fishing spot" style="position:absolute;bottom:66px;right:14px;width:44px;height:44px;border-radius:50%;background:#fff;color:var(--navy);border:2px solid rgba(27,46,75,0.15);font-size:22px;font-weight:900;cursor:pointer;box-shadow:0 2px 16px rgba(0,0,0,0.18);z-index:999;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;transition:background 0.2s,color 0.2s,transform 0.2s var(--spring);">+</button>
+        <div class="map-locate-btn" onclick="mapLocateMe()" title="My location" style="bottom:118px;">📍</div>
         <div style="position:absolute;top:8px;left:50%;transform:translateX(-50%);z-index:500;display:flex;gap:6px;">
           <button onclick="setMapLayer('all')" id="map-tab-all" style="background:var(--navy);color:#fff;border:none;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 12px rgba(0,0,0,0.18);">All</button>
           <button onclick="setMapLayer('mine')" id="map-tab-mine" style="background:rgba(255,255,255,0.9);color:#111;border:none;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 12px rgba(0,0,0,0.12);backdrop-filter:blur(8px);">Mine</button>
